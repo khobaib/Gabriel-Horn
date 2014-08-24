@@ -121,11 +121,11 @@ public class HomeActivity extends FragmentActivity {
 				} else if (tabId.equalsIgnoreCase("RewardsTabFragments")) {
 					ft.setCustomAnimations(
 
-					R.anim.slide_in_from_bottom, R.anim.slide_out_bottom);
+					R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 
 					ft.add(R.id.realtabcontent, new FragmentAccount(), "RewardsTabFragments");
 				} else if (tabId.equalsIgnoreCase("ShareTabFragments")) {
-					ft.setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_bottom);
+					ft.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 					ft.replace(R.id.realtabcontent, new FragmentShare(), "ShareTabFragments");
 
 				}
@@ -190,6 +190,7 @@ public class HomeActivity extends FragmentActivity {
 
 			}
 		});
+
 		tabs.getChildAt(0).setBackgroundResource(R.drawable.individual_tab);
 		tabs.getChildAt(1).setBackgroundResource(R.drawable.individual_tab);
 		tabs.getChildAt(2).setBackgroundResource(R.drawable.individual_tab);

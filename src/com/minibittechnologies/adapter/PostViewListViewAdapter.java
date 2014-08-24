@@ -2,6 +2,7 @@ package com.minibittechnologies.adapter;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,34 +16,38 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.ParseUser;
 
-public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
-
-	// private final String[] mPostsObjectIds;
-	private static Context mContext;
-
-	public PostViewListViewAdapter(final Context context) {
-		super(context, new ParseQueryAdapter.QueryFactory<Post>() {
-
+public class PostViewListViewAdapter extends ParseQueryAdapter<Post>
+{
+	public PostViewListViewAdapter(final Context context)
+	{
+		super(context, new ParseQueryAdapter.QueryFactory<Post>()
+		{
 			@Override
-			public ParseQuery<Post> create() {
-				mContext = context;
+			public ParseQuery<Post> create()
+			{
 				ParseQuery<Post> query = Post.getQuery();
-				// query.include("User");
 
-				// query.whereContainedIn("objectId",
-				// Arrays.asList(postsObjectIds));
+				if (ParseUser.getCurrentUser() != null)
+				{
+					ParseObject appParentCompany = ParseUser.getCurrentUser().getParseObject("appCompany");
+					query.whereEqualTo("appCompany", appParentCompany);
+				}
+
 				return query;
 			}
 		});
-
 	}
 
 	@Override
-	public View getItemView(Post post, View v, ViewGroup parent) {
-		if (v == null) {
+	public View getItemView(Post post, View v, ViewGroup parent)
+	{
+		if (v == null)
+		{
 			v = View.inflate(getContext(), R.layout.row_post, null);
 		}
 
@@ -50,16 +55,14 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 
 		ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.iv_post_image);
 		ParseFile imageFile = post.getParseFile("image");
-		if (imageFile != null) {
-			// Log.e(">>>>>>>>", "todoImage width = " + todoImage.getWidth());
+		if (imageFile != null)
+		{
 			todoImage.setParseFile(imageFile);
-			todoImage.loadInBackground(new GetDataCallback() {
-
+			todoImage.loadInBackground(new GetDataCallback()
+			{
 				@Override
-				public void done(byte[] data, ParseException e) {
-					// TODO Auto-generated method stub
-
-				}
+				public void done(byte[] data, ParseException e)
+				{}
 			});
 		}
 
@@ -72,13 +75,16 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 		final TextView tvExpired = (TextView) v.findViewById(R.id.tv_expired);
 		long currentTimeInMillis = System.currentTimeMillis();
 		long expiredTime = post.getExpired().getTime();
-		if (expiredTime > currentTimeInMillis) {
+		if (expiredTime > currentTimeInMillis)
+		{
 			tvExpired.setVisibility(View.GONE);
-		} else {
+		}
+		else
+		{
 			tvExpired.setVisibility(View.VISIBLE);
 		}
 
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 		String date = formatter.format(post.getExpired());
 		Log.e(">>>>>>>", "date in Date = " + post.getExpired() + "   AND date in String = " + date);
 
