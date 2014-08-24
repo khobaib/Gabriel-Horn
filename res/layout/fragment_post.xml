@@ -19,7 +19,7 @@
         ptr:ptrMode="both" />
     -->
 
-    <com.minibittechnologies.utility.ScrollReportListView
+    <ListView
         android:id="@+id/list_view_latest_offer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

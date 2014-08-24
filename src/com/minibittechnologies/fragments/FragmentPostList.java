@@ -11,12 +11,12 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.minibittechnologies.R;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
 import com.minibittechnologies.model.Post;
-import com.minibittechnologies.utility.ScrollReportListView;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -25,13 +25,13 @@ import com.parse.ParseQueryAdapter;
 public class FragmentPostList extends Fragment
 {
 	private ParseQueryAdapter<Post> postAdapter; // Adapter for the Parse query
-	private ScrollReportListView lvPost;
+	private ListView lvPost;
 	private OffersTabFragment parent;
 	private View topBar;
-	
+
 	private boolean isTopVarVisible;
 	private final int HEADER_TRANSITION_DURATION = 150;
-	
+
 	public static final String DEBUG_TAG = "Minibit Debug";
 
 	@Override
@@ -40,7 +40,7 @@ public class FragmentPostList extends Fragment
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 		View topBarClone = View.inflate(getActivity(), R.layout.post_header_view, lvPost);
 
-		lvPost = (ScrollReportListView) rootView.findViewById(R.id.list_view_latest_offer);
+		lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
 		lvPost.addHeaderView(topBarClone);
 		lvPost.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -198,7 +198,7 @@ public class FragmentPostList extends Fragment
 			public void onAnimationCancel(Animator arg0)
 			{}
 		});
-		
+
 		hideAnimator.start();
 	}
 
