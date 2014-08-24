@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="#FFFFFF"
+    android:orientation="vertical" >
+    <RelativeLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#0777A7"
+              android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+            >
+             <ImageView
+                android:id="@+id/backbuttonoftab"
+               android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/back"
+                />
+              <TextView
+                    android:id="@+id/welcome_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="#ffffff"
+                    android:singleLine="true"
+                   android:textSize="17sp"
+                   android:text="Gabriel Horn"
+                    android:textStyle="bold" />
+       
+        </RelativeLayout>
+
+    <ListView
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+</LinearLayout>

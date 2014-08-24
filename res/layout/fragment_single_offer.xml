@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="10dp"
+    android:background="@drawable/rounded_login" >
+    
+    <RelativeLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#0777A7"
+              android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+            >
+             <ImageView
+                android:id="@+id/backbuttonoftab"
+               android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/back"
+                />
+              <TextView
+                    android:id="@+id/welcome_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="#ffffff"
+                    android:singleLine="true"
+                   android:textSize="17sp"
+                   android:text="Gabriel Horn"
+                    android:textStyle="bold" />
+       
+        </RelativeLayout>
+    
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+       android:layout_below="@+id/topBar"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+             >
+              <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+       android:layout_marginTop="16dp"
+       android:layout_alignParentTop="true"
+        android:textColor="#555555"
+        android:textSize="26dp"
+        android:text="dhcgfd gdvcjdc hdcjd "
+        android:textStyle="bold" />
+    <View
+           android:id="@+id/ve_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp" 
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+         android:layout_below="@+id/tv_title"
+       android:layout_marginTop="18dp"
+       android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="12dp"
+        android:layout_below="@+id/ve_line"
+        android:layout_marginTop="28dp"
+        android:textColor="#555555"
+       
+        android:textSize="18dp" 
+        android:text="fddv"/>
+
+    <ImageView
+        android:id="@+id/img_pic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_below="@+id/tv_message"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/top_logo" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
