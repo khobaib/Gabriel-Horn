@@ -2,5 +2,15 @@
 <resources>
 
     <string name="app_name">Gabriel Horn</string>
+    <string name="agree_term">By clicking the submit button below, you are agreeing to our <u>Terms and Conditions</u> and our <u>Private Policy</u>.</string>
+    <string name="login_title">Earn rewards for your purchases!</string>
+    <string name="login_subtitle">Sign up to start earning rewards, or log in to see your My Reward Card.</string>
+    <string name="error_intro">"Please "</string>
+    <string name="error_blank_username">enter a username</string>
+    <string name="error_blank_email">enter an email</string>
+    <string name="error_blank_password">enter a password</string>
+    <string name="error_mismatched_passwords">enter the same password twice</string>
+    <string name="error_join">", and "</string>
+    <string name="error_end">.</string>
 
 </resources>

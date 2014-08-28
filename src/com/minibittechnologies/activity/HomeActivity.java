@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,10 +30,11 @@ import com.minibittechnologies.fragments.FragmentAccount;
 import com.minibittechnologies.fragments.FragmentMore;
 import com.minibittechnologies.fragments.FragmentPostList;
 import com.minibittechnologies.fragments.FragmentShare;
+import com.minibittechnologies.fragments.LoginFragment;
 import com.minibittechnologies.fragments.TabFragment;
 
 @SuppressLint("CutPasteId")
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends FragmentActivity implements FragmentMore.OnDataPass {
 	public static Typeface tp;
 	public String photofromcamera;
 	public TabHost mTabHost;
@@ -88,12 +91,14 @@ public class HomeActivity extends FragmentActivity {
 
 			@Override
 			public void onTabChanged(String tabId) {
-				android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-				FragmentAccount accountFragment = (FragmentAccount) fm.findFragmentByTag("RewardsTabFragments");
-				FragmentMore moreFragment = (FragmentMore) fm.findFragmentByTag("MoreTabFragments");
-				FragmentPostList offerFragment = (FragmentPostList) fm.findFragmentByTag("OffersTabFragment");
-				FragmentShare shareFragment = (FragmentShare) fm.findFragmentByTag("ShareTabFragments");
-				android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+				// FragmentAccount accountFragment = (FragmentAccount)
+				// fm.findFragmentByTag("RewardsTabFragments");
+				// FragmentMore moreFragment = (FragmentMore)
+				// fm.findFragmentByTag("MoreTabFragments");
+				// FragmentPostList offerFragment = (FragmentPostList)
+				// fm.findFragmentByTag("OffersTabFragment");
+				// FragmentShare shareFragment = (FragmentShare)
+				// fm.findFragmentByTag("ShareTabFragments");
 
 				// /** Detaches the androidfragment if exists */
 				// if(androidFragment!=null){
@@ -110,7 +115,8 @@ public class HomeActivity extends FragmentActivity {
 				// }
 
 				/** If current tab is android */
-
+				FragmentManager fm = getSupportFragmentManager();
+				FragmentTransaction ft = fm.beginTransaction();
 				if (tabId.equalsIgnoreCase("MoreTabFragments")) {
 					ft.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 					ft.add(R.id.realtabcontent, new FragmentMore(), "MoreTabFragments");
@@ -311,6 +317,23 @@ public class HomeActivity extends FragmentActivity {
 
 	public void close() {
 		finish();
+	}
+
+	@Override
+	public void onDataPass(String data) {
+		Log.e(">>>>>>>>", "in onDataPass, HomeActivity");
+		// Fragment newFragment = new LoginFragment();
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+		// Replace whatever is in the fragment_container view with
+		// this fragment,
+		// and add the transaction to the back stack
+		transaction.replace(R.id.realtabcontent, new LoginFragment());
+		// transaction.addToBackStack(null);
+
+		// Commit the transaction
+		transaction.commit();
+
 	}
 
 }
