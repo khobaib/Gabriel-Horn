@@ -1,5 +1,7 @@
 package com.minibittechnologies.fragments;
 
+import java.security.PublicKey;
+
 import info.hoang8f.android.segmented.SegmentedGroup;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.minibittechnologies.R;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -25,7 +28,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 
 	SegmentedGroup loginSegment;
 	RelativeLayout signUpLayout, loginLayout;
-	EditText etEmail, etFirstName, etLastName, etPassword;
+	EditText etEmail, etFirstName, etLastName, etPassword,etEmailLogIn,etPasswordLogin;
 	Button bSignUp, bLogin;
 
 	@Override
@@ -95,8 +98,9 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 				// Set up a new Parse user
 				ParseUser user = new ParseUser();
 				user.setEmail(etEmail.getText().toString().trim());
-				user.setUsername(etFirstName.getText().toString());
+				user.setUsername(etEmail.getText().toString().toString());
 				user.setPassword(etPassword.getText().toString());
+				user.put("fullName",etFirstName.getText().toString()+" "+ etLastName.getText().toString());
 				// Call the Parse signup method
 				user.signUpInBackground(new SignUpCallback() {
 
@@ -117,6 +121,63 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 				});
 			}
 
+		});
+		etEmailLogIn=(EditText)v.findViewById(R.id.et_email_login);
+		etPasswordLogin=(EditText)v.findViewById(R.id.et_password_log_in);
+		bLogin=(Button)v.findViewById(R.id.b_login);
+		bLogin.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				boolean validationError = false;
+				StringBuilder validationErrorMessage = new StringBuilder(getResources().getString(R.string.error_intro));
+				if (isEmpty(etEmailLogIn)) {
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_blank_email));
+				}
+				if (isEmpty(etPasswordLogin)) {
+					if (validationError) {
+						validationErrorMessage.append(getResources().getString(R.string.error_join));
+					}
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_blank_password));
+				}
+				validationErrorMessage.append(getResources().getString(R.string.error_end));
+
+				// If there is a validation error, display the error
+				if (validationError) {
+					Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG).show();
+					return;
+				}
+				
+				// Set up a progress dialog
+				final ProgressDialog dlg = new ProgressDialog(getActivity());
+				dlg.setTitle("Please wait.");
+				dlg.setMessage("Logging in.  Please wait...");
+				dlg.show();
+				
+				//log in code
+				
+				String email=etEmailLogIn.getText().toString();
+				String password=etPasswordLogin.getText().toString();
+				//ParseUser.l
+				ParseUser.logInInBackground(email, password, new LogInCallback() {
+					
+					@Override
+					public void done(ParseUser user, ParseException excption) {
+						dlg.dismiss();
+						if(user!=null)
+						{
+							Toast.makeText(getActivity(),"Successfully logged in.",Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							Toast.makeText(getActivity(),excption.getMessage(),Toast.LENGTH_LONG).show();
+						}
+					}
+				});
+				
+			}
 		});
 
 		loginSegment.setOnCheckedChangeListener(this);

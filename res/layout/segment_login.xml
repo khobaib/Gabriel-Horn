@@ -5,17 +5,17 @@
     android:layout_height="wrap_content" >
 
     <EditText
-        android:id="@+id/et_email"
+        android:id="@+id/et_email_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email Address"
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/et_password_log_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/et_email"
+        android:layout_below="@+id/et_email_login"
         android:hint="Password"
         android:inputType="textPassword" />
 
@@ -23,7 +23,7 @@
         android:id="@+id/b_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/et_password"
+        android:layout_below="@+id/et_password_log_in"
         android:layout_centerHorizontal="true"
         android:padding="15dp"
         android:text="Log In" />

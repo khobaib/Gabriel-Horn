@@ -5,6 +5,7 @@ import java.util.Timer;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -29,9 +31,11 @@ import com.minibittechnologies.R;
 import com.minibittechnologies.fragments.FragmentAccount;
 import com.minibittechnologies.fragments.FragmentMore;
 import com.minibittechnologies.fragments.FragmentPostList;
+import com.minibittechnologies.fragments.FragmentRewards;
 import com.minibittechnologies.fragments.FragmentShare;
 import com.minibittechnologies.fragments.LoginFragment;
 import com.minibittechnologies.fragments.TabFragment;
+import com.parse.ParseUser;
 
 @SuppressLint("CutPasteId")
 public class HomeActivity extends FragmentActivity implements FragmentMore.OnDataPass {
@@ -128,8 +132,13 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 					ft.setCustomAnimations(
 
 					R.anim.slide_in_from_bottom, R.anim.slide_out_bottom);
+					
+					ParseUser user=ParseUser.getCurrentUser();
+					if(user!=null)
+						ft.add(R.id.realtabcontent, new FragmentRewards());	
+					else
+						ft.add(R.id.realtabcontent, new LoginFragment(), "LoginTabFragments");	
 
-					ft.add(R.id.realtabcontent, new FragmentAccount(), "RewardsTabFragments");
 				} else if (tabId.equalsIgnoreCase("ShareTabFragments")) {
 					ft.setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_bottom);
 					ft.replace(R.id.realtabcontent, new FragmentShare(), "ShareTabFragments");
@@ -152,7 +161,8 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		Log.e("tag", "2");
 		// icon.setImageResource(R.drawable.rewards_tab);
 		// tSpecAndroid.setIndicator(tabIndicator);
-		tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.offer_tab));
+		//tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.offer_tab));
+		tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(), R.layout.tab_view_offer));
 		Log.e("tag", "3");
 		// tSpecAndroid.setContent(new DummyTabContent(HomeActivity.this));
 		tSpecAndroid.setContent(new DummyTabContent(getBaseContext()));
@@ -164,21 +174,24 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		tSpecAndroid = mTabHost.newTabSpec("RewardsTabFragments");
 		// icon.setImageResource(R.drawable.offer_tab);
 		// tSpecAndroid.setIndicator(tabIndicator);
-		tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.rewards_tab));
+		//tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.rewards_tab));
+		tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(),R.layout.tab_view_rewards));
 		tSpecAndroid.setContent(new DummyTabContent(getBaseContext()));
 		mTabHost.addTab(tSpecAndroid);
 
 		tSpecAndroid = mTabHost.newTabSpec("ShareTabFragments");
 		// icon.setImageResource(R.drawable.share_tab);
 		// tSpecAndroid.setIndicator(tabIndicator);
-		tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.share_tab));
+		//tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.share_tab));
+		tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(),R.layout.tab_view_share));
 		tSpecAndroid.setContent(new DummyTabContent(getBaseContext()));
 		mTabHost.addTab(tSpecAndroid);
 
 		tSpecAndroid = mTabHost.newTabSpec("MoreTabFragments");
 		// icon.setImageResource(R.drawable.more_tab);
 		// tSpecAndroid.setIndicator(tabIndicator);
-		tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.more_tab));
+		//tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.more_tab));
+		tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(),R.layout.tab_view_more));
 		tSpecAndroid.setContent(new DummyTabContent(getBaseContext()));
 		mTabHost.addTab(tSpecAndroid);
 		// mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#F5F5F5"));
@@ -272,7 +285,11 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 	// mTabHost.addTab(spec, c, null);
 	// }
 	//
-
+	private static View prepareTabView(Context context, int layout) {
+	    View view = LayoutInflater.from(context).inflate(layout, null);
+	
+	    return view;
+	}
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
