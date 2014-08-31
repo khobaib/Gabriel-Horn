@@ -24,7 +24,7 @@ public class FragmentRewards extends Fragment{
 		 View v=inflater.inflate(R.layout.fragment_rewards,container,false);
 		 listView=(ListView)v.findViewById(R.id.listView1);
 		 initData();
-		 rewardListadapter=new RewardListadapter(getActivity(),R.layout.rewards_list_row, listRewards);
+		 rewardListadapter=new RewardListadapter(getActivity(),R.layout.row_list_reward, listRewards);
 		 listView.setAdapter(rewardListadapter);
 		 return v;
 	}

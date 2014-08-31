@@ -94,28 +94,6 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 
 			@Override
 			public void onTabChanged(String tabId) {
-				// FragmentAccount accountFragment = (FragmentAccount)
-				// fm.findFragmentByTag("RewardsTabFragments");
-				// FragmentMore moreFragment = (FragmentMore)
-				// fm.findFragmentByTag("MoreTabFragments");
-				// FragmentPostList offerFragment = (FragmentPostList)
-				// fm.findFragmentByTag("OffersTabFragment");
-				// FragmentShare shareFragment = (FragmentShare)
-				// fm.findFragmentByTag("ShareTabFragments");
-
-				// /** Detaches the androidfragment if exists */
-				// if(androidFragment!=null){
-				// //ft.detach(androidFragment);
-				//
-				// Toast.makeText(MainActivity.this, "1", 200).show();
-				// }
-				//
-				//
-				//
-				// if(appleFragment!=null){
-				// //ft.detach(appleFragment);
-				// Toast.makeText(MainActivity.this, " 2", 200).show();
-				// }
 
 				/** If current tab is android */
 				FragmentManager fm = getSupportFragmentManager();
