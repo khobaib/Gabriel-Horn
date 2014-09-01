@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.adapter.CustomAdapterForMore;
+import com.parse.ParseUser;
 
 @SuppressLint("NewApi")
 public class FragmentMore extends Fragment {
@@ -42,7 +43,11 @@ public class FragmentMore extends Fragment {
 		item.add("Visit our Website");
 		item.add("Email Us");
 		item.add("Share our App");
-		item.add("Log In");
+		ParseUser u = ParseUser.getCurrentUser();
+		if (u == null)
+			item.add("Log In");
+		else
+			item.add("Log Out");
 		item.add("sxs");
 	}
 
