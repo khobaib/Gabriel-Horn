@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.model.Post;
 
 public class CustomAdapterForOfferDetails extends BaseAdapter {

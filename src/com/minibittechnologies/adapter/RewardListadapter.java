@@ -1,7 +1,10 @@
 package com.minibittechnologies.adapter;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,14 +14,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.minibittechnologies.R;
-import com.minibittechnologies.model.Reward;
+import org.woodyguthriecenter.app.R;
+import com.minibittechnologies.utility.Constants;
+import com.parse.ParseObject;
 
-public class RewardListadapter extends ArrayAdapter<Reward> {
+public class RewardListadapter extends ArrayAdapter<ParseObject> {
 	public Context context;
 	Bitmap defaultUserPic;
 
-	public RewardListadapter(Context context, int textViewResourceId, List<Reward> items) {
+	public RewardListadapter(Context context, int textViewResourceId, List<ParseObject> items) {
 		super(context, textViewResourceId, items);
 		this.context = context;
 
@@ -31,6 +35,7 @@ public class RewardListadapter extends ArrayAdapter<Reward> {
 
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder = null;
@@ -45,10 +50,21 @@ public class RewardListadapter extends ArrayAdapter<Reward> {
 		} else
 			holder = (ViewHolder) convertView.getTag();
 		// Log.v("msg","hello");
-		Reward reward = getItem(position);
-		holder.name.setText(reward.getName());
-		holder.Days.setText("expires in " + reward.getRemainingDays() + " days.");
-
+		ParseObject reward = getItem(position);
+		holder.name.setText(reward.getString("name"));
+		Date expDate=reward.getDate(Constants.EXPIRATION_DATE);
+		long mili=expDate.getTime();
+		
+		long curMili=System.currentTimeMillis();
+		if(mili<curMili)
+		{
+			holder.Days.setText("expired");
+		}
+		else
+		{
+			long  days=TimeUnit.DAYS.convert(mili-curMili,TimeUnit.MILLISECONDS);
+			holder.Days.setText("expires in "+ days+" days.");
+		}
 		return convertView;
 
 	}

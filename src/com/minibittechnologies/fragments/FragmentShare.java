@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

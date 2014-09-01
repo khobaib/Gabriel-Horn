@@ -27,7 +27,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.fragments.FragmentMore;
 import com.minibittechnologies.fragments.FragmentPostList;
 import com.minibittechnologies.fragments.FragmentRewards;

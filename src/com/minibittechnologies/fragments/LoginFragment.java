@@ -18,7 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;

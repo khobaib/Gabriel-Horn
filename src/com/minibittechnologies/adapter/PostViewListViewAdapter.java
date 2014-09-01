@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.model.Post;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;

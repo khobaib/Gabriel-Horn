@@ -1,6 +1,6 @@
 package com.minibittechnologies.utility.tabhostanimationlistener;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 
 import android.content.Context;
 import android.os.Bundle;

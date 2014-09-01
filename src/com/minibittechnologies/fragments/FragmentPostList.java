@@ -14,7 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
 import com.minibittechnologies.model.Post;
 import com.nineoldandroids.animation.Animator;

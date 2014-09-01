@@ -2,7 +2,7 @@ package com.minibittechnologies.fragments;
 
 import java.util.Stack;
 
-import com.minibittechnologies.R;
+import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.activity.HomeActivity;
 
 import android.os.Bundle;

@@ -1,6 +1,7 @@
 package com.minibittechnologies;
 
 import java.util.ArrayList;
+import org.woodyguthriecenter.app.R;
 
 import android.app.Activity;
 import android.os.Bundle;
