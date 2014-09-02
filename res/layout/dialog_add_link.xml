@@ -12,26 +12,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:padding="10dp"
         android:text="Enter or paste a link below:"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/black"
-        android:padding="10dp"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/editText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:padding="7dp"
-        android:minWidth="296dp"
+        android:layout_margin="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:hint="URL(string with http://)"
-        android:layout_margin="10dp"
-        android:textSize="14sp"
         android:background="@drawable/rounded_white_bg"
-        android:inputType="textUri" >
+        android:ems="10"
+        android:hint="URL(string with http://)"
+        android:inputType="textUri"
+        android:minWidth="296dp"
+        android:padding="7dp"
+        android:textSize="14sp" >
 
         <requestFocus />
     </EditText>
@@ -44,8 +44,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:minHeight="48dp" >
+        android:minHeight="48dp"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btnDialogAddLink"
@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
+            android:gravity="center"
             android:text="Add Link"
             android:textColor="#55a1f4" />
 
@@ -67,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/transparent"
+            android:gravity="center"
             android:text="Cancel"
             android:textColor="#007aff"
             tools:ignore="ButtonOrder" />
