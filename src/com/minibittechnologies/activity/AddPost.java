@@ -13,7 +13,7 @@ import java.io.OutputStream;
 
 import org.woodyguthriecenter.app.R;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -27,6 +27,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,19 +40,27 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.minibittechnologies.fragments.DateOrTimePickerFragment;
+import com.minibittechnologies.interfaces.OnDateOrTimSetListener;
 
 /**
  * @author Touhid
  * 
  */
-public class AddPost extends Activity implements OnClickListener {
+@SuppressLint("NewApi")
+public class AddPost extends FragmentActivity implements OnClickListener {
 
 	private final String TAG = this.getClass().getSimpleName();
-	private Uri mImageCaptureUri;
-	private File picFile;
 	private static final int CAMERA_REQ_CODE = 901;
 	private static final int GALLERY_REQ_CODE = 902;
+	private static final String[] monthArray = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
+			"Nov", "Dec" };
+
+	private Uri mImageCaptureUri;
+	private File picFile;
 
 	private LinearLayout llImageHolder;
 	// private ImageView ivToPostimage;
@@ -69,7 +79,9 @@ public class AddPost extends Activity implements OnClickListener {
 		llImageHolder = (LinearLayout) findViewById(R.id.llImageToPostHolderAddPost);
 		isImageVisible = false;
 		llImageHolder.setVisibility(View.GONE);
-		// TODO set spinners on click
+
+		findViewById(R.id.llDateAddPost).setOnClickListener(this);
+		findViewById(R.id.llTimeAddPost).setOnClickListener(this);
 
 		if (savedInstanceState != null) {
 			picFile = (File) savedInstanceState.getSerializable("post_pic");
@@ -91,19 +103,71 @@ public class AddPost extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+
 		case R.id.btnCamera:
 			showPicDialog();
 			break;
+
 		case R.id.btnHyperLink:
 			addHyperLink();
 			break;
+
 		case R.id.ivToBePostedImage:
 			showPicRemovePrompt();
+			break;
+
+		case R.id.llDateAddPost:
+			showDatePicker();
+			break;
+
+		case R.id.llTimeAddPost:
+			showTimePicker();
 			break;
 
 		default:
 			break;
 		}
+	}
+
+	// Time --- Time
+	private void showTimePicker() {
+		DialogFragment df = new DateOrTimePickerFragment(new OnDateOrTimSetListener() {
+			@Override
+			public void dateOrTimeSet(int hour, int minute, int ignored) {
+				// TODO Auto-generated method stub
+				Log.d(TAG, "Hour: " + hour + ", minute: " + minute + ", ignored: " + ignored);
+				TextView t = (TextView) findViewById(R.id.tvHourAddPost);
+				if (hour >= 12) {
+					t.setText((hour - 12) + "");
+					t = (TextView) findViewById(R.id.tvDayPosiAddPost);
+					t.setText("PM");
+				} else {
+					t.setText(hour + "");
+					t = (TextView) findViewById(R.id.tvDayPosiAddPost);
+					t.setText("AM");
+				}
+				t = (TextView) findViewById(R.id.tvMinAddPost);
+				t.setText(minute + "");
+			}
+		}, DateOrTimePickerFragment.TIME_PICKER);
+		df.show(getSupportFragmentManager(), "time_picker");
+	}
+
+	// Date --- Date
+	private void showDatePicker() {
+		DialogFragment df = new DateOrTimePickerFragment(new OnDateOrTimSetListener() {
+			@Override
+			public void dateOrTimeSet(int year, int month, int day) {
+				Log.d(TAG, "Year: " + year + ", month: " + month + ", day: " + day);
+				TextView t = (TextView) findViewById(R.id.tvYearAddPost);
+				t.setText(year + "");
+				t = (TextView) findViewById(R.id.tvMonthAddPost);
+				t.setText(monthArray[month]);
+				t = (TextView) findViewById(R.id.tvDateAddPost);
+				t.setText(day + "");
+			}
+		}, DateOrTimePickerFragment.DATE_PICKER);
+		df.show(getSupportFragmentManager(), "date_picker");
 	}
 
 	private void showPicRemovePrompt() {

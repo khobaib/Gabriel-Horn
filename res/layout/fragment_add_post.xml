@@ -66,6 +66,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/rounded_black_bg"
             android:ems="10"
+            android:lines="5"
             android:hint=""
             android:padding="5dp" >
         </EditText>
@@ -152,7 +153,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/rounded_black_bg"
                 android:padding="5dp"
-                android:text="PM"
+                android:text="AM"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
@@ -178,6 +179,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:src="@drawable/back"
