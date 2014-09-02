@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/svAddPostFrag"
     android:layout_width="match_parent"
+    android:fillViewport="true"
     android:layout_height="match_parent" >
 
     <LinearLayout
@@ -170,7 +171,7 @@
                 android:background="@color/white" />
 
             <Button
-                android:id="@+id/btnPin"
+                android:id="@+id/btnHyperLink"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:layout_alignParentLeft="true"
@@ -184,8 +185,8 @@
                 android:id="@+id/btnCamera"
                 android:layout_width="84dp"
                 android:layout_height="64dp"
-                android:layout_alignBaseline="@+id/btnPin"
-                android:layout_alignBottom="@+id/btnPin"
+                android:layout_alignBaseline="@+id/btnHyperLink"
+                android:layout_alignBottom="@+id/btnHyperLink"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="23dp"
                 android:background="@drawable/camera" />
@@ -200,6 +201,7 @@
             android:background="@drawable/rounded_black_bg"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:textColor="@color/white"
             android:text="Add Post" />
     </LinearLayout>
 
