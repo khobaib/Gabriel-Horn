@@ -15,12 +15,13 @@ import android.widget.TextView;
 public class CustomAdapterForMore extends BaseAdapter {
 	Activity activity;
 	ArrayList<String> list;
-	public CustomAdapterForMore(Activity activity,
-			ArrayList<String> list) {
+
+	public CustomAdapterForMore(Activity activity, ArrayList<String> list) {
 		super();
-		this.activity=activity;
-		this.list=list;
+		this.activity = activity;
+		this.list = list;
 	}
+
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -38,6 +39,7 @@ public class CustomAdapterForMore extends BaseAdapter {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 	private class ViewHolder {
 		ImageView img_cat;
 		TextView tv_title;
@@ -49,42 +51,36 @@ public class CustomAdapterForMore extends BaseAdapter {
 		ViewHolder holder;
 		LayoutInflater inflater = activity.getLayoutInflater();
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.more_inflate,
-					null);
+			convertView = inflater.inflate(R.layout.more_inflate, null);
 			holder = new ViewHolder();
-			holder.img_cat=(ImageView) convertView.findViewById(R.id.img_cat);
-			holder.tv_title=(TextView) convertView.findViewById(R.id.tv_title);
+			holder.img_cat = (ImageView) convertView.findViewById(R.id.img_cat);
+			holder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
 
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.tv_title.setText(list.get(position));
-		if(position==6){
+		if (position == 6) {
 			holder.img_cat.setVisibility(View.GONE);
 			holder.tv_title.setVisibility(View.GONE);
-		}
-		else{
+		} else {
 			holder.img_cat.setVisibility(View.VISIBLE);
 			holder.tv_title.setVisibility(View.VISIBLE);
-			if (position==0) {
-				holder.img_cat.setImageResource(R.drawable.rewards);
-			}
-			else if(position==1){
-				holder.img_cat.setImageResource(R.drawable.call);
-			}
-			else if(position==2){
-				holder.img_cat.setImageResource(R.drawable.website);
-			}else if(position==3){
-				holder.img_cat.setImageResource(R.drawable.mail);
-			}else if(position==4){
-				holder.img_cat.setImageResource(R.drawable.share);
-			}else if(position==5){
-				holder.img_cat.setImageResource(R.drawable.login);
+			if (position == 0) {
+				holder.img_cat.setImageResource(R.drawable.icon_reward);
+			} else if (position == 1) {
+				holder.img_cat.setImageResource(R.drawable.icon_phone);
+			} else if (position == 2) {
+				holder.img_cat.setImageResource(R.drawable.icon_browser);
+			} else if (position == 3) {
+				holder.img_cat.setImageResource(R.drawable.icon_email);
+			} else if (position == 4) {
+				holder.img_cat.setImageResource(R.drawable.icon_share);
+			} else if (position == 5) {
+				holder.img_cat.setImageResource(R.drawable.icon_logout);
 			}
 		}
-		
-	
 
 		return convertView;
 	}

@@ -65,6 +65,7 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 	String kkr;
 	int k = 4;
 	TabWidget tabs;
+	ParseUser user;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,7 +75,7 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		mTabHost.setup();
 		tabs = (TabWidget) findViewById(android.R.id.tabs);
 
-		final ParseUser user = ParseUser.getCurrentUser();
+		user = ParseUser.getCurrentUser();
 
 		// mTabHost.getChildAt(2).setOnClickListener(new OnClickListener() {
 		//
@@ -95,6 +96,9 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 
 			@Override
 			public void onTabChanged(String tabId) {
+				Log.e(">>>>>", "onTabChanged, tabid = " + tabId);
+
+				user = ParseUser.getCurrentUser();
 
 				/** If current tab is android */
 				FragmentManager fm = getSupportFragmentManager();
@@ -342,16 +346,17 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 	}
 
 	@Override
-	public void onDataPass(String data) {
+	public void onDataPass(String toFragment) {
 		Log.e(">>>>>>>>", "in onDataPass, HomeActivity");
 		// Fragment newFragment = new LoginFragment();
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-		// Replace whatever is in the fragment_container view with
-		// this fragment,
-		// and add the transaction to the back stack
-		transaction.replace(R.id.realtabcontent, new LoginFragment());
-		// transaction.addToBackStack(null);
+		if (toFragment.equals("loginFragment")) {
+			transaction.replace(R.id.realtabcontent, new LoginFragment());
+			// transaction.addToBackStack(null);
+		} else { // toFragment.equals("rewardFragment")
+			transaction.replace(R.id.realtabcontent, new FragmentRewards());
+		}
 
 		// Commit the transaction
 		transaction.commit();

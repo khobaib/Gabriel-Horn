@@ -2,6 +2,8 @@ package com.minibittechnologies.fragments;
 
 import java.util.ArrayList;
 
+import org.woodyguthriecenter.app.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.adapter.CustomAdapterForMore;
 import com.parse.ParseUser;
 
@@ -79,7 +80,7 @@ public class FragmentMore extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
 				if (pos == 5) {
 					Toast.makeText(getActivity(), "Login Button pressed", Toast.LENGTH_SHORT).show();
-					dataPasser.onDataPass(null);
+					dataPasser.onDataPass("loginFragment");
 				}
 
 			}

@@ -16,11 +16,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import com.minibittechnologies.adapter.RewardListadapter;
 import com.minibittechnologies.model.Reward;
 import com.minibittechnologies.utility.Constants;
+import com.minibittechnologies.utility.NestedListView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -29,7 +30,9 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class FragmentRewards extends Fragment {
-	ListView listView;
+	NestedListView listView;
+	TextView tvUserPoint;
+	Activity activity;
 	ArrayList<Reward> listRewards = new ArrayList<Reward>();
 	RewardListadapter rewardListadapter;
 	private Button btnScanForStar;
@@ -45,7 +48,9 @@ public class FragmentRewards extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_rewards, container, false);
-		listView = (ListView) v.findViewById(R.id.listView1);
+		listView = (NestedListView) v.findViewById(R.id.listView1);
+		tvUserPoint = (TextView) v.findViewById(R.id.tv_user_point);
+
 		UserPoint = ParseUser.getCurrentUser().getInt(Constants.USER_REWARD_POINTS);
 		Log.e("points", "" + UserPoint);
 		// initData();
@@ -61,6 +66,16 @@ public class FragmentRewards extends Fragment {
 			}
 		});
 		return v;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		activity = getActivity();
+		if (activity != null) {
+			tvUserPoint.setText("" + UserPoint);
+		}
 	}
 
 	private void scanAndGetStar() {

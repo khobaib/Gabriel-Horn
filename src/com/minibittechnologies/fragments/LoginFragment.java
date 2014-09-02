@@ -4,6 +4,7 @@ import info.hoang8f.android.segmented.SegmentedGroup;
 
 import org.woodyguthriecenter.app.R;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.minibittechnologies.fragments.FragmentMore.OnDataPass;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -29,12 +31,19 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 	RelativeLayout signUpLayout, loginLayout;
 	EditText etEmail, etFirstName, etLastName, etPassword, etEmailLogIn, etPasswordLogin;
 	Button bSignUp, bLogin;
+	OnDataPass dataPasser;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e(">>>>>>", "onCreate, LoginFragment");
 
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		dataPasser = (OnDataPass) activity;
 	}
 
 	@Override
@@ -167,6 +176,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 						dlg.dismiss();
 						if (user != null) {
 							Toast.makeText(getActivity(), "Successfully logged in.", Toast.LENGTH_LONG).show();
+							dataPasser.onDataPass("rewardFragment");
 						} else {
 							Toast.makeText(getActivity(), excption.getMessage(), Toast.LENGTH_LONG).show();
 						}
