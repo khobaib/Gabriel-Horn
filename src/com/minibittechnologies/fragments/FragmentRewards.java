@@ -95,16 +95,52 @@ public class FragmentRewards extends Fragment {
 			if (requestCode == SCANNER_REQUEST_CODE) {
 				// Handle scan intent
 				String contents = data.getStringExtra("SCAN_RESULT");
-				String formatName = data.getStringExtra("SCAN_RESULT_FORMAT");
-				byte[] rawBytes = data.getByteArrayExtra("SCAN_RESULT_BYTES");
-				int intentOrientation = data.getIntExtra("SCAN_RESULT_ORIENTATION", Integer.MIN_VALUE);
-				Integer orientation = (intentOrientation == Integer.MIN_VALUE) ? null : intentOrientation;
-				String errorCorrectionLevel = data.getStringExtra("SCAN_RESULT_ERROR_CORRECTION_LEVEL");
+				Log.e(">>>>>>>", "content = " + contents);
 
-				System.out.println("Contents: " + contents + "\n\n" + "Format: " + formatName + "Orientation: "
-						+ "\n\n" + orientation + "\n\n" + "Error Correction level: " + errorCorrectionLevel);
-				Log.d("SCANNED_RES", "Contents: " + contents + "\n\n" + "Format: " + formatName + "Orientation: "
-						+ "\n\n" + orientation + "\n\n" + "Error Correction level: " + errorCorrectionLevel);
+				ParseQuery<ParseObject> qrCodequery = ParseQuery.getQuery(Constants.OBJECT_QRCODE);
+				qrCodequery.whereEqualTo(Constants.OBJECT_ID, contents);
+				qrCodequery.findInBackground(new FindCallback<ParseObject>() {
+
+					@Override
+					public void done(List<ParseObject> qrCodeObject, ParseException e) {
+						if (e == null) {
+							int pointsToAward = qrCodeObject.get(0).getInt(Constants.POINTS_TO_AWARD);
+
+							ParseUser user = ParseUser.getCurrentUser();
+							user.put(Constants.USER_REWARD_POINTS, UserPoint + pointsToAward);
+							user.saveInBackground(new SaveCallback() {
+
+								@Override
+								public void done(ParseException paramParseException) {
+									ParseUser user = ParseUser.getCurrentUser();
+									UserPoint = user.getInt(Constants.USER_REWARD_POINTS);
+									tvUserPoint.setText("" + UserPoint);
+								}
+							});
+						}
+
+					}
+				});
+				// String formatName =
+				// data.getStringExtra("SCAN_RESULT_FORMAT");
+				// byte[] rawBytes =
+				// data.getByteArrayExtra("SCAN_RESULT_BYTES");
+				// int intentOrientation =
+				// data.getIntExtra("SCAN_RESULT_ORIENTATION",
+				// Integer.MIN_VALUE);
+				// Integer orientation = (intentOrientation ==
+				// Integer.MIN_VALUE) ? null : intentOrientation;
+				// String errorCorrectionLevel =
+				// data.getStringExtra("SCAN_RESULT_ERROR_CORRECTION_LEVEL");
+				//
+				// System.out.println("Contents: " + contents + "\n\n" +
+				// "Format: " + formatName + "Orientation: "
+				// + "\n\n" + orientation + "\n\n" + "Error Correction level: "
+				// + errorCorrectionLevel);
+				// Log.d("SCANNED_RES", "Contents: " + contents + "\n\n" +
+				// "Format: " + formatName + "Orientation: "
+				// + "\n\n" + orientation + "\n\n" + "Error Correction level: "
+				// + errorCorrectionLevel);
 
 			}
 		}
