@@ -9,7 +9,6 @@ import org.woodyguthriecenter.app.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.zxing.client.android.Intents;
 import com.minibittechnologies.adapter.RewardListadapter;
 import com.minibittechnologies.model.Reward;
 import com.minibittechnologies.utility.Constants;
@@ -45,7 +43,7 @@ public class FragmentRewards extends Fragment {
 
 	// ArrayList<String> awardObjectIdList=new ArrayList<String>();
 	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_rewards, container, false);
 		listView = (ListView) v.findViewById(R.id.listView1);
 		UserPoint = ParseUser.getCurrentUser().getInt(Constants.USER_REWARD_POINTS);
@@ -68,8 +66,9 @@ public class FragmentRewards extends Fragment {
 	private void scanAndGetStar() {
 		// go to fullscreen scan
 		Intent intent = new Intent("com.touhiDroid.android.SCAN");
-		intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.AZTEC_MODE + "," + Intents.Scan.PDF417_MODE + ","
-				+ Intents.Scan.QR_CODE_MODE + "," + Intents.Scan.DATA_MATRIX_MODE);
+		// intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.AZTEC_MODE + "," +
+		// Intents.Scan.PDF417_MODE + ","
+		// + Intents.Scan.QR_CODE_MODE + "," + Intents.Scan.DATA_MATRIX_MODE);
 		Log.d("SCAN_CLICK", "Starting scan");
 		startActivityForResult(intent, SCANNER_REQUEST_CODE);
 	}
