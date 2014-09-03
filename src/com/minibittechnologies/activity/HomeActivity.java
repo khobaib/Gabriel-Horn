@@ -197,7 +197,11 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		// tSpecAndroid.setIndicator(tabIndicator);
 		// tSpecAndroid.setIndicator("",
 		// getResources().getDrawable(R.drawable.share_tab));
-		tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(), R.layout.tab_view_share));
+		if (user != null) {
+			tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.tab_post));
+		} else {
+			tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(), R.layout.tab_view_share));
+		}
 		tSpecAndroid.setContent(new DummyTabContent(getBaseContext()));
 		mTabHost.addTab(tSpecAndroid);
 
@@ -353,6 +357,7 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 
 		if (toFragment.equals("loginFragment")) {
 			transaction.replace(R.id.realtabcontent, new LoginFragment());
+			mTabHost.getTabWidget().getChildAt(2).setBackgroundResource(R.drawable.tab_post);
 			// transaction.addToBackStack(null);
 		} else { // toFragment.equals("rewardFragment")
 			transaction.replace(R.id.realtabcontent, new FragmentRewards());

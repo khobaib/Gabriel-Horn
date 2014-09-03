@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.sourceforge.zbar.Symbol;
+
 import org.woodyguthriecenter.app.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,7 +20,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dm.zbar.android.scanner.ZBarConstants;
+import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.minibittechnologies.adapter.RewardListadapter;
 import com.minibittechnologies.model.Reward;
 import com.minibittechnologies.utility.Constants;
@@ -30,6 +36,9 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class FragmentRewards extends Fragment {
+
+	private static final int ZBAR_QR_SCANNER_REQUEST = 1;
+
 	NestedListView listView;
 	TextView tvUserPoint;
 	Activity activity;
@@ -42,7 +51,7 @@ public class FragmentRewards extends Fragment {
 	// private ArrayList<ParseObject> newAwardList=new ArrayList<>();
 	private ArrayList<ParseObject> finalAwardList = new ArrayList<>();
 
-	private static final int SCANNER_REQUEST_CODE = 1111;
+	// private static final int SCANNER_REQUEST_CODE = 1111;
 
 	// ArrayList<String> awardObjectIdList=new ArrayList<String>();
 	@Override
@@ -78,23 +87,39 @@ public class FragmentRewards extends Fragment {
 		}
 	}
 
+	// private void scanAndGetStar() {
+	// // go to fullscreen scan
+	// Intent intent = new Intent("com.touhiDroid.android.SCAN");
+	// // intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.AZTEC_MODE + "," +
+	// // Intents.Scan.PDF417_MODE + ","
+	// // + Intents.Scan.QR_CODE_MODE + "," + Intents.Scan.DATA_MATRIX_MODE);
+	// Log.d("SCAN_CLICK", "Starting scan");
+	// startActivityForResult(intent, SCANNER_REQUEST_CODE);
+	// }
+
 	private void scanAndGetStar() {
-		// go to fullscreen scan
-		Intent intent = new Intent("com.touhiDroid.android.SCAN");
-		// intent.putExtra(Intents.Scan.FORMATS, Intents.Scan.AZTEC_MODE + "," +
-		// Intents.Scan.PDF417_MODE + ","
-		// + Intents.Scan.QR_CODE_MODE + "," + Intents.Scan.DATA_MATRIX_MODE);
-		Log.d("SCAN_CLICK", "Starting scan");
-		startActivityForResult(intent, SCANNER_REQUEST_CODE);
+		if (isCameraAvailable()) {
+			Intent intent = new Intent(activity, ZBarScannerActivity.class);
+			intent.putExtra(ZBarConstants.SCAN_MODES, new int[] { Symbol.QRCODE });
+			startActivityForResult(intent, ZBAR_QR_SCANNER_REQUEST);
+		} else {
+			Toast.makeText(activity, "Rear Facing Camera Unavailable", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	public boolean isCameraAvailable() {
+		PackageManager pm = activity.getPackageManager();
+		return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
 		if (resultCode == Activity.RESULT_OK) {
 			// Handle successful scan
-			if (requestCode == SCANNER_REQUEST_CODE) {
+			if (requestCode == ZBAR_QR_SCANNER_REQUEST) {
 				// Handle scan intent
-				String contents = data.getStringExtra("SCAN_RESULT");
+				String contents = data.getStringExtra(ZBarConstants.SCAN_RESULT);
 				Log.e(">>>>>>>", "content = " + contents);
 
 				ParseQuery<ParseObject> qrCodequery = ParseQuery.getQuery(Constants.OBJECT_QRCODE);

@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:text="Add Link"
             android:textColor="#55a1f4" />
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:text="Cancel"
             android:textColor="#007aff"
