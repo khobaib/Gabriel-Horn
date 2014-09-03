@@ -78,21 +78,6 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 
 		user = ParseUser.getCurrentUser();
 
-		// mTabHost.getChildAt(2).setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		//
-		// }
-		// });
-
-		// tabs.getChildTabViewAt(2).setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		//
-		// }
-		// });
 		TabHost.OnTabChangeListener tabChangeListener = new TabHost.OnTabChangeListener() {
 
 			@Override
@@ -205,8 +190,9 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		// tSpecAndroid.setIndicator(tabIndicator);
 		// tSpecAndroid.setIndicator("",
 		// getResources().getDrawable(R.drawable.share_tab));
+		user = ParseUser.getCurrentUser();
 		if (user != null) {
-			tSpecAndroid.setIndicator("", getResources().getDrawable(R.drawable.tab_post));
+			tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(), R.layout.tab_view_add_post));
 		} else {
 			tSpecAndroid.setIndicator(prepareTabView(tabs.getContext(), R.layout.tab_view_share));
 		}
@@ -364,8 +350,13 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 		if (toFragment.equals("loginFragment")) {
-			transaction.replace(R.id.realtabcontent, new LoginFragment());
-			mTabHost.getTabWidget().getChildAt(2).setBackgroundResource(R.drawable.tab_post);
+			user = ParseUser.getCurrentUser();
+			if (user == null) {
+				transaction.replace(R.id.realtabcontent, new LoginFragment());
+				// mTabHost.getTabWidget().getChildAt(2).setBackgroundResource(R.layout.tab_view_add_post);
+			} else {
+				ParseUser.getCurrentUser().logOut();
+			}
 			// transaction.addToBackStack(null);
 		} else { // toFragment.equals("rewardFragment")
 			transaction.replace(R.id.realtabcontent, new FragmentRewards());
@@ -375,5 +366,4 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 		transaction.commit();
 
 	}
-
 }
