@@ -8,7 +8,7 @@
         android:layout_height="70dp"
         android:padding="10dp"
         android:layout_gravity="center"
-        android:src="@drawable/share_tab"/>
+        android:src="@drawable/add_post_tab"/>
     
 
 </LinearLayout>

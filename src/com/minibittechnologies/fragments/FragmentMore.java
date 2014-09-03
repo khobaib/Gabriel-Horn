@@ -80,7 +80,7 @@ public class FragmentMore extends Fragment {
 				if (pos == 5) {
 					// Toast.makeText(getActivity(), "Login Button pressed",
 					// Toast.LENGTH_SHORT).show();
-					ParseUser.getCurrentUser().logOut();
+					// ParseUser.getCurrentUser().logOut();
 					dataPasser.onDataPass("loginFragment");
 				}
 
