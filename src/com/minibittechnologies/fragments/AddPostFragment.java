@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+
+import javax.security.auth.PrivateCredentialPermission;
 
 import org.woodyguthriecenter.app.R;
 
@@ -31,20 +34,32 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.minibittechnologies.adapter.NothingSelectedSpinnerAdapter;
 import com.minibittechnologies.fragments.FragmentMore.OnDataPass;
 import com.minibittechnologies.interfaces.OnDateOrTimSetListener;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 public class AddPostFragment extends Fragment {
 
@@ -57,7 +72,7 @@ public class AddPostFragment extends Fragment {
 			"Nov", "Dec" };
 
 	private Uri mImageCaptureUri;
-	private File picFile;
+	private File picFile=null;
 
 	private LinearLayout llImageHolder;
 	// private ImageView ivToPostimage;
@@ -65,9 +80,12 @@ public class AddPostFragment extends Fragment {
 
 	private Bitmap scaledBmp;
 
-	private Button bCamera, bHLink;
+	private Button bCamera, bHLink,btnAddPost;
 	private ImageView ivSelectedImage;
 	private LinearLayout llDateLayout, llTimeLayout;
+	private EditText edtCategory;
+	private Spinner spCategory;
+	String[] catList={"Offer","Event","Post"};
 
 	View v;
 	Activity activity;
@@ -119,7 +137,86 @@ public class AddPostFragment extends Fragment {
 
 			}
 		});
+      btnAddPost=(Button)v.findViewById(R.id.btnAddPost);
+      btnAddPost.setOnClickListener(new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			byte[] data=new byte[(int)picFile.length()];
+			FileInputStream fileInputStream;
+			try {
 
+
+				fileInputStream = new FileInputStream(picFile);
+				fileInputStream.read(data);
+				ParseFile pFile=new ParseFile(picFile.getName(), data);
+				ParseObject parseObject=ParseObject.create("Post");
+				parseObject.put("contents","test upload");
+				parseObject.put("image",pFile);
+				parseObject.put("title","myImage");
+				parseObject.saveInBackground(new SaveCallback() {
+					
+					@Override
+					public void done(ParseException e) {
+						if(e==null)
+
+						{
+							Log.e("TAG","success");
+
+						}
+						else
+						{
+							Log.e("TAG","error");
+						}
+					}
+				});
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+
+
+
+
+		}
+	});
+      edtCategory=(EditText)v.findViewById(R.id.etCategoryAddPost);
+    /*  edtCategory.setOnClickListener(new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			
+			
+		}
+	});*/
+      edtCategory.setOnTouchListener(new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent arg1) {
+			spCategory.performClick();
+			return true;
+		}
+	});
+      spCategory=(Spinner)v.findViewById(R.id.sp_catgory);
+      spCategory.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View v, int position,
+				long id) {
+			
+			if(position>0)
+			{
+				edtCategory.setText(catList[position-1]);
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	});
+      setSpinner();
 		llImageHolder = (LinearLayout) v.findViewById(R.id.llImageToPostHolderAddPost);
 		isImageVisible = false;
 		llImageHolder.setVisibility(View.GONE);
@@ -153,7 +250,14 @@ public class AddPostFragment extends Fragment {
 
 		return v;
 	}
-
+		private void setSpinner()
+		{ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(
+                getActivity(), android.R.layout.simple_spinner_dropdown_item,Arrays.asList(catList));
+        spCategory.setAdapter(new NothingSelectedSpinnerAdapter(myAdapter, R.layout.row_spinner_nothing_selected,                         
+                getActivity()));
+        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			
+		}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -320,7 +424,7 @@ public class AddPostFragment extends Fragment {
 				return;
 			}
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-			intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+			//intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
 			intent.putExtra("return-data", true);
 			Log.d(TAG, "cam intent starting");
 			startActivityForResult(intent, CAMERA_REQ_CODE);
@@ -331,11 +435,12 @@ public class AddPostFragment extends Fragment {
 
 	private void setImageFile() {
 		// Set the file name
-		File directory = new File(Environment.getExternalStorageDirectory(), "Gabriel Horn");
+		File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Gabriel Horn");
+		directory.mkdir();
 		String mainDir = directory.toString();
 		String photoFileName = "post_pic" + ".png";
 		Log.d(TAG, photoFileName);
-		picFile = new File(mainDir, photoFileName);
+		picFile = new File(directory.getPath(), photoFileName);
 	}
 
 	private int getCorrectionAngleForCam() throws IOException {
@@ -477,6 +582,7 @@ public class AddPostFragment extends Fragment {
 				try {
 					if (picFile == null)
 						setImageFile();
+					//Log.e("msg",data.getData().toString());
 					Bitmap bmp = decodeFile(picFile, 500);
 					int angle = getCorrectionAngleForCam();
 					int w = bmp.getWidth();
