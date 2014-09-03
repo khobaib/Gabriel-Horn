@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/svAddPostFrag"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:fillViewport="true" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,6 +66,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/rounded_black_bg"
             android:ems="10"
+            android:lines="5"
             android:hint=""
             android:padding="5dp" >
         </EditText>
@@ -151,8 +153,37 @@
                 android:layout_weight="1"
                 android:background="@drawable/rounded_black_bg"
                 android:padding="5dp"
-                android:text="PM"
+                android:text="AM"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llImageToPostHolderAddPost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables"
+            android:visibility="visible" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:text="Images"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ImageView
+                android:id="@+id/ivToBePostedImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:src="@drawable/back"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <RelativeLayout
@@ -170,7 +201,7 @@
                 android:background="@color/white" />
 
             <Button
-                android:id="@+id/btnPin"
+                android:id="@+id/btnHyperLink"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:layout_alignParentLeft="true"
@@ -184,8 +215,8 @@
                 android:id="@+id/btnCamera"
                 android:layout_width="84dp"
                 android:layout_height="64dp"
-                android:layout_alignBaseline="@+id/btnPin"
-                android:layout_alignBottom="@+id/btnPin"
+                android:layout_alignBaseline="@+id/btnHyperLink"
+                android:layout_alignBottom="@+id/btnHyperLink"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="23dp"
                 android:background="@drawable/camera" />
@@ -200,7 +231,8 @@
             android:background="@drawable/rounded_black_bg"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Add Post" />
+            android:text="Add Post"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </ScrollView>
