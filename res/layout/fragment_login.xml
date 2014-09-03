@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_subtitle"
-            android:background="#ffb1ff69"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:minHeight="80dp" >
 

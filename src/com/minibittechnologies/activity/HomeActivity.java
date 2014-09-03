@@ -29,6 +29,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.minibittechnologies.fragments.AddPostFragment;
 import com.minibittechnologies.fragments.FragmentMore;
 import com.minibittechnologies.fragments.FragmentPostList;
 import com.minibittechnologies.fragments.FragmentRewards;
@@ -125,9 +126,11 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 					if (user == null)
 						ft.replace(R.id.realtabcontent, new FragmentShare(), "ShareTabFragments");
 					else {
-						Intent intent = new Intent(HomeActivity.this, AddPost.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						startActivity(intent);
+						ft.replace(R.id.realtabcontent, new AddPostFragment(), "ShareTabFragments");
+						// Intent intent = new Intent(HomeActivity.this,
+						// AddPost.class);
+						// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						// startActivity(intent);
 					}
 				}
 				ft.commit();
@@ -151,10 +154,15 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 				if (user == null) {
 					shareTheApp();
 				} else {
+					FragmentManager fm = getSupportFragmentManager();
+					FragmentTransaction ft = fm.beginTransaction();
+					ft.replace(R.id.realtabcontent, new AddPostFragment(), "ShareTabFragments");
+					ft.commit();
 					// TODO show add post
-					Intent intent = new Intent(HomeActivity.this, AddPost.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(intent);
+					// Intent intent = new Intent(HomeActivity.this,
+					// AddPost.class);
+					// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					// startActivity(intent);
 				}
 
 			}

@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_signup"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:padding="5dp" >
 
     <EditText
         android:id="@+id/et_email"
@@ -50,10 +51,12 @@
 
     <Button
         android:id="@+id/b_continue"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_terms"
         android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/login_button_back"
         android:padding="15dp"
         android:text="Continue" />
 
