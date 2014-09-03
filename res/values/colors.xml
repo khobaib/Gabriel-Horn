@@ -6,6 +6,7 @@
     <color name="black_light">#ff5b5d5f</color>
     <color name="login_title">#ffffd04e</color>
     <color name="app_theme">#ff0777a7</color>
+    <color name="blue">#ff0000ee</color>
 
 
 </resources>

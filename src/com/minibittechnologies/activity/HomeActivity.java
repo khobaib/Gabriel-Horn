@@ -112,7 +112,7 @@ public class HomeActivity extends FragmentActivity implements FragmentMore.OnDat
 					ft.add(R.id.realtabcontent, new FragmentPostList(), "OffersTabFragment");
 
 				} else if (tabId.equalsIgnoreCase("RewardsTabFragments")) {
-					ft.setCustomAnimations(R.anim.slide_in_from_bottom, R.anim.slide_out_bottom);
+					ft.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 					// ft.setCustomAnimations(R.anim.slide_in_bottom,
 					// R.anim.slide_out_bottom);
 

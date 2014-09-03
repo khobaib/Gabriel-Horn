@@ -9,6 +9,7 @@ import net.sourceforge.zbar.Symbol;
 import org.woodyguthriecenter.app.R;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +39,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-public class FragmentRewards extends Fragment {
+public class FragmentRewards extends Fragment implements OnItemClickListener{
 
 	private static final int ZBAR_QR_SCANNER_REQUEST = 1;
 
@@ -66,6 +70,7 @@ public class FragmentRewards extends Fragment {
 		getRewardList();
 		rewardListadapter = new RewardListadapter(getActivity(), R.layout.row_list_reward, finalAwardList);
 		listView.setAdapter(rewardListadapter);
+		listView.setOnItemClickListener(this);
 		// logOut();
 		btnScanForStar = (Button) v.findViewById(R.id.btnScanForStar);
 		btnScanForStar.setOnClickListener(new OnClickListener() {
@@ -222,6 +227,10 @@ public class FragmentRewards extends Fragment {
 													myObj.put("name", rewardList.get(pos).get("name"));
 													myObj.put(Constants.EXPIRATION_DATE,
 															object.get(Constants.EXPIRATION_DATE));
+													myObj.put(Constants.OWN_REWARD,object.get(Constants.OWN_REWARD));
+													int points=rewardList.get(pos).getInt(Constants.REWARD_POINTS_NEEDED);
+													Log.e("points",""+points);
+													myObj.put(Constants.REWARD_POINTS_NEEDED,points);
 													finalAwardList.add(myObj);
 
 													rewardListadapter.notifyDataSetChanged();
@@ -238,6 +247,10 @@ public class FragmentRewards extends Fragment {
 											myObj.put("name", rewardList.get(pos).get("name"));
 											myObj.put(Constants.EXPIRATION_DATE,
 													list.get(j).get(Constants.EXPIRATION_DATE));
+											myObj.put(Constants.OWN_REWARD,list.get(j).get(Constants.OWN_REWARD));
+											int points=rewardList.get(pos).getInt(Constants.REWARD_POINTS_NEEDED);
+											Log.e("points",""+points);
+											myObj.put(Constants.REWARD_POINTS_NEEDED,points);
 											finalAwardList.add(myObj);
 											rewardListadapter.notifyDataSetChanged();
 										}
@@ -271,6 +284,123 @@ public class FragmentRewards extends Fragment {
 	private void initData() {
 		listRewards.add(new Reward("Reward 1", "7"));
 		listRewards.add(new Reward("Reward 2", "17"));
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		ParseObject reward=finalAwardList.get(position);
+		if(isRewardExpired(reward))
+		{
+			showExpiredDialog(""+reward.get("name"));
+		}
+		else
+		{
+			showRewardOptionDialog(reward);
+		}
+	   
+		
+	}
+	private void updateWonReward(final ParseObject reward)
+	{
+		ParseQuery<ParseObject> query=ParseQuery.getQuery(Constants.OBJECT_REWARDSWON);
+		query.whereEqualTo(Constants.WINNER,ParseUser.getCurrentUser());
+		query.whereEqualTo(Constants.EXPIRATION_DATE,reward.get(Constants.EXPIRATION_DATE));
+		query.whereEqualTo(Constants.OWN_REWARD,reward.get(Constants.OWN_REWARD));
+		query.whereEqualTo(Constants.HAS_USER_CLAIMED,false);
+		query.findInBackground(new FindCallback<ParseObject>() {
+
+			@Override
+			public void done(List<ParseObject> list, ParseException e) {
+				if(e==null)
+				{
+					Log.e("reedem list size",""+list.size());
+					if(list.size()==1)
+					{
+						ParseObject wonReward=list.get(0);
+						wonReward.put(Constants.HAS_USER_CLAIMED, true);
+						wonReward.saveInBackground();
+						setUserPoints(reward.getInt(Constants.REWARD_POINTS_NEEDED));
+						
+					}
+					
+				}
+				
+			}
+		});
+		
+	}
+	private void setUserPoints(int pointsUsed)
+	{
+		ParseUser user=ParseUser.getCurrentUser();
+		UserPoint=UserPoint-pointsUsed;
+		user.put(Constants.USER_REWARD_POINTS,UserPoint);
+		user.saveInBackground();
+		finalAwardList.clear();
+		rewardListadapter.notifyDataSetChanged();
+		tvUserPoint.setText(""+UserPoint);
+		Log.e("up:",UserPoint+"   "+ pointsUsed);
+		getRewardList();
+		
+		
+	}
+	private boolean isRewardExpired(ParseObject reward)
+	{
+		Date expDate=reward.getDate(Constants.EXPIRATION_DATE);
+		long mili=expDate.getTime();
+		
+		long curMili=System.currentTimeMillis();
+		if(mili<curMili)
+		   return true;
+		else
+			return false;
+	}
+	private void showExpiredDialog(String name)
+	{
+		final Dialog dialog=new Dialog(getActivity());
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dilog_expired);
+		TextView tvClose=(TextView)dialog.findViewById(R.id.tv_close);
+		TextView tvGift=(TextView)dialog.findViewById(R.id.tv_name);
+		tvGift.setText(name);
+		tvClose.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				
+			}
+			
+		});
+		dialog.show();
+	}
+	private void showRewardOptionDialog(final ParseObject reward)
+	{
+		final Dialog dialog=new Dialog(getActivity());
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dialog_reward_option);
+		TextView tvCancel=(TextView)dialog.findViewById(R.id.tv_cancel);
+		TextView tvGift=(TextView)dialog.findViewById(R.id.tv_name);
+		TextView tvRedeem=(TextView)dialog.findViewById(R.id.tv_redeem);
+		tvGift.setText(""+reward.get("name"));
+		tvCancel.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				
+			}
+			
+		});
+		tvRedeem.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				dialog.dismiss();
+				updateWonReward(reward);
+				
+			}
+		});
+		dialog.show();
 	}
 
 }
