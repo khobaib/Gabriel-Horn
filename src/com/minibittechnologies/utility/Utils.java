@@ -1,8 +1,12 @@
 package com.minibittechnologies.utility;
 
+import org.woodyguthriecenter.app.R;
+
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 
 public class Utils {
@@ -68,6 +72,18 @@ public class Utils {
 	{
 		Toast.makeText(contxt,str,Toast.LENGTH_LONG).show();
 		
+	}
+	public static ProgressDialog createProgressDialog(Context mContext) {
+		ProgressDialog dialog = new ProgressDialog(mContext);
+		try {
+			dialog.show();
+		} catch (BadTokenException e) {
+
+		}
+		dialog.setCancelable(false);
+		dialog.setContentView(R.layout.progress_dialog);
+		// dialog.setMessage(Message);
+		return dialog;
 	}
 
 }

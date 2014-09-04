@@ -1,7 +1,10 @@
 package com.minibittechnologies.fragments;
 
+import java.util.List;
+
 import org.woodyguthriecenter.app.R;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,12 +18,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
 import com.minibittechnologies.model.Post;
+import com.minibittechnologies.utility.Utils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.parse.ParseQueryAdapter;
+import com.parse.ParseQueryAdapter.OnQueryLoadListener;
 
 public class FragmentPostList extends Fragment {
 	private ParseQueryAdapter<Post> postAdapter; // Adapter for the Parse query
@@ -32,25 +40,41 @@ public class FragmentPostList extends Fragment {
 	private final int HEADER_TRANSITION_DURATION = 150;
 
 	public static final String DEBUG_TAG = "Minibit Debug";
+	private ProgressDialog pDialog;
+	private PullToRefreshListView mPullToRefreshListView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 		View topBarClone = View.inflate(getActivity(), R.layout.post_header_view, lvPost);
 
-		lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
-		lvPost.addHeaderView(topBarClone);
+		//lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
+		mPullToRefreshListView=(PullToRefreshListView)rootView.findViewById(R.id.list_view_latest_offer);
+		lvPost=this.mPullToRefreshListView.getRefreshableView();
+		//
+		//lvPost.addHeaderView(topBarClone);
 		lvPost.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				Log.e(">>>>>>>", "pressed");
 			}
 		});
+      mPullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 
+		@Override
+		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+			Log.e("refresh","called");
+			
+			postAdapter.clear();
+			pDialog.show();
+			postAdapter.loadObjects();
+			
+		}
+	});
 		initHeaderListener();
 
 		topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
-		topBar.setVisibility(View.INVISIBLE);
+		topBar.setVisibility(View.VISIBLE);
 		((RelativeLayout) rootView).addView(topBar);
 
 		return rootView;
@@ -59,8 +83,25 @@ public class FragmentPostList extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
+		pDialog=Utils.createProgressDialog(getActivity());
+		pDialog.show();
 		postAdapter = new PostViewListViewAdapter(getActivity());
+		postAdapter.addOnQueryLoadListener(new OnQueryLoadListener<Post>() {
+
+			@Override
+			public void onLoaded(List<Post> arg0, Exception arg1) {
+				
+
+				if(pDialog.isShowing())
+					pDialog.dismiss();
+				mPullToRefreshListView.onRefreshComplete();
+			}
+
+			@Override
+			public void onLoading() {
+				
+			}
+		});
 		lvPost.setAdapter(postAdapter);
 	}
 
@@ -183,5 +224,11 @@ public class FragmentPostList extends Fragment {
 
 	public void setParent(OffersTabFragment parent) {
 		this.parent = parent;
+	}
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		if(pDialog.isShowing())
+			pDialog.dismiss();
 	}
 }

@@ -38,7 +38,6 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 			}
 		});
 	}
-
 	@Override
 	public View getItemView(Post post, View v, ViewGroup parent) {
 		if (v == null) {

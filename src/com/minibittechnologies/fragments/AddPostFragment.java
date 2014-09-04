@@ -18,6 +18,7 @@ import org.woodyguthriecenter.app.R;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
@@ -60,6 +61,7 @@ import android.widget.Toast;
 import com.minibittechnologies.adapter.NothingSelectedSpinnerAdapter;
 import com.minibittechnologies.fragments.FragmentMore.OnDataPass;
 import com.minibittechnologies.interfaces.OnDateOrTimSetListener;
+import com.minibittechnologies.utility.Utils;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -96,7 +98,7 @@ public class AddPostFragment extends Fragment {
 	Activity activity;
 	private TextView tvMonth,tvDay,tvYear,tvHour,tvMin,tvAmPM;
 	private String postLink="";
-
+	private ProgressDialog pDialog;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -176,6 +178,10 @@ public class AddPostFragment extends Fragment {
     		  }
     		  errorMessage.append(getResources().getString(R.string.error_end));
     		  Date date=calculateExpiryDate();
+    		  //set up progress dialog 
+    		  
+    		  pDialog=Utils.createProgressDialog(getActivity());
+    		  pDialog.show();
     		  if(!validationError)
     		  {
     			  ParseObject parseObject=ParseObject.create("Post");
@@ -185,6 +191,7 @@ public class AddPostFragment extends Fragment {
     			  parseObject.put("expiration",date);
     			  parseObject.put("author",ParseUser.getCurrentUser());
     			  parseObject.put("link",postLink);
+    			  parseObject.put("appCompany",ParseUser.getCurrentUser().get("appCompany"));
     			  if(mImageCaptureUri!=null)
     			  {
     				  byte[] data=new byte[(int)picFile.length()];
@@ -210,12 +217,14 @@ public class AddPostFragment extends Fragment {
 
     					  {
     						  Log.e("TAG","success");
+    						  Toast.makeText(getActivity(),"Successfully posted.",Toast.LENGTH_LONG).show();
 
     					  }
     					  else
     					  {
     						  Log.e("TAG","error");
     					  }
+    					  pDialog.dismiss();
     				  }
     			  });
 
@@ -841,6 +850,12 @@ public class AddPostFragment extends Fragment {
 		int nh = (int) (((float) dw / iw) * ih);
 		scaledBmp = Bitmap.createScaledBitmap(scaledBmp, dw, nh, true);
 		ivToPostimage.setImageBitmap(scaledBmp);
+	}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if(pDialog.isShowing())
+			pDialog.dismiss();
 	}
 
 }

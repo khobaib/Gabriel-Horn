@@ -10,6 +10,7 @@ import org.woodyguthriecenter.app.R;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.minibittechnologies.adapter.RewardListadapter;
 import com.minibittechnologies.model.Reward;
 import com.minibittechnologies.utility.Constants;
 import com.minibittechnologies.utility.NestedListView;
+import com.minibittechnologies.utility.Utils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -58,6 +60,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener{
 	// private static final int SCANNER_REQUEST_CODE = 1111;
 
 	// ArrayList<String> awardObjectIdList=new ArrayList<String>();
+	private ProgressDialog pDialog;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_rewards, container, false);
@@ -67,6 +70,8 @@ public class FragmentRewards extends Fragment implements OnItemClickListener{
 		UserPoint = ParseUser.getCurrentUser().getInt(Constants.USER_REWARD_POINTS);
 		Log.e("points", "" + UserPoint);
 		// initData();
+		pDialog=Utils.createProgressDialog(getActivity());
+		pDialog.show();
 		getRewardList();
 		rewardListadapter = new RewardListadapter(getActivity(), R.layout.row_list_reward, finalAwardList);
 		listView.setAdapter(rewardListadapter);
@@ -187,6 +192,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener{
 	private void getRewardList() {
 		ParseQuery<ParseObject> rewardQuery = ParseQuery.getQuery(Constants.OBJECT_REWARDS);
 		rewardQuery.whereLessThanOrEqualTo(Constants.REWARD_POINTS_NEEDED, UserPoint);
+		rewardQuery.whereEqualTo("appCompany",ParseUser.getCurrentUser().get("appCompany"));
 		rewardQuery.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
@@ -262,7 +268,8 @@ public class FragmentRewards extends Fragment implements OnItemClickListener{
 						});
 
 					}
-					// getAvailableWonList();
+					if(pDialog.isShowing())
+						pDialog.cancel();
 
 				}
 
@@ -302,6 +309,8 @@ public class FragmentRewards extends Fragment implements OnItemClickListener{
 	}
 	private void updateWonReward(final ParseObject reward)
 	{
+		if(!pDialog.isShowing())
+		    pDialog.show();
 		ParseQuery<ParseObject> query=ParseQuery.getQuery(Constants.OBJECT_REWARDSWON);
 		query.whereEqualTo(Constants.WINNER,ParseUser.getCurrentUser());
 		query.whereEqualTo(Constants.EXPIRATION_DATE,reward.get(Constants.EXPIRATION_DATE));
@@ -401,6 +410,12 @@ public class FragmentRewards extends Fragment implements OnItemClickListener{
 			}
 		});
 		dialog.show();
+	}
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		if(pDialog.isShowing())
+			pDialog.dismiss();
 	}
 
 }

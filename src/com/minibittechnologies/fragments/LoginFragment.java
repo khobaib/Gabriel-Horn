@@ -1,5 +1,7 @@
 package com.minibittechnologies.fragments;
 
+import java.util.List;
+
 import info.hoang8f.android.segmented.SegmentedGroup;
 
 import org.woodyguthriecenter.app.R;
@@ -20,8 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.minibittechnologies.fragments.FragmentMore.OnDataPass;
+import com.minibittechnologies.utility.Utils;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -32,6 +38,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 	EditText etEmail, etFirstName, etLastName, etPassword, etEmailLogIn, etPasswordLogin;
 	Button bSignUp, bLogin;
 	OnDataPass dataPasser;
+	private ProgressDialog pDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +57,6 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.e(">>>>>>", "onCreateView, LoginFragment");
 		View v = inflater.inflate(R.layout.fragment_login, container, false);
-
 		loginSegment = (SegmentedGroup) v.findViewById(R.id.segmented);
 
 		signUpLayout = (RelativeLayout) v.findViewById(R.id.sg_signup);
@@ -96,37 +102,56 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 					Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG).show();
 					return;
 				}
-
+               String appPackage=getActivity().getApplicationContext().getPackageName();
+               Log.e("appPackage",appPackage);
 				// Set up a progress dialog
-				final ProgressDialog dlg = new ProgressDialog(getActivity());
-				dlg.setTitle("Please wait.");
-				dlg.setMessage("Signing up.  Please wait...");
-				dlg.show();
-
-				// Set up a new Parse user
-				ParseUser user = new ParseUser();
-				user.setEmail(etEmail.getText().toString().trim());
-				user.setUsername(etEmail.getText().toString().toString());
-				user.setPassword(etPassword.getText().toString());
-				user.put("fullName", etFirstName.getText().toString() + " " + etLastName.getText().toString());
-				// Call the Parse signup method
-				user.signUpInBackground(new SignUpCallback() {
-
+				pDialog=Utils.createProgressDialog(getActivity());
+				pDialog.show();
+				ParseQuery<ParseObject> parseQuery=ParseQuery.getQuery("AppParentCompany");
+				parseQuery.whereEqualTo("appIdentifier",appPackage);
+				parseQuery.findInBackground(new FindCallback<ParseObject>() {
+					
 					@Override
-					public void done(ParseException e) {
-						dlg.dismiss();
-						if (e != null) {
-							Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-						} else {
-							// Start an intent for the dispatch activity
-							// Intent intent = new Intent(getActivity(),
-							// DispatchActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
-							// Intent.FLAG_ACTIVITY_NEW_TASK);
-							// startActivity(intent);
+					public void done(List<ParseObject> list, ParseException e) {
+						if(e==null)
+						{
+							if(list.size()>0)
+							{
+								ParseObject appCompany=list.get(0);
+								ParseUser user = new ParseUser();
+								user.setEmail(etEmail.getText().toString().trim());
+								user.setUsername(etEmail.getText().toString().toString());
+								user.setPassword(etPassword.getText().toString());
+								user.put("appCompany",appCompany);
+								user.put("fullName", etFirstName.getText().toString() + " " + etLastName.getText().toString());
+								// Call the Parse signup method
+								user.signUpInBackground(new SignUpCallback() {
+
+									@Override
+									public void done(ParseException e) {
+										pDialog.dismiss();
+										if (e != null) {
+											Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+										} else {
+											// Start an intent for the dispatch activity
+											// Intent intent = new Intent(getActivity(),
+											// DispatchActivity.class);
+											// intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
+											// Intent.FLAG_ACTIVITY_NEW_TASK);
+											// startActivity(intent);
+										}
+									}
+								});
+							}
 						}
+						else
+						{
+							 Log.e("errre",e.toString());
+						}
+						
 					}
 				});
+				
 			}
 
 		});
@@ -159,10 +184,8 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 				}
 
 				// Set up a progress dialog
-				final ProgressDialog dlg = new ProgressDialog(getActivity());
-				dlg.setTitle("Please wait.");
-				dlg.setMessage("Logging in.  Please wait...");
-				dlg.show();
+				pDialog=Utils.createProgressDialog(getActivity());
+				pDialog.show();
 
 				// log in code
 
@@ -173,7 +196,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 
 					@Override
 					public void done(ParseUser user, ParseException excption) {
-						dlg.dismiss();
+						pDialog.dismiss();
 						if (user != null) {
 							Toast.makeText(getActivity(), "Successfully logged in.", Toast.LENGTH_LONG).show();
 							dataPasser.onDataPass("rewardFragment");
@@ -190,7 +213,6 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 
 		return v;
 	}
-
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		switch (checkedId) {
@@ -212,6 +234,12 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 		} else {
 			return true;
 		}
+	}
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		if(pDialog.isShowing())
+			pDialog.cancel();
 	}
 
 }
