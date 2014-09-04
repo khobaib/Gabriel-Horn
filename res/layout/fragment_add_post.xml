@@ -29,7 +29,6 @@
             android:layout_margin="5dp"
             android:background="@drawable/rounded_black_bg"
             android:ems="10"
-            android:hint="Offer"
             android:padding="5dp" />
         <Spinner 
             android:id="@+id/sp_catgory"

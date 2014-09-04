@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import javax.security.auth.PrivateCredentialPermission;
 
@@ -30,6 +33,7 @@ import android.provider.MediaStore.MediaColumns;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -59,6 +63,7 @@ import com.minibittechnologies.interfaces.OnDateOrTimSetListener;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class AddPostFragment extends Fragment {
@@ -83,12 +88,14 @@ public class AddPostFragment extends Fragment {
 	private Button bCamera, bHLink,btnAddPost;
 	private ImageView ivSelectedImage;
 	private LinearLayout llDateLayout, llTimeLayout;
-	private EditText edtCategory;
+	private EditText edtCategory,edtTitle,edtDetails;
 	private Spinner spCategory;
 	String[] catList={"Offer","Event","Post"};
 
 	View v;
 	Activity activity;
+	private TextView tvMonth,tvDay,tvYear,tvHour,tvMin,tvAmPM;
+	private String postLink="";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -140,46 +147,91 @@ public class AddPostFragment extends Fragment {
       btnAddPost=(Button)v.findViewById(R.id.btnAddPost);
       btnAddPost.setOnClickListener(new OnClickListener() {
 		
-		@Override
-		public void onClick(View v) {
-			byte[] data=new byte[(int)picFile.length()];
-			FileInputStream fileInputStream;
-			try {
+    	  @Override
+    	  public void onClick(View v) {
+    		  boolean validationError = false;
+    		  StringBuilder errorMessage=new StringBuilder(getResources().getString(R.string.error_intro));
+    		  String catgory=edtCategory.getText().toString();
+    		  if(catgory.equals(""))
+    		  {
+    			  errorMessage.append("Enter Category");
+    			  validationError=true;
+    		  }
+    		  String tite=edtTitle.getText().toString();
+    		  if(tite.equals(""))
+    		  {
+    			  if(validationError)
+    				  errorMessage.append(", ");
+    			  validationError=true;
+    			  errorMessage.append("Enter Title");
+    		  }
+    		  String details=edtDetails.getText().toString();	
+    		  if(details.equals(""))
+    		  {
+    			  if(validationError)
+    				  errorMessage.append(" and ");
+    			  validationError=true;
+    			  errorMessage.append("Enter Deatils");
+
+    		  }
+    		  errorMessage.append(getResources().getString(R.string.error_end));
+    		  Date date=calculateExpiryDate();
+    		  if(!validationError)
+    		  {
+    			  ParseObject parseObject=ParseObject.create("Post");
+    			  parseObject.put("contents",details);
+    			  parseObject.put("title",tite);
+    			  parseObject.put("category",catgory);
+    			  parseObject.put("expiration",date);
+    			  parseObject.put("author",ParseUser.getCurrentUser());
+    			  parseObject.put("link",postLink);
+    			  if(mImageCaptureUri!=null)
+    			  {
+    				  byte[] data=new byte[(int)picFile.length()];
+    				  FileInputStream fileInputStream;
+    				  try {
 
 
-				fileInputStream = new FileInputStream(picFile);
-				fileInputStream.read(data);
-				ParseFile pFile=new ParseFile(picFile.getName(), data);
-				ParseObject parseObject=ParseObject.create("Post");
-				parseObject.put("contents","test upload");
-				parseObject.put("image",pFile);
-				parseObject.put("title","myImage");
-				parseObject.saveInBackground(new SaveCallback() {
-					
-					@Override
-					public void done(ParseException e) {
-						if(e==null)
+    					  fileInputStream = new FileInputStream(picFile);
+    					  fileInputStream.read(data);
+    					  ParseFile pFile=new ParseFile(picFile.getName(), data);
 
-						{
-							Log.e("TAG","success");
+    					  parseObject.put("image",pFile);
+    				  } catch (IOException e) {
 
-						}
-						else
-						{
-							Log.e("TAG","error");
-						}
-					}
-				});
-			} catch (IOException e) {
+    					  e.printStackTrace();
+    				  }
+    			  }
+    			  parseObject.saveInBackground(new SaveCallback() {
 
-				e.printStackTrace();
-			}
+    				  @Override
+    				  public void done(ParseException e) {
+    					  if(e==null)
+
+    					  {
+    						  Log.e("TAG","success");
+
+    					  }
+    					  else
+    					  {
+    						  Log.e("TAG","error");
+    					  }
+    				  }
+    			  });
+
+    		  }
+    		  else
+    		  {
+    			  toast(errorMessage.toString());
+    		  }
 
 
 
 
-		}
-	});
+    	  }
+
+      });
+
       edtCategory=(EditText)v.findViewById(R.id.etCategoryAddPost);
     /*  edtCategory.setOnClickListener(new OnClickListener() {
 		
@@ -217,6 +269,18 @@ public class AddPostFragment extends Fragment {
 		}
 	});
       setSpinner();
+      
+      edtTitle=(EditText)v.findViewById(R.id.etTitleAddPost);
+      edtDetails=(EditText)v.findViewById(R.id.etDetailsAddPost);
+      tvMonth=(TextView)v.findViewById(R.id.tvMonthAddPost);
+      tvDay=(TextView)v.findViewById(R.id.tvDateAddPost);
+      tvYear=(TextView)v.findViewById(R.id.tvYearAddPost);
+      tvHour=(TextView)v.findViewById(R.id.tvHourAddPost);
+      tvMin=(TextView)v.findViewById(R.id.tvMinAddPost);
+      tvAmPM=(TextView)v.findViewById(R.id.tvDayPosiAddPost);
+      
+      initDateAndTimePicker();
+     
 		llImageHolder = (LinearLayout) v.findViewById(R.id.llImageToPostHolderAddPost);
 		isImageVisible = false;
 		llImageHolder.setVisibility(View.GONE);
@@ -258,12 +322,16 @@ public class AddPostFragment extends Fragment {
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			
 		}
+		private void toast(String str)
+		{
+			Toast.makeText(getActivity(),str,Toast.LENGTH_LONG).show();
+			
+		}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		activity = getActivity();
 	}
-
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -271,6 +339,75 @@ public class AddPostFragment extends Fragment {
 			setImageFile();
 		outState.putSerializable("post_pic", picFile);
 		outState.putBoolean("is_image_visible", isImageVisible);
+	}
+	private Date calculateExpiryDate()
+	{
+		String day=tvDay.getText().toString();
+		String stringMonth=tvMonth.getText().toString();
+		int month=0;
+		/*for(int i=0;i<monthArray.length;i++)
+		{
+			if(monthArray[i].equals(stringMonth))
+				month=i;
+		}*/
+		String year=tvYear.getText().toString();
+		String minute=tvMin.getText().toString();	
+		int  hour=Integer.valueOf(tvHour.getText().toString());
+		String amPm=tvAmPM.getText().toString();
+		if(amPm.equals("PM"))
+		{
+			hour=hour+12;
+		}
+		
+		String dateString=day+"-"+stringMonth+"-"+year +" " + hour+":"+minute;
+		//Log.e("DATE",dateString);
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy hh:mm");
+		Date date=null;
+		try {
+			date=formatter.parse(dateString);
+			Log.e("DATE",date.toString());
+		} catch (java.text.ParseException e) {
+			
+			e.printStackTrace();
+		}
+		
+		return date;
+		
+				
+	}
+	private void initDateAndTimePicker()
+	{
+		Time time=new Time();
+		time.setToNow();
+		int month=time.month;
+		int day=time.monthDay;
+		int year=time.year;
+		int hour=time.hour;
+		int min=time.minute;
+		tvYear.setText(""+year);
+		tvDay.setText(""+day);
+		tvMonth.setText(monthArray[month]);
+		if (hour >= 12) {
+			tvHour.setText((hour - 12) + "");
+			tvAmPM.setText("PM");
+		} else {
+			tvHour.setText(hour + "");
+			tvAmPM.setText("AM");
+		}
+		tvMin.setText(min+"");
+		
+	}
+	private String getTimeStamp()
+	{
+		Time time=new Time();
+		time.setToNow();
+		int month=time.month;
+		int day=time.monthDay;
+		int year=time.year;
+		int hour=time.hour;
+		int min=time.minute;
+		
+		return year+"_"+month+"_"+day+"_"+hour+"_"+min;
 	}
 
 	// Time --- Time
@@ -280,18 +417,14 @@ public class AddPostFragment extends Fragment {
 			public void dateOrTimeSet(int hour, int minute, int ignored) {
 				// TODO Auto-generated method stub
 				Log.d(TAG, "Hour: " + hour + ", minute: " + minute + ", ignored: " + ignored);
-				TextView t = (TextView) v.findViewById(R.id.tvHourAddPost);
 				if (hour >= 12) {
-					t.setText((hour - 12) + "");
-					t = (TextView) v.findViewById(R.id.tvDayPosiAddPost);
-					t.setText("PM");
+					tvHour.setText((hour - 12) + "");
+					tvAmPM.setText("PM");
 				} else {
-					t.setText(hour + "");
-					t = (TextView) v.findViewById(R.id.tvDayPosiAddPost);
-					t.setText("AM");
+					tvHour.setText(hour + "");
+					tvAmPM.setText("AM");
 				}
-				t = (TextView) v.findViewById(R.id.tvMinAddPost);
-				t.setText(minute + "");
+				tvMin.setText(minute + "");
 			}
 		}, DateOrTimePickerFragment.TIME_PICKER);
 		df.show(((FragmentActivity) activity).getSupportFragmentManager(), "time_picker");
@@ -303,12 +436,9 @@ public class AddPostFragment extends Fragment {
 			@Override
 			public void dateOrTimeSet(int year, int month, int day) {
 				Log.d(TAG, "Year: " + year + ", month: " + month + ", day: " + day);
-				TextView t = (TextView) v.findViewById(R.id.tvYearAddPost);
-				t.setText(year + "");
-				t = (TextView) v.findViewById(R.id.tvMonthAddPost);
-				t.setText(monthArray[month]);
-				t = (TextView) v.findViewById(R.id.tvDateAddPost);
-				t.setText(day + "");
+				tvYear.setText(year + "");
+				tvMonth.setText(monthArray[month]);
+				tvDay.setText(day + "");
 			}
 		}, DateOrTimePickerFragment.DATE_PICKER);
 		df.show(((FragmentActivity) activity).getSupportFragmentManager(), "date_picker");
@@ -359,7 +489,25 @@ public class AddPostFragment extends Fragment {
 		Window window = dialog.getWindow();
 		window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		window.setGravity(Gravity.CENTER);
-
+		final EditText edtLink=(EditText)dialog.findViewById(R.id.editText1);
+        Button addLink=(Button)dialog.findViewById(R.id.btnDialogAddLink);
+        Button cancl=(Button)dialog.findViewById(R.id.btnDialogCancelAddLink);
+        addLink.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				postLink=edtLink.getText().toString();
+				dialog.dismiss();
+			}
+		});
+        cancl.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();		
+			}
+		});
+        
 		// The below code is EXTRA - to dim the parent view by 70% :D
 		WindowManager.LayoutParams lp = window.getAttributes();
 		lp.dimAmount = 0.7f;
@@ -438,9 +586,18 @@ public class AddPostFragment extends Fragment {
 		File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Gabriel Horn");
 		directory.mkdir();
 		String mainDir = directory.toString();
-		String photoFileName = "post_pic" + ".png";
+		
+
+		String photoFileName = "post_pic"+getTimeStamp()+
+				".png";
 		Log.d(TAG, photoFileName);
 		picFile = new File(directory.getPath(), photoFileName);
+		try {
+			picFile.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private int getCorrectionAngleForCam() throws IOException {
