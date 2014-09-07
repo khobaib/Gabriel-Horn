@@ -4,39 +4,37 @@ import java.util.ArrayList;
 
 import org.woodyguthriecenter.app.R;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomAdapterForMore extends BaseAdapter {
+public class CustomAdapterForMore extends ArrayAdapter<String> {
 	Activity activity;
 	ArrayList<String> list;
 
 	public CustomAdapterForMore(Activity activity, ArrayList<String> list) {
-		super();
+		super(activity,0,list);
 		this.activity = activity;
 		this.list = list;
 	}
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return list.size();
 	}
 
 	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
+	public String getItem(int position) {
 		return list.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -46,12 +44,13 @@ public class CustomAdapterForMore extends BaseAdapter {
 
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		LayoutInflater inflater = activity.getLayoutInflater();
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.more_inflate, null);
+			convertView = inflater.inflate(R.layout.more_inflate, null, false);
 			holder = new ViewHolder();
 			holder.img_cat = (ImageView) convertView.findViewById(R.id.img_cat);
 			holder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
@@ -83,6 +82,15 @@ public class CustomAdapterForMore extends BaseAdapter {
 		}
 
 		return convertView;
+	}
+
+	public void setData(ArrayList<String> itemList) {
+		clear();
+		if (itemList != null) {
+			for (int i = 0; i < itemList.size(); i++) {
+				add(itemList.get(i));
+			}
+		}
 	}
 
 }

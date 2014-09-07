@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:id="@+id/flFragmentHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="3dp" >
+    </FrameLayout>
+
+    <!-- <FrameLayout -->
+    <!-- android:id="@+id/fl" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignParentBottom="true" -->
+    <!-- android:layout_alignParentLeft="true" -->
+    <!-- tools:ignore="HardcodedText" > -->
+
+
+    <!-- <TextView -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_gravity="center" -->
+    <!-- android:text="This is for the transparency check" -->
+    <!-- android:textAppearance="?android:attr/textAppearanceMedium" /> -->
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical"
+        tools:ignore="HardcodedText" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ff777777" />
+
+        <LinearLayout
+            android:id="@+id/llBottomTabHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp" >
+
+            <Button
+                android:id="@+id/btnOffer"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/tab_1"
+                android:text="Offer"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnReward"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/tab_2"
+                android:text="Reward"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnAddPost"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/tab_post_1"
+                android:text="Add Post"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnMore"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/tab_4"
+                android:text="More"
+                android:textSize="14sp" />
+            <!-- Pressed color(TODO): #4275f7 -->
+        </LinearLayout>
+    </LinearLayout>
+    <!-- </FrameLayout> -->
+</RelativeLayout>

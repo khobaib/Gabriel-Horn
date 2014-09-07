@@ -22,7 +22,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
+import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
+import com.minibittechnologies.utility.Constants;
 import com.minibittechnologies.utility.Utils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
@@ -42,33 +44,52 @@ public class FragmentPostList extends Fragment {
 	public static final String DEBUG_TAG = "Minibit Debug";
 	private ProgressDialog pDialog;
 	private PullToRefreshListView mPullToRefreshListView;
+
+	private FragmentClickListener fragClicker;
+
+	/**
+	 * Try never to use it! Rather call <br>
+	 * {@code newInstance(FragmentClickListener fragClicker)}
+	 */
+	public FragmentPostList() {
+	}
+
+	private FragmentPostList(FragmentClickListener fragClicker) {
+		this.fragClicker = fragClicker;
+	}
+
+	public static Fragment newInstance(FragmentClickListener fragClicker) {
+		return new FragmentPostList(fragClicker);
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
-		View topBarClone = View.inflate(getActivity(), R.layout.post_header_view, lvPost);
+		// View topBarClone = View.inflate(getActivity(),
+		// R.layout.post_header_view, lvPost);
 
-		//lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
-		mPullToRefreshListView=(PullToRefreshListView)rootView.findViewById(R.id.list_view_latest_offer);
-		lvPost=this.mPullToRefreshListView.getRefreshableView();
+		// lvPost = (ListView)
+		// rootView.findViewById(R.id.list_view_latest_offer);
+		mPullToRefreshListView = (PullToRefreshListView) rootView.findViewById(R.id.list_view_latest_offer);
+		lvPost = this.mPullToRefreshListView.getRefreshableView();
 		//
-		//lvPost.addHeaderView(topBarClone);
+		// lvPost.addHeaderView(topBarClone);
 		lvPost.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				Log.e(">>>>>>>", "pressed");
+				fragClicker.onFragmentItemClick(Constants.FRAG_OFFER, false, (Post) parent.getItemAtPosition(position));
 			}
 		});
-      mPullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+		mPullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				Log.e("refresh", "called");
 
-		@Override
-		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-			Log.e("refresh","called");
-			
-			postAdapter.loadObjects();
-			pDialog.show();
-			
-		}
-	});
+				postAdapter.loadObjects();
+				pDialog.show();
+			}
+		});
 		initHeaderListener();
 
 		topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
@@ -81,27 +102,26 @@ public class FragmentPostList extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		pDialog=Utils.createProgressDialog(getActivity());
+		pDialog = Utils.createProgressDialog(getActivity());
 		pDialog.show();
 		postAdapter = new PostViewListViewAdapter(getActivity());
 		postAdapter.addOnQueryLoadListener(new OnQueryLoadListener<Post>() {
 
 			@Override
 			public void onLoaded(List<Post> arg0, Exception arg1) {
-				
-				if(pDialog.isShowing())
+
+				if (pDialog.isShowing())
 					pDialog.dismiss();
 				mPullToRefreshListView.onRefreshComplete();
-				Log.e("size",""+postAdapter.getCount());
+				Log.e("size", "" + postAdapter.getCount());
 			}
 
 			@Override
 			public void onLoading() {
-				//postAdapter.clear();
-				
-				
+				// postAdapter.clear();
+
 			}
-			
+
 		});
 		lvPost.setAdapter(postAdapter);
 	}
@@ -226,10 +246,11 @@ public class FragmentPostList extends Fragment {
 	public void setParent(OffersTabFragment parent) {
 		this.parent = parent;
 	}
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		if(pDialog.isShowing())
+		if (pDialog.isShowing())
 			pDialog.dismiss();
 	}
 }

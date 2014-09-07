@@ -1,5 +1,7 @@
 package com.minibittechnologies.fragments;
 
+import org.woodyguthriecenter.app.R;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,22 +10,27 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.woodyguthriecenter.app.R;
+import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
+import com.minibittechnologies.utility.Constants;
 
 @SuppressLint("NewApi")
 public class FragmentSingleOffer extends Fragment {
 
-	Post singleofferDetails;
-	OffersTabFragment parent;
-	TextView tv_title, tv_message;
-	ImageView img_pic;
-	ImageView backbuttonoftab;
-	TextView welcome_title;
-	RelativeLayout topBar;
+	public OffersTabFragment parent;
+
+	private Post singleofferDetails;
+	@SuppressWarnings("unused")
+	private TextView tv_title, tv_message;
+	// private ImageView img_pic;
+	private ImageView backbuttonoftab;
+	private TextView welcome_title;
+
+	// private RelativeLayout topBar;
+
+	// private FragmentClickListener fragClicker;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -33,6 +40,11 @@ public class FragmentSingleOffer extends Fragment {
 
 	public FragmentSingleOffer(Post singleofferDetails) {
 		this.singleofferDetails = singleofferDetails;
+//		this.fragClicker = fragClicker;
+	}
+
+	public static Fragment newInstance(Post singleofferDetails) {
+		return new FragmentSingleOffer(singleofferDetails);
 	}
 
 	@Override
@@ -40,16 +52,18 @@ public class FragmentSingleOffer extends Fragment {
 		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_single_offer, container, false);
 		tv_title = (TextView) v.findViewById(R.id.tv_title);
 		tv_message = (TextView) v.findViewById(R.id.tv_message);
-		img_pic = (ImageView) v.findViewById(R.id.img_pic);
-		topBar = (RelativeLayout) v.findViewById(R.id.topBar);
+		// img_pic = (ImageView) v.findViewById(R.id.img_pic);
+		// topBar = (RelativeLayout) v.findViewById(R.id.topBar);
 		welcome_title = (TextView) v.findViewById(R.id.welcome_title);
-		backbuttonoftab = (ImageView) v.findViewById(R.id.backbuttonoftab);
-		backbuttonoftab.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				parent.onBackPressed();
-			}
-		});
+		// backbuttonoftab = (ImageView) v.findViewById(R.id.backbuttonoftab);
+		// backbuttonoftab.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// // parent.onBackPressed();
+		// // Back from the page
+		// fragClicker.onFragmentItemClick(Constants.FRAG_LOGIN, false,null);
+		// }
+		// });
 		welcome_title.setText("Post Details");
 		tv_title.setText(singleofferDetails.getTitle());
 		// tv_message.setText(singleofferDetails.getMessage());

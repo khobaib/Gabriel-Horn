@@ -21,5 +21,13 @@ public class Constants {
 	public static final String MILIS_BEFORE_EXPIRATION = "millisBeforeExpiration";
 	public static final String OBJECT_QRCODE = "QRCode";
 	public static final String POINTS_TO_AWARD = "pointsToAward";
+	
+	public static final int FRAG_OFFER = 1;
+	public static final int FRAG_REWARD = 2;
+	public static final int FRAG_ADD_POST = 3;
+	public static final int FRAG_MORE = 4;
+	public static final int FRAG_LOGIN = 5;
+	public static final int FRAG_OFFER_DETAILS = 6;
+	public static final int FRAG_LOGGED_IN = 51;
 
 }

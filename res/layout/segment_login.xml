@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email Address"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:textColor="@color/white" />
 
     <EditText
         android:id="@+id/et_password_log_in"
@@ -18,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_email_login"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/b_login"
@@ -29,6 +31,7 @@
         android:layout_margin="10dp"
         android:background="@drawable/login_button_back"
         android:padding="15dp"
-        android:text="Log In" />
+        android:text="Log In"
+        android:textColor="@color/white" />
 
 </RelativeLayout>
