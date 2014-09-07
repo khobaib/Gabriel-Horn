@@ -42,7 +42,6 @@ public class FragmentPostList extends Fragment {
 	public static final String DEBUG_TAG = "Minibit Debug";
 	private ProgressDialog pDialog;
 	private PullToRefreshListView mPullToRefreshListView;
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
@@ -65,9 +64,8 @@ public class FragmentPostList extends Fragment {
 		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 			Log.e("refresh","called");
 			
-			postAdapter.clear();
-			pDialog.show();
 			postAdapter.loadObjects();
+			pDialog.show();
 			
 		}
 	});
@@ -91,16 +89,19 @@ public class FragmentPostList extends Fragment {
 			@Override
 			public void onLoaded(List<Post> arg0, Exception arg1) {
 				
-
 				if(pDialog.isShowing())
 					pDialog.dismiss();
 				mPullToRefreshListView.onRefreshComplete();
+				Log.e("size",""+postAdapter.getCount());
 			}
 
 			@Override
 			public void onLoading() {
+				//postAdapter.clear();
+				
 				
 			}
+			
 		});
 		lvPost.setAdapter(postAdapter);
 	}
