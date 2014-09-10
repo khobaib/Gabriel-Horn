@@ -4,17 +4,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.woodyguthriecenter.app.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.woodyguthriecenter.app.R;
 import com.minibittechnologies.utility.Constants;
 import com.parse.ParseObject;
 
@@ -50,20 +52,18 @@ public class RewardListadapter extends ArrayAdapter<ParseObject> {
 		} else
 			holder = (ViewHolder) convertView.getTag();
 		// Log.v("msg","hello");
+		Log.e(">>>>>>", "position = " + position);
 		ParseObject reward = getItem(position);
 		holder.name.setText(reward.getString("name"));
-		Date expDate=reward.getDate(Constants.EXPIRATION_DATE);
-		long mili=expDate.getTime();
-		
-		long curMili=System.currentTimeMillis();
-		if(mili<curMili)
-		{
+		Date expDate = reward.getDate(Constants.EXPIRATION_DATE);
+		long mili = expDate.getTime();
+
+		long curMili = System.currentTimeMillis();
+		if (mili < curMili) {
 			holder.Days.setText("expired");
-		}
-		else
-		{
-			long  days=TimeUnit.DAYS.convert(mili-curMili,TimeUnit.MILLISECONDS);
-			holder.Days.setText("expires in "+ days+" days.");
+		} else {
+			long days = TimeUnit.DAYS.convert(mili - curMili, TimeUnit.MILLISECONDS);
+			holder.Days.setText("expires in " + days + " days.");
 		}
 		return convertView;
 

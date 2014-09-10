@@ -110,9 +110,10 @@ public class FragmentMore extends Fragment {
 						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
 					} else {
 						ParseUser.logOut();
-						alert("Logged out.");
-						initMenuItems();
-						adapter.setData(items);
+						// alert("Logged out.");
+						// initMenuItems();
+						// adapter.setData(items);
+						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
 					}
 				}
 

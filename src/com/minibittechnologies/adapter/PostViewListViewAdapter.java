@@ -10,6 +10,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.minibittechnologies.model.Post;
@@ -71,15 +72,15 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 		tvTitle.setText(post.getTitle());
 		tvContent.setText(post.getContent());
 
-		final TextView tvExpired = (TextView) v.findViewById(R.id.tv_expired);
+		final ImageView ivExpired = (ImageView) v.findViewById(R.id.iv_expired);
 		long currentTimeInMillis = System.currentTimeMillis();
 
 		if (post.getExpired() != null) {
 			long expiredTime = post.getExpired().getTime();
 			if (expiredTime > currentTimeInMillis) {
-				tvExpired.setVisibility(View.GONE);
+				ivExpired.setVisibility(View.GONE);
 			} else {
-				tvExpired.setVisibility(View.VISIBLE);
+				ivExpired.setVisibility(View.VISIBLE);
 			}
 			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 			String date = formatter.format(post.getExpired());

@@ -9,8 +9,10 @@ import net.sourceforge.zbar.Symbol;
 import org.woodyguthriecenter.app.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -44,6 +46,9 @@ import com.parse.SaveCallback;
 public class FragmentRewards extends Fragment implements OnItemClickListener {
 
 	private static final int ZBAR_QR_SCANNER_REQUEST = 1;
+
+	private static final int BUTTON_POSITIVE = -1;
+	private static final int BUTTON_NEGATIVE = -2;
 
 	NestedListView listView;
 	TextView tvUserPoint;
@@ -79,6 +84,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_rewards, container, false);
 		listView = (NestedListView) v.findViewById(R.id.listView1);
+
 		tvUserPoint = (TextView) v.findViewById(R.id.tv_user_point);
 
 		UserPoint = ParseUser.getCurrentUser().getInt(Constants.USER_REWARD_POINTS);
@@ -90,6 +96,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		rewardListadapter = new RewardListadapter(getActivity(), R.layout.row_list_reward, finalAwardList);
 		listView.setAdapter(rewardListadapter);
 		listView.setOnItemClickListener(this);
+
 		// logOut();
 		btnScanForStar = (Button) v.findViewById(R.id.btnScanForStar);
 		btnScanForStar.setOnClickListener(new OnClickListener() {
@@ -108,6 +115,11 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		activity = getActivity();
 		if (activity != null) {
 			tvUserPoint.setText("" + UserPoint);
+
+			// View footerView =
+			// getActivity().getLayoutInflater().inflate(R.layout.list_offer_footer,
+			// null, false);
+			// listView.addFooterView(footerView);
 		}
 	}
 
@@ -170,27 +182,6 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 
 					}
 				});
-				// String formatName =
-				// data.getStringExtra("SCAN_RESULT_FORMAT");
-				// byte[] rawBytes =
-				// data.getByteArrayExtra("SCAN_RESULT_BYTES");
-				// int intentOrientation =
-				// data.getIntExtra("SCAN_RESULT_ORIENTATION",
-				// Integer.MIN_VALUE);
-				// Integer orientation = (intentOrientation ==
-				// Integer.MIN_VALUE) ? null : intentOrientation;
-				// String errorCorrectionLevel =
-				// data.getStringExtra("SCAN_RESULT_ERROR_CORRECTION_LEVEL");
-				//
-				// System.out.println("Contents: " + contents + "\n\n" +
-				// "Format: " + formatName + "Orientation: "
-				// + "\n\n" + orientation + "\n\n" + "Error Correction level: "
-				// + errorCorrectionLevel);
-				// Log.d("SCANNED_RES", "Contents: " + contents + "\n\n" +
-				// "Format: " + formatName + "Orientation: "
-				// + "\n\n" + orientation + "\n\n" + "Error Correction level: "
-				// + errorCorrectionLevel);
-
 			}
 		}
 	}
@@ -204,6 +195,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	}
 
 	private void getRewardList() {
+		finalAwardList = new ArrayList<ParseObject>();
 		ParseQuery<ParseObject> rewardQuery = ParseQuery.getQuery(Constants.OBJECT_REWARDS);
 		rewardQuery.whereLessThanOrEqualTo(Constants.REWARD_POINTS_NEEDED, UserPoint);
 		rewardQuery.whereEqualTo("appCompany", ParseUser.getCurrentUser().get("appCompany"));
@@ -393,32 +385,23 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	}
 
 	private void showRewardOptionDialog(final ParseObject reward) {
-		final Dialog dialog = new Dialog(getActivity());
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.dialog_reward_option);
-		TextView tvCancel = (TextView) dialog.findViewById(R.id.tv_cancel);
-		TextView tvGift = (TextView) dialog.findViewById(R.id.tv_name);
-		TextView tvRedeem = (TextView) dialog.findViewById(R.id.tv_redeem);
-		tvGift.setText("" + reward.get("name"));
-		tvCancel.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
+		AlertDialog Alert = new AlertDialog.Builder(getActivity()).create();
+		Alert.setTitle("" + reward.get("name"));
+		Alert.setMessage("Do you want to use this reward?");
 
-			}
-
-		});
-		tvRedeem.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				dialog.dismiss();
+		Alert.setButton(BUTTON_POSITIVE, "Redeem", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
 				updateWonReward(reward);
-
 			}
 		});
-		dialog.show();
+
+		Alert.setButton(BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				dialog.dismiss();
+			}
+		});
+		Alert.show();
 	}
 
 	@Override
