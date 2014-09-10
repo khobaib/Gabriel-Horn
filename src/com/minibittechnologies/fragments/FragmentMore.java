@@ -50,7 +50,8 @@ public class FragmentMore extends Fragment implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		fragClicker = (FragmentClickListener) getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
+		// fragClicker = (FragmentClickListener)
+		// getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 		initMenuItems();
 	}
 
@@ -73,6 +74,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		// dataPasser = (OnDataPass) activity;
+		fragClicker = (FragmentClickListener) activity;
 	}
 
 	// @Override

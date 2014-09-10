@@ -3,6 +3,7 @@
  */
 package com.minibittechnologies.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.minibittechnologies.fragments.AddPostFragment;
+import com.minibittechnologies.fragments.FragmentEditLocation;
 import com.minibittechnologies.fragments.FragmentMore;
 import com.minibittechnologies.fragments.FragmentPostList;
 import com.minibittechnologies.fragments.FragmentRewards;
@@ -40,7 +42,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener {
+public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener, Serializable {
 
 	private static final long serialVersionUID = -7335912528173342127L;
 
@@ -94,26 +96,24 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	private void setupFragmentList() {
 		fList = new ArrayList<>();
-		// fList.add(FragmentPostList.newInstance(this)); // 0
-		// fList.add(FragmentRewards.newInstance()); // 1
-		// fList.add(AddPostFragment.newInstance()); // 2
-		// fList.add(FragmentMore.newInstance(this)); // 3
-		// fList.add(LoginFragment.newInstance(this)); // 4
-		// fList.add(FragmentSingleOffer.newInstance(this)); // 5
-		Bundle b = new Bundle();
-		b.putSerializable(Constants.KEY_FRAG_CLICKER, this);
-
-		Fragment f = FragmentPostList.newInstance();
-		f.setArguments(b);
-		fList.add(f); // 0
+		fList.add(FragmentPostList.newInstance()); // 0
 		fList.add(FragmentRewards.newInstance()); // 1
 		fList.add(AddPostFragment.newInstance()); // 2
-		f = FragmentMore.newInstance();
-		f.setArguments(b);
-		fList.add(f); // 3
-		f = LoginFragment.newInstance();
-		f.setArguments(b);
-		fList.add(f); // 4
+		fList.add(FragmentMore.newInstance()); // 3
+		fList.add(LoginFragment.newInstance()); // 4
+		// fList.add(FragmentSingleOffer.newInstance(this)); // 5
+
+		// Fragment f = FragmentPostList.newInstance();
+		// // f.setArguments(b);
+		// fList.add(f); // 0
+		// fList.add(FragmentRewards.newInstance()); // 1
+		// fList.add(AddPostFragment.newInstance()); // 2
+		// f = FragmentMore.newInstance();
+		// // f.setArguments(b);
+		// fList.add(f); // 3
+		// f = LoginFragment.newInstance();
+		// // f.setArguments(b);
+		// fList.add(f); // 4
 	}
 
 	@Override
@@ -162,6 +162,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			} else {
 				shareTheApp();
 			}
+			Log.i(TAG, "broken!!");
 			break;
 		case R.id.btnMore:
 			Log.d(TAG, "More Clicked");
@@ -318,7 +319,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	}
 
 	private void shareTheApp() {
-		Intent sendIntent = new Intent();
+		Log.e(TAG, "shareTheApp");
+		Intent sendIntent = new Intent(HolderActivity.this, HomeActivity.class);
 		sendIntent.setAction(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey I am using Gabriel Horn!");
 		sendIntent.setType("text/plain");
@@ -454,6 +456,17 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	public void editStoreLocation() {
 		// TODO Load g-map & get selected location
 		Log.i(TAG, "editStoreLocation");
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		Fragment f = FragmentEditLocation.newInstance();
+		fragTranx.replace(R.id.flFragmentHolder, f);
+		fragTranx.commit();
+		if (fragBackStack.contains(f))
+			clearStackUptoFragment(f);
+		fragBackStack.push(f);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 255, 255, 255));
+		// setMoreTabPressed();
+
 	}
 
 	@Override

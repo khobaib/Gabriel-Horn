@@ -5,6 +5,7 @@ import java.util.List;
 import org.woodyguthriecenter.app.R;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -62,10 +63,18 @@ public class FragmentPostList extends Fragment {
 	public static Fragment newInstance() {
 		return new FragmentPostList();
 	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		fragClicker = (FragmentClickListener) activity;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		fragClicker = (FragmentClickListener) getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
+		// fragClicker = (FragmentClickListener)
+		// getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 	}
 
 	@SuppressLint("InflateParams")
