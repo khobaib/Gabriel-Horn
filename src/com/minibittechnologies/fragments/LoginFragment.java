@@ -58,13 +58,15 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e(">>>>>>", "onCreate, LoginFragment");
-		fragClicker = (FragmentClickListener) getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
+		// fragClicker = (FragmentClickListener)
+		// getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		// dataPasser = (OnDataPass) activity;
+		fragClicker = (FragmentClickListener) activity;
 	}
 
 	@Override
