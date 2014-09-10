@@ -41,7 +41,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 	// OnDataPass dataPasser;
 	private ProgressDialog pDialog;
 
-	private FragmentClickListener fragCliker;
+	private FragmentClickListener fragClicker;
 
 	// public LoginFragment() {
 	// }
@@ -58,7 +58,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e(">>>>>>", "onCreate, LoginFragment");
-
+		fragClicker = (FragmentClickListener) getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 						if (user != null) {
 							Toast.makeText(getActivity(), "Successfully logged in.", Toast.LENGTH_LONG).show();
 							// dataPasser.onDataPass("rewardFragment");
-							fragCliker.onFragmentItemClick(Constants.FRAG_LOGGED_IN, false, null);
+							fragClicker.onFragmentItemClick(Constants.FRAG_LOGGED_IN, false, null);
 						} else {
 							Toast.makeText(getActivity(), excption.getMessage(), Toast.LENGTH_LONG).show();
 						}

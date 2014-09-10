@@ -42,16 +42,7 @@ public class FragmentMore extends Fragment {
 
 	private FragmentClickListener fragClicker;
 
-	// private FragmentMore(FragmentClickListener fClciker) {
-	// fragClicker = fClciker;
-	// }
-	//
-	// public FragmentMore() {
-	// }
-
 	public static Fragment newInstance() {
-		// Bundle b = new Bundle();
-		// b.putParcelable("fragClciker", fragClciker);
 		return new FragmentMore();
 	}
 
@@ -84,46 +75,51 @@ public class FragmentMore extends Fragment {
 		// dataPasser = (OnDataPass) activity;
 	}
 
+//	@Override
+//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_more, container, false);
+//		topBar = (RelativeLayout) v.findViewById(R.id.topBar);
+//		welcome_title = (TextView) v.findViewById(R.id.welcome_title);
+//		// backbuttonoftab = (ImageView) v.findViewById(R.id.backbuttonoftab);
+//		// backbuttonoftab.setOnClickListener(new OnClickListener() {
+//		// @Override
+//		// public void onClick(View v) {
+//		// parent.onBackPressed();
+//		// }
+//		// });
+//		list_item = (ListView) v.findViewById(R.id.list_item);
+//		adapter = new CustomAdapterForMore(getActivity(), items);
+//		list_item.setAdapter(adapter);
+//
+//		list_item.setOnItemClickListener(new OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
+//				if (pos == 5) {
+//					// Toast.makeText(getActivity(), "Login Button pressed",
+//					// Toast.LENGTH_SHORT).show();
+//					// ParseUser.getCurrentUser().logOut();
+//					// dataPasser.onDataPass("loginFragment");
+//					if (ParseUser.getCurrentUser() == null) {
+//						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
+//					} else {
+//						ParseUser.logOut();
+//						// alert("Logged out.");
+//						// initMenuItems();
+//						// adapter.setData(items);
+//						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
+//					}
+//				}
+//
+//			}
+//		});
+//
+//		return v;
+//	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_more, container, false);
-		topBar = (RelativeLayout) v.findViewById(R.id.topBar);
-		welcome_title = (TextView) v.findViewById(R.id.welcome_title);
-		// backbuttonoftab = (ImageView) v.findViewById(R.id.backbuttonoftab);
-		// backbuttonoftab.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// parent.onBackPressed();
-		// }
-		// });
-		list_item = (ListView) v.findViewById(R.id.list_item);
-		adapter = new CustomAdapterForMore(getActivity(), items);
-		list_item.setAdapter(adapter);
-
-		list_item.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
-				if (pos == 5) {
-					// Toast.makeText(getActivity(), "Login Button pressed",
-					// Toast.LENGTH_SHORT).show();
-					// ParseUser.getCurrentUser().logOut();
-					// dataPasser.onDataPass("loginFragment");
-					if (ParseUser.getCurrentUser() == null) {
-						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
-					} else {
-						ParseUser.logOut();
-						// alert("Logged out.");
-						// initMenuItems();
-						// adapter.setData(items);
-						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
-					}
-				}
-
-			}
-		});
-
-		return v;
+		View rv=inflater.inflate(R.layout, container, false);
 	}
 
 	@Override
@@ -136,6 +132,7 @@ public class FragmentMore extends Fragment {
 		public void onDataPass(String data);
 	}
 
+	@SuppressWarnings("unused")
 	private void alert(String message) {
 		try {
 			AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
