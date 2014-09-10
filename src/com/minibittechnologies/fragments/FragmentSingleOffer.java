@@ -25,6 +25,7 @@ public class FragmentSingleOffer extends Fragment {
 	private Post singleofferDetails;
 	private TextView tv_title, tv_message;
 	// private ImageView img_pic;
+	@SuppressWarnings("unused")
 	private ImageView backbuttonoftab;
 	private TextView welcome_title;
 
@@ -95,8 +96,6 @@ public class FragmentSingleOffer extends Fragment {
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
-
 		super.onPause();
 		// ((HomeActivity)getActivity()).welcome_title.setText("Gebriel Horn");
 	}

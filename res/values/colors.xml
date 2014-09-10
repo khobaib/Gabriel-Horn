@@ -7,6 +7,8 @@
     <color name="login_title">#ffffd04e</color>
     <color name="app_theme">#ff0777a7</color>
     <color name="blue">#ff0000ee</color>
-
+    <color name="transparent">#00000000</color>
+    <color name="gray_light">#dddddd</color>
+    <color name="gray_darker">#ededed</color>
 
 </resources>

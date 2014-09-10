@@ -13,9 +13,8 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ import com.minibittechnologies.utility.Constants;
 import com.parse.ParseUser;
 
 @SuppressLint("NewApi")
-public class FragmentMore extends Fragment {
+public class FragmentMore extends Fragment implements OnClickListener {
 
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -38,6 +37,7 @@ public class FragmentMore extends Fragment {
 	RelativeLayout topBar;
 
 	// OnDataPass dataPasser;
+	@SuppressWarnings("unused")
 	private CustomAdapterForMore adapter;
 
 	private FragmentClickListener fragClicker;
@@ -75,51 +75,73 @@ public class FragmentMore extends Fragment {
 		// dataPasser = (OnDataPass) activity;
 	}
 
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_more, container, false);
-//		topBar = (RelativeLayout) v.findViewById(R.id.topBar);
-//		welcome_title = (TextView) v.findViewById(R.id.welcome_title);
-//		// backbuttonoftab = (ImageView) v.findViewById(R.id.backbuttonoftab);
-//		// backbuttonoftab.setOnClickListener(new OnClickListener() {
-//		// @Override
-//		// public void onClick(View v) {
-//		// parent.onBackPressed();
-//		// }
-//		// });
-//		list_item = (ListView) v.findViewById(R.id.list_item);
-//		adapter = new CustomAdapterForMore(getActivity(), items);
-//		list_item.setAdapter(adapter);
-//
-//		list_item.setOnItemClickListener(new OnItemClickListener() {
-//
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View v, int pos, long id) {
-//				if (pos == 5) {
-//					// Toast.makeText(getActivity(), "Login Button pressed",
-//					// Toast.LENGTH_SHORT).show();
-//					// ParseUser.getCurrentUser().logOut();
-//					// dataPasser.onDataPass("loginFragment");
-//					if (ParseUser.getCurrentUser() == null) {
-//						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
-//					} else {
-//						ParseUser.logOut();
-//						// alert("Logged out.");
-//						// initMenuItems();
-//						// adapter.setData(items);
-//						fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
-//					}
-//				}
-//
-//			}
-//		});
-//
-//		return v;
-//	}
-	
+	// @Override
+	// public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	// Bundle savedInstanceState) {
+	// ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_more,
+	// container, false);
+	// topBar = (RelativeLayout) v.findViewById(R.id.topBar);
+	// welcome_title = (TextView) v.findViewById(R.id.welcome_title);
+	// // backbuttonoftab = (ImageView) v.findViewById(R.id.backbuttonoftab);
+	// // backbuttonoftab.setOnClickListener(new OnClickListener() {
+	// // @Override
+	// // public void onClick(View v) {
+	// // parent.onBackPressed();
+	// // }
+	// // });
+	// list_item = (ListView) v.findViewById(R.id.list_item);
+	// adapter = new CustomAdapterForMore(getActivity(), items);
+	// list_item.setAdapter(adapter);
+	//
+	// list_item.setOnItemClickListener(new OnItemClickListener() {
+	//
+	// @Override
+	// public void onItemClick(AdapterView<?> parent, View v, int pos, long id)
+	// {
+	// if (pos == 5) {
+	// // Toast.makeText(getActivity(), "Login Button pressed",
+	// // Toast.LENGTH_SHORT).show();
+	// // ParseUser.getCurrentUser().logOut();
+	// // dataPasser.onDataPass("loginFragment");
+	// if (ParseUser.getCurrentUser() == null) {
+	// fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
+	// } else {
+	// ParseUser.logOut();
+	// // alert("Logged out.");
+	// // initMenuItems();
+	// // adapter.setData(items);
+	// fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
+	// }
+	// }
+	//
+	// }
+	// });
+	//
+	// return v;
+	// }
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rv=inflater.inflate(R.layout, container, false);
+		View rv = inflater.inflate(R.layout.frag_more_static, container, false);
+		rv.findViewById(R.id.tvMyRewardsMore).setOnClickListener(this);
+		TextView tvLogOut = (TextView) rv.findViewById(R.id.tvLogOutMore);
+		tvLogOut.setOnClickListener(this);
+		if (ParseUser.getCurrentUser() != null)
+			tvLogOut.setText("Log in");
+		else
+			tvLogOut.setText("Log out");
+		rv.findViewById(R.id.tvEditLocationMore).setOnClickListener(this);
+
+		rv.findViewById(R.id.tvCallUsMore).setOnClickListener(this);
+		rv.findViewById(R.id.tvEmailUsMore).setOnClickListener(this);
+		rv.findViewById(R.id.tvVisitWebMore).setOnClickListener(this);
+		rv.findViewById(R.id.tvShareAppMore).setOnClickListener(this);
+
+		rv.findViewById(R.id.tvAboutAppMore).setOnClickListener(this);
+		rv.findViewById(R.id.tvTermsConditionMore).setOnClickListener(this);
+		rv.findViewById(R.id.tvPrivacyPolicyMore).setOnClickListener(this);
+
+		return rv;
 	}
 
 	@Override
@@ -146,6 +168,47 @@ public class FragmentMore extends Fragment {
 			bld.create().show();
 		} catch (Exception e) {
 			Log.e(TAG, "Exception inside alert with message: " + message + "\n" + e.getMessage());
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.tvMyRewardsMore:
+			fragClicker.gotoRewardsTab();
+			return;
+		case R.id.tvLogOutMore:
+			if (ParseUser.getCurrentUser() != null)
+				ParseUser.logOut();
+			fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
+			return;
+		case R.id.tvEditLocationMore:
+			fragClicker.editStoreLocation();
+			return;
+		case R.id.tvCallUsMore:
+			fragClicker.onCallUsMenuClick();
+			return;
+		case R.id.tvEmailUsMore:
+			fragClicker.onEmailUsMenuClick();
+			return;
+		case R.id.tvVisitWebMore:
+			fragClicker.onVisitWebMenuClick();
+			return;
+		case R.id.tvShareAppMore:
+			fragClicker.onShareAppMenuClick();
+			return;
+		case R.id.tvAboutAppMore:
+			fragClicker.onAboutAppMenuClick();
+			return;
+		case R.id.tvTermsConditionMore:
+			fragClicker.onTermsConditionMenuClick();
+			return;
+		case R.id.tvPrivacyPolicyMore:
+			fragClicker.onPrivacyPolicyMenuClick();
+			return;
+
+		default:
+			return;
 		}
 	}
 }

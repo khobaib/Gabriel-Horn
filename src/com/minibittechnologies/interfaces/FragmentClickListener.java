@@ -13,8 +13,16 @@ import com.minibittechnologies.model.Post;
  */
 public interface FragmentClickListener extends Serializable {
 
-	long serialId = 0L;
-
 	public void onFragmentItemClick(int fragType, boolean doLogIn, Post tPsot);
+	public void gotoRewardsTab();
+	public void logInOrOut();
+	public void editStoreLocation();
+	public void onCallUsMenuClick();
+	public void onEmailUsMenuClick();
+	public void onVisitWebMenuClick();
+	public void onShareAppMenuClick();
+	public void onAboutAppMenuClick();
+	public void onTermsConditionMenuClick();
+	public void onPrivacyPolicyMenuClick();
 
 }

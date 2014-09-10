@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.minibittechnologies.fragments.AddPostFragment;
 import com.minibittechnologies.fragments.FragmentMore;
@@ -311,63 +310,6 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		}
 	}
 
-	@Override
-	public void onFragmentItemClick(int fragType, boolean doLogIn, Post post) {
-		// boolean isLoggedIn = !(ParseUser.getCurrentUser()==null);
-		if (fragType == Constants.FRAG_REWARD) {
-			if (doLogIn) {
-				Log.d(TAG, "Logging in & log in fragment calling as the reward tab...");
-			} else {
-				// isLoggedIn = false;
-				// Toast.makeText(this, "Now assume that you're logged out!",
-				// Toast.LENGTH_LONG).show();
-				Log.d(TAG, "Logged out & Reward tab...");
-			}
-			fragTranx = fragMang.beginTransaction();
-			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
-			fragTranx.commit();
-			if (fragBackStack.contains(fList.get(1)))
-				clearStackUptoPos(1);
-			fragBackStack.push(fList.get(1));
-			setRewardTabPressed();
-		} else if (fragType == Constants.FRAG_OFFER) {
-			// TODO Show post details
-			Log.d(TAG, "FRAG_MORE transitioning to FragmentSingleOffer");
-			fragTranx = fragMang.beginTransaction();
-			Fragment f = FragmentSingleOffer.newInstance(post);
-			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
-			fragTranx.replace(R.id.flFragmentHolder, f);
-			fragTranx.commit();
-			if (fragBackStack.contains(f))
-				clearStackUptoFragment(f);
-			fragBackStack.push(f);
-		} else if (fragType == Constants.FRAG_MORE) {
-			// TO_DO Show log-in fragment
-			if (doLogIn) {
-				Log.d(TAG, "FRAG_MORE transitioning to LogInFragment");
-				fragTranx = fragMang.beginTransaction();
-				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
-				fragTranx.commit();
-				if (fragBackStack.contains(fList.get(4)))
-					clearStackUptoPos(4);
-				fragBackStack.push(fList.get(4));
-				setRewardTabPressed();
-			} else
-				Toast.makeText(HolderActivity.this, "Log out is yet to be implemented!", Toast.LENGTH_LONG).show();
-		} else if (fragType == Constants.FRAG_LOGGED_IN) {
-			fragTranx = fragMang.beginTransaction();
-			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
-			fragTranx.commit();
-			if (fragBackStack.contains(fList.get(1)))
-				clearStackUptoPos(1);
-			fragBackStack.push(fList.get(1));
-			setRewardTabPressed();
-		}
-	}
-
 	private void shareTheApp() {
 		Intent sendIntent = new Intent();
 		sendIntent.setAction(Intent.ACTION_SEND);
@@ -402,6 +344,116 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			setMoreTabPressed();
 		else
 			Log.e(TAG, "No suitable tab found!! :: f = " + f);
+	}
+
+	@Override
+	public void onFragmentItemClick(int fragType, boolean doLogIn, Post post) {
+		// boolean isLoggedIn = !(ParseUser.getCurrentUser()==null);
+		if (fragType == Constants.FRAG_REWARD) {
+			fragTranx = fragMang.beginTransaction();
+			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
+			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(1)))
+				clearStackUptoPos(1);
+			fragBackStack.push(fList.get(1));
+			setRewardTabPressed();
+		} else if (fragType == Constants.FRAG_OFFER) {
+			// TO_DO Show post details
+			Log.d(TAG, "FRAG_MORE transitioning to FragmentSingleOffer");
+			fragTranx = fragMang.beginTransaction();
+			Fragment f = FragmentSingleOffer.newInstance(post);
+			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
+			fragTranx.replace(R.id.flFragmentHolder, f);
+			fragTranx.commit();
+			if (fragBackStack.contains(f))
+				clearStackUptoFragment(f);
+			fragBackStack.push(f);
+		} else if (fragType == Constants.FRAG_MORE) {
+			// TO_DO Show log-in fragment
+			if (doLogIn) {
+				Log.d(TAG, "FRAG_MORE transitioning to LogInFragment");
+				fragTranx = fragMang.beginTransaction();
+				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
+				fragTranx.commit();
+				if (fragBackStack.contains(fList.get(4)))
+					clearStackUptoPos(4);
+				fragBackStack.push(fList.get(4));
+				setRewardTabPressed();
+			}
+		} else if (fragType == Constants.FRAG_LOGGED_IN) {
+			fragTranx = fragMang.beginTransaction();
+			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
+			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(1)))
+				clearStackUptoPos(1);
+			fragBackStack.push(fList.get(1));
+			setRewardTabPressed();
+		}
+	}
+
+	@Override
+	public void gotoRewardsTab() {
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		Fragment f;
+		if (ParseUser.getCurrentUser() == null)
+			f = fList.get(4);
+		else
+			f = fList.get(1);
+		fragTranx.replace(R.id.flFragmentHolder, f);
+		fragTranx.commit();
+		if (fragBackStack.contains(f))
+			clearStackUptoFragment(f);
+		fragBackStack.push(f);
+		setRewardTabPressed();
+	}
+
+	@Override
+	public void logInOrOut() {
+	}
+
+	@Override
+	public void editStoreLocation() {
+		// TODO Load g-map & get selected location
+		Log.i(TAG, "editStoreLocation");
+	}
+
+	@Override
+	public void onCallUsMenuClick() {
+		// TODO make a call to the provider
+	}
+
+	@Override
+	public void onEmailUsMenuClick() {
+		// TODO email the provider
+	}
+
+	@Override
+	public void onVisitWebMenuClick() {
+		// TODO Load the provider's web-page in a webview
+	}
+
+	@Override
+	public void onShareAppMenuClick() {
+		shareTheApp();
+	}
+
+	@Override
+	public void onAboutAppMenuClick() {
+		// TODO load about-app fragment
+	}
+
+	@Override
+	public void onTermsConditionMenuClick() {
+		// TODO load terms-and-condition fragment
+	}
+
+	@Override
+	public void onPrivacyPolicyMenuClick() {
+		// TODO load privacy-policy fragment
 	}
 
 }
