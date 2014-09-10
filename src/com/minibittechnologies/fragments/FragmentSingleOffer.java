@@ -7,14 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
-import com.minibittechnologies.utility.Constants;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
 
 @SuppressLint("NewApi")
 public class FragmentSingleOffer extends Fragment {
@@ -22,29 +23,23 @@ public class FragmentSingleOffer extends Fragment {
 	public OffersTabFragment parent;
 
 	private Post singleofferDetails;
-	@SuppressWarnings("unused")
 	private TextView tv_title, tv_message;
 	// private ImageView img_pic;
 	private ImageView backbuttonoftab;
 	private TextView welcome_title;
 
-	// private RelativeLayout topBar;
+	public static FragmentSingleOffer newInstance(Post singleofferDetails) {
+		FragmentSingleOffer f = new FragmentSingleOffer();
+		Bundle args = new Bundle();
+		args.putSerializable("post", singleofferDetails);
+		f.setArguments(args);
+		return f;
+	}
 
-	// private FragmentClickListener fragClicker;
-
-	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	}
-
-	public FragmentSingleOffer(Post singleofferDetails) {
-		this.singleofferDetails = singleofferDetails;
-//		this.fragClicker = fragClicker;
-	}
-
-	public static Fragment newInstance(Post singleofferDetails) {
-		return new FragmentSingleOffer(singleofferDetails);
+		this.singleofferDetails = (Post) getArguments().get("post");
 	}
 
 	@Override
@@ -66,7 +61,18 @@ public class FragmentSingleOffer extends Fragment {
 		// });
 		welcome_title.setText("Post Details");
 		tv_title.setText(singleofferDetails.getTitle());
-		// tv_message.setText(singleofferDetails.getMessage());
+		tv_message.setText(singleofferDetails.getContent());
+
+		ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.img_pic);
+		ParseFile imageFile = singleofferDetails.getParseFile("image");
+		if (imageFile != null) {
+			todoImage.setParseFile(imageFile);
+			todoImage.loadInBackground(new GetDataCallback() {
+				@Override
+				public void done(byte[] data, ParseException e) {
+				}
+			});
+		}
 		// ImageLoader.getInstance().displayImage(singleofferDetails.getImg_url(),img_pic);
 		return v;
 	}

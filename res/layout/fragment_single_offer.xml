@@ -84,7 +84,7 @@
                 android:textColor="#555555"
                 android:textSize="18dp" />
 
-            <ImageView
+            <com.parse.ParseImageView
                 android:id="@+id/img_pic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,8 +92,14 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="16dp"
-                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
                 android:src="@drawable/top_logo" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:layout_below="@+id/img_pic"
+                android:background="@android:color/transparent" />
         </RelativeLayout>
     </ScrollView>
 

@@ -3,9 +3,6 @@ package com.minibittechnologies.fragments;
 import java.util.Stack;
 
 import org.woodyguthriecenter.app.R;
-import com.minibittechnologies.activity.HomeActivity;
-import com.minibittechnologies.model.Post;
-import com.minibittechnologies.utility.Constants;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,15 +10,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.ViewParent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class OffersTabFragment extends TabFragment
-{
+import com.minibittechnologies.activity.HomeActivity;
+import com.minibittechnologies.utility.Constants;
+
+public class OffersTabFragment extends TabFragment {
 	protected Stack<Fragment> backEndStack;
 	protected Stack<Integer> trackcallhome;
 	Bundle sBundle;
@@ -29,68 +25,61 @@ public class OffersTabFragment extends TabFragment
 	int callstatefromtab = 0;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		trackcallhome = new Stack<Integer>();
 		backEndStack = new Stack<Fragment>();
-		
+
 		FragmentPostList initialFragment = new FragmentPostList();
 		initialFragment.setParent(this);
-		
+
 		trackcallhome.push(0);
 		backEndStack.push(initialFragment);
 		sBundle = savedInstanceState;
 	}
 
-	public void StartSingleOfferFragment(Post singleofferDetails)
-	{
-		FragmentSingleOffer newFragment = new FragmentSingleOffer(singleofferDetails);
-		newFragment.parent = this;
-		FragmentManager fragmentManager = getChildFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		// fragmentTransaction.setCustomAnimations(
-		// R.anim.slide_in_right_toleft,R.anim.slide_out_leftright);
-		fragmentTransaction.replace(R.id.tab3Content, newFragment);
-		fragmentTransaction.addToBackStack(null);
-		backEndStack.push(newFragment);
-		fragmentTransaction.commitAllowingStateLoss();
-	}
+	// public void StartSingleOfferFragment(Post singleofferDetails)
+	// {
+	// FragmentSingleOffer newFragment = new
+	// FragmentSingleOffer(singleofferDetails);
+	// newFragment.parent = this;
+	// FragmentManager fragmentManager = getChildFragmentManager();
+	// FragmentTransaction fragmentTransaction =
+	// fragmentManager.beginTransaction();
+	// // fragmentTransaction.setCustomAnimations(
+	// // R.anim.slide_in_right_toleft,R.anim.slide_out_leftright);
+	// fragmentTransaction.replace(R.id.tab3Content, newFragment);
+	// fragmentTransaction.addToBackStack(null);
+	// backEndStack.push(newFragment);
+	// fragmentTransaction.commitAllowingStateLoss();
+	// }
 
 	@Override
-	public void onResume()
-	{
+	public void onResume() {
 		super.onResume();
 	}
 
 	@Override
-	public void onPause()
-	{
+	public void onPause() {
 		// TODO Auto-generated method stub
 
 		super.onPause();
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ViewParent parent = (ViewParent) container.getParent();
-		if (parent instanceof View)
-		{
+		if (parent instanceof View) {
 
 		}
 		View v = inflater.inflate(R.layout.fragment_tab3, container, false);
 		return v;
 	}
 
-	public void onStart()
-	{
-		if (Constants.TABFROMSHARE)
-		{
+	public void onStart() {
+		if (Constants.TABFROMSHARE) {
 			Constants.TABFROMSHARE = false;
-		}
-		else
-		{
+		} else {
 			trackcallhome.peek();
 			Fragment fragment = backEndStack.peek();
 
@@ -108,28 +97,20 @@ public class OffersTabFragment extends TabFragment
 		super.onStart();
 	}
 
-	public void clearr()
-	{
+	public void clearr() {
 		trackcallhome.pop();
 		backEndStack.pop();
 	}
 
 	@Override
-	public void onBackPressed()
-	{
+	public void onBackPressed() {
 
-		if (backEndStack.size() == 1)
-		{
+		if (backEndStack.size() == 1) {
 			((HomeActivity) getActivity()).close();
-		}
-		else
-		{
-			if (backEndStack.size() == 1)
-			{
+		} else {
+			if (backEndStack.size() == 1) {
 				((HomeActivity) getActivity()).close();
-			}
-			else
-			{
+			} else {
 				backEndStack.pop();
 				Fragment frg = backEndStack.peek();
 				Log.d("1", "4");

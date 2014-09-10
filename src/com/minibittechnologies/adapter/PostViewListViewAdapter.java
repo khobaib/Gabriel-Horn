@@ -31,6 +31,13 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 
 				if (ParseUser.getCurrentUser() != null) {
 					ParseObject appParentCompany = ParseUser.getCurrentUser().getParseObject("appCompany");
+					try {
+						Log.e(">>><<<<", "appParentCompany - " + appParentCompany.fetchIfNeeded().get("appIdentifier"));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 					query.whereEqualTo("appCompany", appParentCompany);
 				}
 
@@ -38,6 +45,7 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 			}
 		});
 	}
+
 	@Override
 	public View getItemView(Post post, View v, ViewGroup parent) {
 		if (v == null) {
@@ -75,7 +83,8 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 			}
 			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 			String date = formatter.format(post.getExpired());
-			Log.e(">>>>>>>", "date in Date = " + post.getExpired() + "   AND date in String = " + date);
+			// Log.e(">>>>>>>", "date in Date = " + post.getExpired() +
+			// "   AND date in String = " + date);
 		}
 
 		return v;

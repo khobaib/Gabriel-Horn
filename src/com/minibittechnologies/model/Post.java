@@ -1,5 +1,6 @@
 package com.minibittechnologies.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.parse.ParseClassName;
@@ -7,7 +8,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 @ParseClassName("Post")
-public class Post extends ParseObject {
+public class Post extends ParseObject implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public String getAppCompany() {
 		return getString("appCompany");

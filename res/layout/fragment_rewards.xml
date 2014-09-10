@@ -84,6 +84,7 @@
             android:padding="15dp"
             android:text="+ scan for star"
             android:textSize="25dp"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView

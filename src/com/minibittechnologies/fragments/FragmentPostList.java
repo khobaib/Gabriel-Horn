@@ -18,9 +18,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
 import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
@@ -38,12 +35,15 @@ public class FragmentPostList extends Fragment {
 	private OffersTabFragment parent;
 	private View topBar;
 
-	private boolean isTopVarVisible;
+	private boolean isTopBarVisible;
 	private final int HEADER_TRANSITION_DURATION = 150;
 
 	public static final String DEBUG_TAG = "Minibit Debug";
 	private ProgressDialog pDialog;
-	private PullToRefreshListView mPullToRefreshListView;
+
+	View topBarClone;
+
+	// private PullToRefreshListView mPullToRefreshListView;
 
 	private FragmentClickListener fragClicker;
 
@@ -65,15 +65,24 @@ public class FragmentPostList extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
+
+		lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
+
 		// View topBarClone = View.inflate(getActivity(),
 		// R.layout.post_header_view, lvPost);
+		topBarClone = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, null, false);
+		Log.e(">>>>>>>>>", "adding new top bar");
+		lvPost.addHeaderView(topBarClone);
 
-		// lvPost = (ListView)
-		// rootView.findViewById(R.id.list_view_latest_offer);
-		mPullToRefreshListView = (PullToRefreshListView) rootView.findViewById(R.id.list_view_latest_offer);
-		lvPost = this.mPullToRefreshListView.getRefreshableView();
-		//
+		isTopBarVisible = true;
+
+		// View topBarClone = inflater.inflate(R.layout.post_header_view,
+		// container, false);
 		// lvPost.addHeaderView(topBarClone);
+		// mPullToRefreshListView = (PullToRefreshListView)
+		// rootView.findViewById(R.id.list_view_latest_offer);
+		// lvPost = this.mPullToRefreshListView.getRefreshableView();
+		//
 		lvPost.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -81,16 +90,20 @@ public class FragmentPostList extends Fragment {
 				fragClicker.onFragmentItemClick(Constants.FRAG_OFFER, false, (Post) parent.getItemAtPosition(position));
 			}
 		});
-		mPullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
-			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				Log.e("refresh", "called");
-
-				postAdapter.loadObjects();
-				pDialog.show();
-			}
-		});
+		// mPullToRefreshListView.setOnRefreshListener(new
+		// OnRefreshListener<ListView>() {
+		// @Override
+		// public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+		// Log.e("refresh", "called");
+		//
+		// postAdapter.loadObjects();
+		// pDialog.show();
+		// }
+		// });
 		initHeaderListener();
+
+		View footerView = getActivity().getLayoutInflater().inflate(R.layout.list_offer_footer, null, false);
+		lvPost.addFooterView(footerView);
 
 		topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
 		topBar.setVisibility(View.VISIBLE);
@@ -100,11 +113,25 @@ public class FragmentPostList extends Fragment {
 	}
 
 	@Override
+	public void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		Log.e(">>>>>>>>>", "removing new top bar");
+		lvPost.removeHeaderView(topBarClone);
+	}
+
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+
 		pDialog = Utils.createProgressDialog(getActivity());
 		pDialog.show();
 		postAdapter = new PostViewListViewAdapter(getActivity());
+
 		postAdapter.addOnQueryLoadListener(new OnQueryLoadListener<Post>() {
 
 			@Override
@@ -112,12 +139,14 @@ public class FragmentPostList extends Fragment {
 
 				if (pDialog.isShowing())
 					pDialog.dismiss();
-				mPullToRefreshListView.onRefreshComplete();
+				// lvPost.addHeaderView(topBarClone);
+				// mPullToRefreshListView.onRefreshComplete();
 				Log.e("size", "" + postAdapter.getCount());
 			}
 
 			@Override
 			public void onLoading() {
+				// topBarClone.setVisibility(View.VISIBLE);
 				// postAdapter.clear();
 
 			}
@@ -142,9 +171,10 @@ public class FragmentPostList extends Fragment {
 	}
 
 	public void onHeaderVisibilityUpdate(boolean shouldShow) {
-		if (!isTopVarVisible && shouldShow) {
+		Log.e(">>>>>>>>>>>", "topbar visible = " + isTopBarVisible + " and shouldShow = " + shouldShow);
+		if (!isTopBarVisible && shouldShow) {
 			showTopBar();
-		} else if (isTopVarVisible && !shouldShow) {
+		} else if (isTopBarVisible && !shouldShow) {
 			hideTopBar();
 		}
 	}
@@ -172,14 +202,14 @@ public class FragmentPostList extends Fragment {
 					int dy = topScrollPosition - previousScrollY;
 					if (Math.abs(dy) > UPDATE_HEADER_THRESHOLD) {
 						if (dy > 0) {
-							Log.e(DEBUG_TAG, "Scrolling down");
+							// Log.e(DEBUG_TAG, "Scrolling down");
 							onHeaderVisibilityUpdate(false);
 						} else {
-							Log.e(DEBUG_TAG, "Scrolling up");
+							// Log.e(DEBUG_TAG, "Scrolling up");
 							onHeaderVisibilityUpdate(true);
 						}
 
-						Log.e(DEBUG_TAG, topScrollPosition + ",	" + dy);
+						// Log.e(DEBUG_TAG, topScrollPosition + ",	" + dy);
 						previousScrollY = topScrollPosition;
 					}
 				}
@@ -203,7 +233,7 @@ public class FragmentPostList extends Fragment {
 
 			@Override
 			public void onAnimationEnd(Animator arg0) {
-				isTopVarVisible = true;
+				isTopBarVisible = true;
 			}
 
 			@Override
@@ -228,7 +258,7 @@ public class FragmentPostList extends Fragment {
 
 			@Override
 			public void onAnimationEnd(Animator arg0) {
-				isTopVarVisible = false;
+				isTopBarVisible = false;
 			}
 
 			@Override

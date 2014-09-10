@@ -298,7 +298,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		long curMili = System.currentTimeMillis();
 		long total = miliLeft + curMili;
 		Date date = new Date(total);
-		Log.e("date", date.toString());
+		// Log.e("date", date.toString());
 		return date;
 
 	}

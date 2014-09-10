@@ -246,14 +246,18 @@
         <Button
             android:id="@+id/btnAddPost"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
-            android:background="@drawable/rounded_black_bg"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:background="@drawable/login_button_back"
+            android:padding="15dp"
             android:text="Add Post"
             android:textColor="@color/white" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 
 </ScrollView>

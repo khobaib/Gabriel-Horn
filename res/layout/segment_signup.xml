@@ -67,4 +67,11 @@
         android:text="Continue"
         android:textColor="@color/white" />
 
+    <View
+        android:id="@+id/v_bottom"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/b_continue"
+        android:layout_marginTop="100dp" />
+
 </RelativeLayout>

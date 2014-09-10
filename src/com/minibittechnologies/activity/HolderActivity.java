@@ -34,10 +34,6 @@ import com.minibittechnologies.model.Post;
 import com.minibittechnologies.utility.Constants;
 import com.parse.ParseUser;
 
-/**
- * @author Touhid
- * 
- */
 public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener {
 
 	private final String TAG = this.getClass().getSimpleName();
@@ -68,7 +64,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_holder);
-		
+
 		fragBackStack = new Stack<>();
 		initTabButtons();
 		fList = new ArrayList<>();
@@ -101,6 +97,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		switch (v.getId()) {
 		case R.id.btnOffer:
 			Log.d(TAG, "Offer Clicked");
+			fragTranx.setCustomAnimations(R.anim.slide_out_leftright, R.anim.slide_in_left_to_right);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(0));
 			fragTranx.commit();
 			fragBackStack.push(fList.get(0));
@@ -109,9 +106,11 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		case R.id.btnReward:
 			Log.d(TAG, "Reward Clicked");
 			if (isLoggedIn) {
+				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
 				fragBackStack.push(fList.get(1));
 			} else {
+				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
 				fragBackStack.push(fList.get(4));
 			}
@@ -121,6 +120,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		case R.id.btnAddPost:
 			Log.d(TAG, "Add Post Clicked");
 			if (isLoggedIn) {
+				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(2));
 				fragTranx.commit();
 				fragBackStack.push(fList.get(2));
@@ -131,6 +131,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			break;
 		case R.id.btnMore:
 			Log.d(TAG, "More Clicked");
+			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(3));
 			fragTranx.commit();
 			fragBackStack.push(fList.get(3));
@@ -155,7 +156,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	private void setOfferTabPressed() {
 		// initTabButtons();
-		btnOffer.setTextColor(Color.BLUE);
+		btnOffer.setTextColor(getResources().getColor(R.color.app_theme));
 		Drawable d = getResources().getDrawable(R.drawable.tab_1_p);
 		if (d != null)
 			btnOffer.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
@@ -169,15 +170,15 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		d = getResources().getDrawable(R.drawable.tab_4);
 		if (d != null)
 			btnMore.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
-		btnReward.setTextColor(Color.BLACK);
-		btnAddPost.setTextColor(Color.BLACK);
-		btnMore.setTextColor(Color.BLACK);
-		llBottomTabHoolder.setBackgroundColor(Color.argb(220, 204, 204, 204));
+		btnReward.setTextColor(Color.GRAY);
+		btnAddPost.setTextColor(Color.GRAY);
+		btnMore.setTextColor(Color.GRAY);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 245, 245, 245));
 	}
 
 	private void setRewardTabPressed() {
 		// initTabButtons();
-		btnReward.setTextColor(Color.BLUE);
+		btnReward.setTextColor(getResources().getColor(R.color.app_theme));
 		Drawable d = getResources().getDrawable(R.drawable.tab_2_p);
 		if (d != null)
 			btnReward.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
@@ -194,12 +195,12 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		btnOffer.setTextColor(Color.WHITE);
 		btnAddPost.setTextColor(Color.WHITE);
 		btnMore.setTextColor(Color.WHITE);
-		llBottomTabHoolder.setBackgroundColor(Color.argb(220, 20, 20, 20));
+		llBottomTabHoolder.setBackgroundColor(Color.argb(200, 20, 20, 20));
 	}
 
 	private void setAddPostTabPressed() {
 		// initTabButtons();
-		btnAddPost.setTextColor(Color.BLUE);
+		btnAddPost.setTextColor(getResources().getColor(R.color.app_theme));
 		Drawable d = getResources().getDrawable(getAddPostResIdAndSetText(true));
 		if (d != null)
 			btnAddPost.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
@@ -216,12 +217,12 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		btnOffer.setTextColor(Color.WHITE);
 		btnReward.setTextColor(Color.WHITE);
 		btnMore.setTextColor(Color.WHITE);
-		llBottomTabHoolder.setBackgroundColor(Color.argb(220, 29, 31, 31));
+		llBottomTabHoolder.setBackgroundColor(Color.argb(200, 20, 20, 20));
 	}
 
 	private void setMoreTabPressed() {
 		// initTabButtons();
-		btnMore.setTextColor(Color.BLUE);
+		btnMore.setTextColor(getResources().getColor(R.color.app_theme));
 		Drawable d = getResources().getDrawable(R.drawable.tab_4_p);
 		if (d != null)
 			btnMore.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
@@ -235,10 +236,10 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		d = getResources().getDrawable(getAddPostResIdAndSetText(false));
 		if (d != null)
 			btnAddPost.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
-		btnOffer.setTextColor(Color.BLACK);
-		btnReward.setTextColor(Color.BLACK);
-		btnAddPost.setTextColor(Color.BLACK);
-		llBottomTabHoolder.setBackgroundColor(Color.argb(220, 250, 250, 250));
+		btnOffer.setTextColor(Color.GRAY);
+		btnReward.setTextColor(Color.GRAY);
+		btnAddPost.setTextColor(Color.GRAY);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 245, 245, 245));
 	}
 
 	private void initTabButtons() {
@@ -282,6 +283,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 				Log.d(TAG, "Logged out & Reward tab...");
 			}
 			fragTranx = fragMang.beginTransaction();
+			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
 			fragTranx.commit();
 			fragBackStack.push(fList.get(1));
@@ -291,6 +293,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			Log.d(TAG, "FRAG_MORE transitioning to FragmentSingleOffer");
 			fragTranx = fragMang.beginTransaction();
 			Fragment f = FragmentSingleOffer.newInstance(post);
+			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 			fragTranx.replace(R.id.flFragmentHolder, f);
 			fragTranx.commit();
 			fragBackStack.push(f);
@@ -299,14 +302,16 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			if (doLogIn) {
 				Log.d(TAG, "FRAG_MORE transitioning to LogInFragment");
 				fragTranx = fragMang.beginTransaction();
+				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
 				fragTranx.commit();
 				fragBackStack.push(fList.get(4));
 				setRewardTabPressed();
 			} else
 				Toast.makeText(HolderActivity.this, "Log out is yet to be implemented!", Toast.LENGTH_LONG).show();
-		}else if(fragType == Constants.FRAG_LOGGED_IN){
+		} else if (fragType == Constants.FRAG_LOGGED_IN) {
 			fragTranx = fragMang.beginTransaction();
+			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
 			fragTranx.commit();
 			fragBackStack.push(fList.get(1));
@@ -324,7 +329,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onBackPressed() {
-		if (fragBackStack.size() == 0) {
+		if (fragBackStack.size() <= 1) {
 			Log.e(TAG, "Going out from the app with no fragment remaining in the back-stack.");
 			super.onBackPressed();
 		} else {
