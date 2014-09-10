@@ -13,6 +13,8 @@ public class Utils {
 	public static final String PREF_NAME = "HGHORN";
 	public static final int MODE = Context.MODE_WORLD_WRITEABLE;
 	public static final String KEY_PARENT_APP_ID = "parent_app_id";
+	public static final String APP_COMPANY_PHONE = "app_company_phone";
+	public static final String APP_COMPANY_EMAIL = "app_company_email";
 	public static void writeBoolean(Context context, String key, boolean value) {
 		getEditor(context).putBoolean(key, value).commit();
 	}

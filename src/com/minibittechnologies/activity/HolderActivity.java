@@ -4,11 +4,13 @@
 package com.minibittechnologies.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import org.woodyguthriecenter.app.R;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,6 +33,11 @@ import com.minibittechnologies.fragments.LoginFragment;
 import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
 import com.minibittechnologies.utility.Constants;
+import com.minibittechnologies.utility.Utils;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener {
@@ -65,7 +72,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_holder);
-
+		getAppCompanyInfo();
 		fragBackStack = new Stack<>();
 		initTabButtons();
 		setupFragmentList();
@@ -394,6 +401,34 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		}
 	}
 
+	private void getAppCompanyInfo()
+	{
+		String appCompany=Utils.readString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,"");
+		if(appCompany.equals(""))
+		{
+			String appPackage =getApplicationContext().getPackageName();
+			ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("AppParentCompany");
+			parseQuery.whereEqualTo("appIdentifier", appPackage);
+			parseQuery.findInBackground(new FindCallback<ParseObject>() {
+				
+				@Override
+				public void done(List<ParseObject> list, ParseException e) {
+					if(e==null)
+					{
+						ParseObject company=list.get(0);
+						String appId=company.getString("objectId");
+						Utils.writeString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,appId);
+						String companyPhn=company.getString("phoneNumber");
+						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_PHONE,companyPhn);
+						String companyEmail=company.getString("email");
+						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,companyEmail);
+						Log.e("MSG",appId+companyPhn+companyEmail);
+					}
+					
+				}
+			});
+		}
+	}
 	@Override
 	public void gotoRewardsTab() {
 		fragTranx = fragMang.beginTransaction();
