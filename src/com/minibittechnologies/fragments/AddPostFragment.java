@@ -105,7 +105,6 @@ public class AddPostFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e(">>>>>>", "onCreate, LoginFragment");
-
 	}
 
 	@Override

@@ -36,6 +36,8 @@ import com.parse.ParseUser;
 
 public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener {
 
+	private static final long serialVersionUID = -7335912528173342127L;
+
 	private final String TAG = this.getClass().getSimpleName();
 
 	private Button btnOffer, btnReward, btnAddPost, btnMore;
@@ -51,11 +53,11 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	/**
 	 * Length = 5 <br>
-	 * 0: FragmentPostList <br>
+	 * 0: FragmentPostList - has arg <br>
 	 * 1: FragmentRewards <br>
 	 * 2: AddPostFragment <br>
-	 * 3: FragmentMore <br>
-	 * 4: LoginFragment <br>
+	 * 3: FragmentMore - has arg<br>
+	 * 4: LoginFragment - has arg<br>
 	 */
 	// * 5: FragmentSingleOffer <br>
 	private static ArrayList<Fragment> fList;
@@ -67,13 +69,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 		fragBackStack = new Stack<>();
 		initTabButtons();
-		fList = new ArrayList<>();
-		fList.add(FragmentPostList.newInstance(this)); // 0
-		fList.add(FragmentRewards.newInstance()); // 1
-		fList.add(AddPostFragment.newInstance()); // 2
-		fList.add(FragmentMore.newInstance(this)); // 3
-		fList.add(LoginFragment.newInstance(this)); // 4
-		// fList.add(FragmentSingleOffer.newInstance(this)); // 5
+		setupFragmentList();
 
 		fragMang = getSupportFragmentManager();
 		fragTranx = fragMang.beginTransaction();
@@ -90,6 +86,30 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		btnMore.setOnClickListener(this);
 	}
 
+	private void setupFragmentList() {
+		fList = new ArrayList<>();
+		// fList.add(FragmentPostList.newInstance(this)); // 0
+		// fList.add(FragmentRewards.newInstance()); // 1
+		// fList.add(AddPostFragment.newInstance()); // 2
+		// fList.add(FragmentMore.newInstance(this)); // 3
+		// fList.add(LoginFragment.newInstance(this)); // 4
+		// fList.add(FragmentSingleOffer.newInstance(this)); // 5
+		Bundle b = new Bundle();
+		b.putSerializable(Constants.KEY_FRAG_CLICKER, this);
+
+		Fragment f = FragmentPostList.newInstance();
+		f.setArguments(b);
+		fList.add(f); // 0
+		fList.add(FragmentRewards.newInstance()); // 1
+		fList.add(AddPostFragment.newInstance()); // 2
+		f = FragmentMore.newInstance();
+		f.setArguments(b);
+		fList.add(f); // 3
+		f = LoginFragment.newInstance();
+		f.setArguments(b);
+		fList.add(f); // 4
+	}
+
 	@Override
 	public void onClick(View v) {
 		fragTranx = fragMang.beginTransaction();
@@ -100,6 +120,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx.setCustomAnimations(R.anim.slide_out_leftright, R.anim.slide_in_left_to_right);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(0));
 			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(0)))
+				clearStackUptoPos(0);
 			fragBackStack.push(fList.get(0));
 			setOfferTabPressed();
 			break;
@@ -108,10 +130,14 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			if (isLoggedIn) {
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
+				if (fragBackStack.contains(fList.get(1)))
+					clearStackUptoPos(1);
 				fragBackStack.push(fList.get(1));
 			} else {
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
+				if (fragBackStack.contains(fList.get(4)))
+					clearStackUptoPos(4);
 				fragBackStack.push(fList.get(4));
 			}
 			fragTranx.commit();
@@ -123,6 +149,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(2));
 				fragTranx.commit();
+				if (fragBackStack.contains(fList.get(2)))
+					clearStackUptoPos(2);
 				fragBackStack.push(fList.get(2));
 				setAddPostTabPressed();
 			} else {
@@ -134,6 +162,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(3));
 			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(3)))
+				clearStackUptoPos(3);
 			fragBackStack.push(fList.get(3));
 			setMoreTabPressed();
 			break;
@@ -141,6 +171,17 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		default:
 			break;
 		}
+	}
+
+	private void clearStackUptoPos(int pos) {
+		Fragment f = fList.get(pos);
+		while (!(fragBackStack.isEmpty()) && (fragBackStack.pop() != f))
+			Log.d(TAG, "Clearing frag upto pos=" + pos + ": fragBackStack.size() = " + fragBackStack.size());
+	}
+
+	private void clearStackUptoFragment(Fragment f) {
+		while (!(fragBackStack.isEmpty()) && (fragBackStack.pop() != f))
+			Log.d(TAG, "Clearing frag upto f: fragBackStack.size() = " + fragBackStack.size());
 	}
 
 	public void setTabPressedState(int index) {
@@ -286,6 +327,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
 			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(1)))
+				clearStackUptoPos(1);
 			fragBackStack.push(fList.get(1));
 			setRewardTabPressed();
 		} else if (fragType == Constants.FRAG_OFFER) {
@@ -296,15 +339,19 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 			fragTranx.replace(R.id.flFragmentHolder, f);
 			fragTranx.commit();
+			if (fragBackStack.contains(f))
+				clearStackUptoFragment(f);
 			fragBackStack.push(f);
 		} else if (fragType == Constants.FRAG_MORE) {
-			// TODO Show log-in fragment
+			// TO_DO Show log-in fragment
 			if (doLogIn) {
 				Log.d(TAG, "FRAG_MORE transitioning to LogInFragment");
 				fragTranx = fragMang.beginTransaction();
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
 				fragTranx.commit();
+				if (fragBackStack.contains(fList.get(4)))
+					clearStackUptoPos(4);
 				fragBackStack.push(fList.get(4));
 				setRewardTabPressed();
 			} else
@@ -314,6 +361,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
 			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(1)))
+				clearStackUptoPos(1);
 			fragBackStack.push(fList.get(1));
 			setRewardTabPressed();
 		}
@@ -338,7 +387,21 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx = fragMang.beginTransaction();
 			fragTranx.replace(R.id.flFragmentHolder, fragBackStack.peek());
 			fragTranx.commit();
+			resetTabSelectionForFragment(fragBackStack.peek());
 		}
+	}
+
+	private void resetTabSelectionForFragment(Fragment f) {
+		if (f == fList.get(0))
+			setOfferTabPressed();
+		else if (f == fList.get(1) || f == fList.get(4))
+			setRewardTabPressed();
+		else if (f == fList.get(2))
+			setAddPostTabPressed();
+		else if (f == fList.get(3))
+			setMoreTabPressed();
+		else
+			Log.e(TAG, "No suitable tab found!! :: f = " + f);
 	}
 
 }

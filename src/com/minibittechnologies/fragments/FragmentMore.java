@@ -42,21 +42,24 @@ public class FragmentMore extends Fragment {
 
 	private FragmentClickListener fragClicker;
 
-	private FragmentMore(FragmentClickListener fClciker) {
-		fragClicker = fClciker;
-	}
+	// private FragmentMore(FragmentClickListener fClciker) {
+	// fragClicker = fClciker;
+	// }
+	//
+	// public FragmentMore() {
+	// }
 
-	public FragmentMore() {
-	}
-
-	public static Fragment newInstance(FragmentClickListener fragClciker) {
-		return new FragmentMore(fragClciker);
+	public static Fragment newInstance() {
+		// Bundle b = new Bundle();
+		// b.putParcelable("fragClciker", fragClciker);
+		return new FragmentMore();
 	}
 
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		fragClicker = (FragmentClickListener) getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 		initMenuItems();
 	}
 

@@ -45,6 +45,8 @@ import com.parse.SaveCallback;
 
 public class FragmentRewards extends Fragment implements OnItemClickListener {
 
+	private final String TAG = this.getClass().getSimpleName();
+
 	private static final int ZBAR_QR_SCANNER_REQUEST = 1;
 
 	private static final int BUTTON_POSITIVE = -1;
@@ -67,14 +69,8 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	// ArrayList<String> awardObjectIdList=new ArrayList<String>();
 	private ProgressDialog pDialog;
 
-	// private FragmentClickListener fragClicker;
-
 	public FragmentRewards() {
 	}
-
-	// public FragmentRewards(FragmentClickListener fClicker) {
-	// fragClicker = fClicker;
-	// }
 
 	public static Fragment newInstance() {
 		return new FragmentRewards();
@@ -164,7 +160,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 
 					@Override
 					public void done(List<ParseObject> qrCodeObject, ParseException e) {
-						if (e == null) {
+						if (e == null && qrCodeObject != null && qrCodeObject.size() > 0) {
 							int pointsToAward = qrCodeObject.get(0).getInt(Constants.POINTS_TO_AWARD);
 
 							ParseUser user = ParseUser.getCurrentUser();
@@ -178,11 +174,29 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 									tvUserPoint.setText("" + UserPoint);
 								}
 							});
+						} else {
+							Log.d(TAG, "The QR-code is not supported!");
+							alert("Cannot find this prouct.");
 						}
-
 					}
 				});
 			}
+		}
+	}
+
+	protected void alert(String message) {
+		try {
+			AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
+			bld.setMessage(message);
+			bld.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			bld.create().show();
+		} catch (Exception e) {
+			Log.e(TAG, "Exception inside alert with message: " + message + "\n" + e.getMessage());
 		}
 	}
 

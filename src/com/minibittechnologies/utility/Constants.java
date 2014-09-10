@@ -29,5 +29,7 @@ public class Constants {
 	public static final int FRAG_LOGIN = 5;
 	public static final int FRAG_OFFER_DETAILS = 6;
 	public static final int FRAG_LOGGED_IN = 51;
+	
+	public static final String KEY_FRAG_CLICKER = "FragmentClickListener";
 
 }

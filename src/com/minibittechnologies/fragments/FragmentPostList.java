@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.woodyguthriecenter.app.R;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -47,21 +48,27 @@ public class FragmentPostList extends Fragment {
 
 	private FragmentClickListener fragClicker;
 
-	/**
-	 * Try never to use it! Rather call <br>
-	 * {@code newInstance(FragmentClickListener fragClicker)}
-	 */
-	public FragmentPostList() {
+	// /**
+	// * Try never to use it! Rather call <br>
+	// * {@code newInstance(FragmentClickListener fragClicker)}
+	// */
+	// public FragmentPostList() {
+	// }
+	//
+	// private FragmentPostList(FragmentClickListener fragClicker) {
+	// this.fragClicker = fragClicker;
+	// }
+
+	public static Fragment newInstance() {
+		return new FragmentPostList();
+	}
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		fragClicker = (FragmentClickListener) getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 	}
 
-	private FragmentPostList(FragmentClickListener fragClicker) {
-		this.fragClicker = fragClicker;
-	}
-
-	public static Fragment newInstance(FragmentClickListener fragClicker) {
-		return new FragmentPostList(fragClicker);
-	}
-
+	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);

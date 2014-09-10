@@ -43,15 +43,15 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
 
 	private FragmentClickListener fragCliker;
 
-	public LoginFragment() {
-	}
+	// public LoginFragment() {
+	// }
+	//
+	// private LoginFragment(FragmentClickListener fClicker) {
+	// fragCliker = fClicker;
+	// }
 
-	private LoginFragment(FragmentClickListener fClicker) {
-		fragCliker = fClicker;
-	}
-
-	public static Fragment newInstance(FragmentClickListener fClicker) {
-		return new LoginFragment(fClicker);
+	public static Fragment newInstance() {
+		return new LoginFragment();
 	}
 
 	@Override
