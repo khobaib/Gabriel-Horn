@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.internal.em;
 import com.minibittechnologies.fragments.AddPostFragment;
 import com.minibittechnologies.fragments.FragmentEditLocation;
 import com.minibittechnologies.fragments.FragmentMore;
@@ -418,13 +420,13 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 					if(e==null)
 					{
 						ParseObject company=list.get(0);
-						String appId=company.getString("objectId");
+						String appId=company.getObjectId();
 						Utils.writeString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,appId);
 						String companyPhn=company.getString("phoneNumber");
 						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_PHONE,companyPhn);
 						String companyEmail=company.getString("email");
 						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,companyEmail);
-						Log.e("MSG",appId+companyPhn+companyEmail);
+						Log.e("MSGD",appId+companyPhn+companyEmail);
 					}
 					
 				}
@@ -471,12 +473,26 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onCallUsMenuClick() {
-		// TODO make a call to the provider
+		String phn=Utils.readString(HolderActivity.this,Utils.APP_COMPANY_PHONE,"");
+		if(!phn.equals(""))
+		{
+		Intent callIntent = new Intent(Intent.ACTION_CALL);
+		callIntent.setData(Uri.parse("tel:" + phn));
+		startActivity(callIntent);
+		}
 	}
 
 	@Override
 	public void onEmailUsMenuClick() {
-		// TODO email the provider
+		String email=Utils.readString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,"");
+		if(!email.equals(""))
+		{
+			Intent intentMail = new Intent(Intent.ACTION_SEND);
+			intentMail.putExtra(Intent.EXTRA_EMAIL, new String[]{email});          
+			
+			intentMail.setType("message/rfc822");
+			startActivity(Intent.createChooser(intentMail, "Choose an Email client :"));
+		}
 	}
 
 	@Override

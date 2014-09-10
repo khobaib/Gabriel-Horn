@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.minibittechnologies.activity.HolderActivity;
 import com.minibittechnologies.model.Post;
+import com.minibittechnologies.utility.Utils;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -29,19 +31,11 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 			@Override
 			public ParseQuery<Post> create() {
 				ParseQuery<Post> query = Post.getQuery();
-
-				if (ParseUser.getCurrentUser() != null) {
-					ParseObject appParentCompany = ParseUser.getCurrentUser().getParseObject("appCompany");
-					try {
-						Log.e(">>><<<<", "appParentCompany - " + appParentCompany.fetchIfNeeded().get("appIdentifier"));
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					query.whereEqualTo("appCompany", appParentCompany);
-				}
-
+				String appCompany=Utils.readString(context,Utils.KEY_PARENT_APP_ID,"");
+				Log.e("MSG",appCompany);
+				ParseObject object=new ParseObject("AppParentCompany");
+				object.put("objectId",appCompany);
+				query.whereEqualTo("appCompany",object);	
 				return query;
 			}
 		});
