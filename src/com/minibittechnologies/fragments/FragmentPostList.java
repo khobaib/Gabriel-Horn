@@ -28,6 +28,10 @@ import com.minibittechnologies.utility.Utils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseQueryAdapter.OnQueryLoadListener;
 
@@ -183,7 +187,22 @@ public class FragmentPostList extends Fragment {
 	private void doListQuery() {
 		// Refreshes the list view with new data based usually on updated
 		// location data.
-		postAdapter.loadObjects();
+		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+		queryAppCompany.fromLocalDatastore();
+		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject obj, ParseException e) {
+				if(e==null)
+				{
+					Utils.appCompany=obj;
+					postAdapter.loadObjects();
+					Log.e("MSG","got app company");
+				}
+				
+			}
+		});
 	}
 
 	public void onHeaderVisibilityUpdate(boolean shouldShow) {

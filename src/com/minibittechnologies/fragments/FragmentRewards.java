@@ -37,6 +37,7 @@ import com.minibittechnologies.utility.Constants;
 import com.minibittechnologies.utility.NestedListView;
 import com.minibittechnologies.utility.Utils;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -88,7 +89,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		// initData();
 		pDialog = Utils.createProgressDialog(getActivity());
 		pDialog.show();
-		getRewardList();
+		getAppCompany();
 		rewardListadapter = new RewardListadapter(getActivity(), R.layout.row_list_reward, finalAwardList);
 		listView.setAdapter(rewardListadapter);
 		listView.setOnItemClickListener(this);
@@ -209,10 +210,11 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	}
 
 	private void getRewardList() {
-		finalAwardList = new ArrayList<ParseObject>();
+		//finalAwardList = new ArrayList<ParseObject>();
+		//finalAwardList.clear();
 		ParseQuery<ParseObject> rewardQuery = ParseQuery.getQuery(Constants.OBJECT_REWARDS);
 		rewardQuery.whereLessThanOrEqualTo(Constants.REWARD_POINTS_NEEDED, UserPoint);
-		rewardQuery.whereEqualTo("appCompany", ParseUser.getCurrentUser().get("appCompany"));
+		rewardQuery.whereEqualTo("appCompany",Utils.appCompany);
 		rewardQuery.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
@@ -269,6 +271,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 										});
 
 									} else if (list.size() > 0) {
+										Log.e("Award in view", "" + list.size());
 										for (int j = 0; j < list.size(); j++) {
 											ParseObject myObj = new ParseObject("Reward");
 											myObj.put("name", rewardList.get(pos).get("name"));
@@ -378,7 +381,26 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		else
 			return false;
 	}
+	private void getAppCompany()
+	{
+		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+		queryAppCompany.fromLocalDatastore();
+		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject obj, ParseException e) {
+				if(e==null)
+				{
+					Utils.appCompany=obj;
+					getRewardList();
+					Log.e("MSG","got app company");
+				}
+				
+			}
+		});
 
+	}
 	private void showExpiredDialog(String name) {
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

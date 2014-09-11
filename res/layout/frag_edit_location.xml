@@ -38,6 +38,7 @@
         android:orientation="horizontal" >
 
         <EditText
+            android:id="@+id/etlocation"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_margin="15dp"

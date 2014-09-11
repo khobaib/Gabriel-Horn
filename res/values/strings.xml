@@ -12,5 +12,6 @@
     <string name="error_mismatched_passwords">enter the same password twice</string>
     <string name="error_join">", and "</string>
     <string name="error_end">.</string>
+    <string name="api_key_tanzeer">AIzaSyBnDq7Z8vTBs5PrjYwcjdn85wWkoVhcIY8</string>
 
 </resources>

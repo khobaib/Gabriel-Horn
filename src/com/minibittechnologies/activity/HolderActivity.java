@@ -34,15 +34,19 @@ import com.minibittechnologies.fragments.FragmentPostList;
 import com.minibittechnologies.fragments.FragmentRewards;
 import com.minibittechnologies.fragments.FragmentSingleOffer;
 import com.minibittechnologies.fragments.LoginFragment;
+import com.minibittechnologies.fragments.TermsAndConditionsFragment;
+import com.minibittechnologies.fragments.VisitSiteFragment;
 import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
 import com.minibittechnologies.utility.Constants;
 import com.minibittechnologies.utility.Utils;
 import com.parse.FindCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener, Serializable {
 
@@ -76,6 +80,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_holder);
+		ParseAnalytics.trackAppOpened(getIntent());
 		getAppCompanyInfo();
 		fragBackStack = new Stack<>();
 		initTabButtons();
@@ -426,6 +431,15 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_PHONE,companyPhn);
 						String companyEmail=company.getString("email");
 						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,companyEmail);
+						String companySite=company.getString("websiteUrl");
+						Utils.writeString(HolderActivity.this,Utils.VISIT_OUR_SITE,companySite);
+						company.pinInBackground(new SaveCallback() {
+							
+							@Override
+							public void done(ParseException arg0) {
+								Log.e("MSG","appCompanySaved");								
+							}
+						});
 						Log.e("MSGD",appId+companyPhn+companyEmail);
 					}
 					
@@ -481,6 +495,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		startActivity(callIntent);
 		}
 	}
+	
 
 	@Override
 	public void onEmailUsMenuClick() {
@@ -497,7 +512,15 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onVisitWebMenuClick() {
-		// TODO Load the provider's web-page in a webview
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		VisitSiteFragment visitSiteFragment=new VisitSiteFragment();
+		fragTranx.replace(R.id.flFragmentHolder,visitSiteFragment);
+		fragTranx.commit();
+		if (fragBackStack.contains(visitSiteFragment))
+			clearStackUptoFragment(visitSiteFragment);
+		fragBackStack.push(visitSiteFragment);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 255, 255, 255));
 	}
 
 	@Override
@@ -512,7 +535,15 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onTermsConditionMenuClick() {
-		// TODO load terms-and-condition fragment
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		TermsAndConditionsFragment tcFragment=new TermsAndConditionsFragment();
+		fragTranx.replace(R.id.flFragmentHolder, tcFragment);
+		fragTranx.commit();
+		if (fragBackStack.contains(tcFragment))
+			clearStackUptoFragment(tcFragment);
+		fragBackStack.push(tcFragment);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 255, 255, 255));
 	}
 
 	@Override

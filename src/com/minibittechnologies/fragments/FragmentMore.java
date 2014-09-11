@@ -128,7 +128,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 		rv.findViewById(R.id.tvMyRewardsMore).setOnClickListener(this);
 		TextView tvLogOut = (TextView) rv.findViewById(R.id.tvLogOutMore);
 		tvLogOut.setOnClickListener(this);
-		if (ParseUser.getCurrentUser() != null)
+		if (ParseUser.getCurrentUser() == null)
 			tvLogOut.setText("Log in");
 		else
 			tvLogOut.setText("Log out");
@@ -181,7 +181,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 			return;
 		case R.id.tvLogOutMore:
 			if (ParseUser.getCurrentUser() != null)
-				ParseUser.logOut();
+				ParseUser.getCurrentUser().logOut();
 			fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
 			return;
 		case R.id.tvEditLocationMore:
