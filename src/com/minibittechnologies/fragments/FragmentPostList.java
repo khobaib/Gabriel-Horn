@@ -20,6 +20,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
 import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
@@ -49,7 +52,7 @@ public class FragmentPostList extends Fragment {
 
 	View topBarClone;
 
-	// private PullToRefreshListView mPullToRefreshListView;
+	private PullToRefreshListView mPullToRefreshListView;
 
 	private FragmentClickListener fragClicker;
 
@@ -86,15 +89,16 @@ public class FragmentPostList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 
-		lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
-
+		//lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
+		mPullToRefreshListView=(PullToRefreshListView) rootView.findViewById(R.id.list_view_latest_offer);
+		lvPost=this.mPullToRefreshListView.getRefreshableView();
 		// View topBarClone = View.inflate(getActivity(),
 		// R.layout.post_header_view, lvPost);
-		topBarClone = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, null, false);
-		Log.e(">>>>>>>>>", "adding new top bar");
-		lvPost.addHeaderView(topBarClone);
+		//topBarClone = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, null, false);
+		//Log.e(">>>>>>>>>", "adding new top bar");
+		//lvPost.addHeaderView(topBarClone);
 
-		isTopBarVisible = true;
+		//isTopBarVisible = true;
 
 		// View topBarClone = inflater.inflate(R.layout.post_header_view,
 		// container, false);
@@ -110,24 +114,22 @@ public class FragmentPostList extends Fragment {
 				fragClicker.onFragmentItemClick(Constants.FRAG_OFFER, false, (Post) parent.getItemAtPosition(position));
 			}
 		});
-		// mPullToRefreshListView.setOnRefreshListener(new
-		// OnRefreshListener<ListView>() {
-		// @Override
-		// public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		// Log.e("refresh", "called");
-		//
-		// postAdapter.loadObjects();
-		// pDialog.show();
-		// }
-		// });
-		initHeaderListener();
+		mPullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				postAdapter.loadObjects();
+				pDialog.show();
+			}
+		});
+	//	initHeaderListener();
 
 		View footerView = getActivity().getLayoutInflater().inflate(R.layout.list_offer_footer, null, false);
 		lvPost.addFooterView(footerView);
 
-		topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
-		topBar.setVisibility(View.VISIBLE);
-		((RelativeLayout) rootView).addView(topBar);
+		//topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
+		//topBar.setVisibility(View.VISIBLE);
+		//((RelativeLayout) rootView).addView(topBar);
 
 		return rootView;
 	}
@@ -160,7 +162,7 @@ public class FragmentPostList extends Fragment {
 				if (pDialog.isShowing())
 					pDialog.dismiss();
 				// lvPost.addHeaderView(topBarClone);
-				// mPullToRefreshListView.onRefreshComplete();
+				mPullToRefreshListView.onRefreshComplete();
 				Log.e("size", "" + postAdapter.getCount());
 			}
 

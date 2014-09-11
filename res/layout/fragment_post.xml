@@ -4,20 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CCCCCC" >
+    <ImageView
+        android:id="@+id/img_top_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:src="@drawable/toplogo" />
 
-    <!--
-         <com.handmark.pulltorefresh.library.PullToRefreshListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/list_view_latest_offer"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@+id/img_top_logo"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:divider="#CCCCCC"
         android:dividerHeight="10dp"
         ptr:ptrMode="pullFromStart" />
-    -->
-
+<!--
     <ListView
         android:id="@+id/list_view_latest_offer"
         android:layout_width="fill_parent"
@@ -27,5 +34,6 @@
         android:layout_marginRight="10dp"
         android:divider="#CCCCCC"
         android:dividerHeight="10dp" />
-
+        
+ -->
 </RelativeLayout>
