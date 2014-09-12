@@ -207,6 +207,47 @@
                 tools:ignore="ContentDescription" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llLinkToPostHolderAddPost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical"
+            android:visibility="visible"
+            tools:ignore="UseCompoundDrawables" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:text="links"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/tvlink_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/rounded_white_bg"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/tvToBePostedlinks"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:textSize="18dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:textColor="@color/black"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+        </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/RelativeLayout1"
             android:layout_width="match_parent"

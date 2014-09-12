@@ -37,6 +37,7 @@ import com.minibittechnologies.utility.Constants;
 import com.minibittechnologies.utility.NestedListView;
 import com.minibittechnologies.utility.Utils;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -44,6 +45,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class FragmentRewards extends Fragment implements OnItemClickListener {
+
+	private final String TAG = this.getClass().getSimpleName();
 
 	private static final int ZBAR_QR_SCANNER_REQUEST = 1;
 
@@ -67,14 +70,8 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	// ArrayList<String> awardObjectIdList=new ArrayList<String>();
 	private ProgressDialog pDialog;
 
-	// private FragmentClickListener fragClicker;
-
 	public FragmentRewards() {
 	}
-
-	// public FragmentRewards(FragmentClickListener fClicker) {
-	// fragClicker = fClicker;
-	// }
 
 	public static Fragment newInstance() {
 		return new FragmentRewards();
@@ -92,7 +89,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		// initData();
 		pDialog = Utils.createProgressDialog(getActivity());
 		pDialog.show();
-		getRewardList();
+		getAppCompany();
 		rewardListadapter = new RewardListadapter(getActivity(), R.layout.row_list_reward, finalAwardList);
 		listView.setAdapter(rewardListadapter);
 		listView.setOnItemClickListener(this);
@@ -164,7 +161,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 
 					@Override
 					public void done(List<ParseObject> qrCodeObject, ParseException e) {
-						if (e == null) {
+						if (e == null && qrCodeObject != null && qrCodeObject.size() > 0) {
 							int pointsToAward = qrCodeObject.get(0).getInt(Constants.POINTS_TO_AWARD);
 
 							ParseUser user = ParseUser.getCurrentUser();
@@ -178,11 +175,29 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 									tvUserPoint.setText("" + UserPoint);
 								}
 							});
+						} else {
+							Log.d(TAG, "The QR-code is not supported!");
+							alert("Cannot find this prouct.");
 						}
-
 					}
 				});
 			}
+		}
+	}
+
+	protected void alert(String message) {
+		try {
+			AlertDialog.Builder bld = new AlertDialog.Builder(getActivity());
+			bld.setMessage(message);
+			bld.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			bld.create().show();
+		} catch (Exception e) {
+			Log.e(TAG, "Exception inside alert with message: " + message + "\n" + e.getMessage());
 		}
 	}
 
@@ -195,10 +210,11 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	}
 
 	private void getRewardList() {
-		finalAwardList = new ArrayList<ParseObject>();
+		//finalAwardList = new ArrayList<ParseObject>();
+		//finalAwardList.clear();
 		ParseQuery<ParseObject> rewardQuery = ParseQuery.getQuery(Constants.OBJECT_REWARDS);
 		rewardQuery.whereLessThanOrEqualTo(Constants.REWARD_POINTS_NEEDED, UserPoint);
-		rewardQuery.whereEqualTo("appCompany", ParseUser.getCurrentUser().get("appCompany"));
+		rewardQuery.whereEqualTo("appCompany",Utils.appCompany);
 		rewardQuery.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
@@ -255,6 +271,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 										});
 
 									} else if (list.size() > 0) {
+										Log.e("Award in view", "" + list.size());
 										for (int j = 0; j < list.size(); j++) {
 											ParseObject myObj = new ParseObject("Reward");
 											myObj.put("name", rewardList.get(pos).get("name"));
@@ -364,7 +381,26 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		else
 			return false;
 	}
+	private void getAppCompany()
+	{
+		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+		queryAppCompany.fromLocalDatastore();
+		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject obj, ParseException e) {
+				if(e==null)
+				{
+					Utils.appCompany=obj;
+					getRewardList();
+					Log.e("MSG","got app company");
+				}
+				
+			}
+		});
 
+	}
 	private void showExpiredDialog(String name) {
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

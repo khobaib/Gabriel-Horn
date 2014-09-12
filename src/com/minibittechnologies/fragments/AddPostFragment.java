@@ -59,9 +59,11 @@ import android.widget.Toast;
 import com.minibittechnologies.adapter.NothingSelectedSpinnerAdapter;
 import com.minibittechnologies.interfaces.OnDateOrTimSetListener;
 import com.minibittechnologies.utility.Utils;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -78,7 +80,7 @@ public class AddPostFragment extends Fragment {
 	private Uri mImageCaptureUri;
 	private File picFile = null;
 
-	private LinearLayout llImageHolder;
+	private LinearLayout llImageHolder,llLinkHolder;
 	// private ImageView ivToPostimage;
 	private boolean isImageVisible = false;
 
@@ -88,6 +90,7 @@ public class AddPostFragment extends Fragment {
 	private ImageView ivSelectedImage;
 	private LinearLayout llDateLayout, llTimeLayout;
 	private EditText edtCategory, edtTitle, edtDetails;
+	private TextView txtLink;
 	private Spinner spCategory;
 	String[] catList = { "Offer", "Event", "Post" };
 
@@ -105,7 +108,6 @@ public class AddPostFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.e(">>>>>>", "onCreate, LoginFragment");
-
 	}
 
 	@Override
@@ -118,7 +120,7 @@ public class AddPostFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.e(">>>>>>", "onCreateView, fragment_add_post");
 		v = inflater.inflate(R.layout.fragment_add_post, container, false);
-
+		getAppCompany();
 		bCamera = (Button) v.findViewById(R.id.btnCamera);
 		bCamera.setOnClickListener(new OnClickListener() {
 
@@ -148,6 +150,8 @@ public class AddPostFragment extends Fragment {
 
 			}
 		});
+		txtLink=(TextView)v.findViewById(R.id.tvToBePostedlinks);
+		
 		btnAddPost = (Button) v.findViewById(R.id.btnAddPost);
 		btnAddPost.setOnClickListener(new OnClickListener() {
 
@@ -179,9 +183,25 @@ public class AddPostFragment extends Fragment {
 				Date date = calculateExpiryDate();
 				// set up progress dialog
 
-				pDialog = Utils.createProgressDialog(getActivity());
-				pDialog.show();
+				
 				if (!validationError) {
+					pDialog = Utils.createProgressDialog(getActivity());
+					pDialog.show();
+					ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+					queryAppCompany.fromLocalDatastore();
+					String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+					queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
+						
+						@Override
+						public void done(ParseObject obj, ParseException e) {
+							if(e==null)
+							{
+								Utils.appCompany=obj;
+								
+							}
+							
+						}
+					});
 					ParseObject parseObject = ParseObject.create("Post");
 					parseObject.put("contents", details);
 					parseObject.put("title", tite);
@@ -189,7 +209,7 @@ public class AddPostFragment extends Fragment {
 					parseObject.put("expiration", date);
 					parseObject.put("author", ParseUser.getCurrentUser());
 					parseObject.put("link", postLink);
-					parseObject.put("appCompany", ParseUser.getCurrentUser().get("appCompany"));
+					parseObject.put("appCompany",Utils.appCompany);
 					if (mImageCaptureUri != null) {
 						byte[] data = new byte[(int) picFile.length()];
 						FileInputStream fileInputStream;
@@ -281,6 +301,9 @@ public class AddPostFragment extends Fragment {
 		llImageHolder = (LinearLayout) v.findViewById(R.id.llImageToPostHolderAddPost);
 		isImageVisible = false;
 		llImageHolder.setVisibility(View.GONE);
+		
+		llLinkHolder = (LinearLayout) v.findViewById(R.id.llLinkToPostHolderAddPost);
+		llLinkHolder.setVisibility(View.GONE);
 
 		llDateLayout = (LinearLayout) v.findViewById(R.id.llDateAddPost);
 		llDateLayout.setOnClickListener(new OnClickListener() {
@@ -320,7 +343,25 @@ public class AddPostFragment extends Fragment {
 		myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 	}
+	private void getAppCompany()
+	{
+		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+		queryAppCompany.fromLocalDatastore();
+		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject obj, ParseException e) {
+				if(e==null)
+				{
+					Utils.appCompany=obj;
+					Log.e("MSG","got app company");
+				}
+				
+			}
+		});
 
+	}
 	private void toast(String str) {
 		Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
 
@@ -488,6 +529,7 @@ public class AddPostFragment extends Fragment {
 		window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		window.setGravity(Gravity.CENTER);
 		final EditText edtLink = (EditText) dialog.findViewById(R.id.editText1);
+		edtLink.setText(postLink);
 		Button addLink = (Button) dialog.findViewById(R.id.btnDialogAddLink);
 		Button cancl = (Button) dialog.findViewById(R.id.btnDialogCancelAddLink);
 		addLink.setOnClickListener(new OnClickListener() {
@@ -495,6 +537,7 @@ public class AddPostFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				postLink = edtLink.getText().toString();
+				addLink();
 				dialog.dismiss();
 			}
 		});
@@ -514,6 +557,19 @@ public class AddPostFragment extends Fragment {
 		dialog.show();
 	}
 
+	private void addLink()
+	{
+		if(postLink.equals(""))
+		{
+			llLinkHolder.setVisibility(View.GONE);
+			
+		}
+		else
+		{
+			llLinkHolder.setVisibility(View.VISIBLE);
+			txtLink.setText(postLink);
+		}
+	}
 	private void showPicDialog() {
 
 		final Dialog dialog = new Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);

@@ -3,14 +3,18 @@
  */
 package com.minibittechnologies.activity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import org.woodyguthriecenter.app.R;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -21,20 +25,32 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import com.google.android.gms.internal.em;
 import com.minibittechnologies.fragments.AddPostFragment;
+import com.minibittechnologies.fragments.FragmentEditLocation;
 import com.minibittechnologies.fragments.FragmentMore;
 import com.minibittechnologies.fragments.FragmentPostList;
 import com.minibittechnologies.fragments.FragmentRewards;
 import com.minibittechnologies.fragments.FragmentSingleOffer;
 import com.minibittechnologies.fragments.LoginFragment;
+import com.minibittechnologies.fragments.TermsAndConditionsFragment;
+import com.minibittechnologies.fragments.VisitSiteFragment;
 import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
 import com.minibittechnologies.utility.Constants;
+import com.minibittechnologies.utility.Utils;
+import com.parse.FindCallback;
+import com.parse.ParseAnalytics;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
-public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener {
+public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener, Serializable {
+
+	private static final long serialVersionUID = -7335912528173342127L;
 
 	private final String TAG = this.getClass().getSimpleName();
 
@@ -51,11 +67,11 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	/**
 	 * Length = 5 <br>
-	 * 0: FragmentPostList <br>
+	 * 0: FragmentPostList - has arg <br>
 	 * 1: FragmentRewards <br>
 	 * 2: AddPostFragment <br>
-	 * 3: FragmentMore <br>
-	 * 4: LoginFragment <br>
+	 * 3: FragmentMore - has arg<br>
+	 * 4: LoginFragment - has arg<br>
 	 */
 	// * 5: FragmentSingleOffer <br>
 	private static ArrayList<Fragment> fList;
@@ -64,16 +80,11 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_holder);
-
+		ParseAnalytics.trackAppOpened(getIntent());
+		getAppCompanyInfo();
 		fragBackStack = new Stack<>();
 		initTabButtons();
-		fList = new ArrayList<>();
-		fList.add(FragmentPostList.newInstance(this)); // 0
-		fList.add(FragmentRewards.newInstance()); // 1
-		fList.add(AddPostFragment.newInstance()); // 2
-		fList.add(FragmentMore.newInstance(this)); // 3
-		fList.add(LoginFragment.newInstance(this)); // 4
-		// fList.add(FragmentSingleOffer.newInstance(this)); // 5
+		setupFragmentList();
 
 		fragMang = getSupportFragmentManager();
 		fragTranx = fragMang.beginTransaction();
@@ -90,6 +101,28 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		btnMore.setOnClickListener(this);
 	}
 
+	private void setupFragmentList() {
+		fList = new ArrayList<>();
+		fList.add(FragmentPostList.newInstance()); // 0
+		fList.add(FragmentRewards.newInstance()); // 1
+		fList.add(AddPostFragment.newInstance()); // 2
+		fList.add(FragmentMore.newInstance()); // 3
+		fList.add(LoginFragment.newInstance()); // 4
+		// fList.add(FragmentSingleOffer.newInstance(this)); // 5
+
+		// Fragment f = FragmentPostList.newInstance();
+		// // f.setArguments(b);
+		// fList.add(f); // 0
+		// fList.add(FragmentRewards.newInstance()); // 1
+		// fList.add(AddPostFragment.newInstance()); // 2
+		// f = FragmentMore.newInstance();
+		// // f.setArguments(b);
+		// fList.add(f); // 3
+		// f = LoginFragment.newInstance();
+		// // f.setArguments(b);
+		// fList.add(f); // 4
+	}
+
 	@Override
 	public void onClick(View v) {
 		fragTranx = fragMang.beginTransaction();
@@ -100,6 +133,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx.setCustomAnimations(R.anim.slide_out_leftright, R.anim.slide_in_left_to_right);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(0));
 			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(0)))
+				clearStackUptoPos(0);
 			fragBackStack.push(fList.get(0));
 			setOfferTabPressed();
 			break;
@@ -108,10 +143,14 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			if (isLoggedIn) {
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
+				if (fragBackStack.contains(fList.get(1)))
+					clearStackUptoPos(1);
 				fragBackStack.push(fList.get(1));
 			} else {
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
+				if (fragBackStack.contains(fList.get(4)))
+					clearStackUptoPos(4);
 				fragBackStack.push(fList.get(4));
 			}
 			fragTranx.commit();
@@ -123,17 +162,22 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
 				fragTranx.replace(R.id.flFragmentHolder, fList.get(2));
 				fragTranx.commit();
+				if (fragBackStack.contains(fList.get(2)))
+					clearStackUptoPos(2);
 				fragBackStack.push(fList.get(2));
 				setAddPostTabPressed();
 			} else {
 				shareTheApp();
 			}
+			Log.i(TAG, "broken!!");
 			break;
 		case R.id.btnMore:
 			Log.d(TAG, "More Clicked");
 			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 			fragTranx.replace(R.id.flFragmentHolder, fList.get(3));
 			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(3)))
+				clearStackUptoPos(3);
 			fragBackStack.push(fList.get(3));
 			setMoreTabPressed();
 			break;
@@ -141,6 +185,17 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		default:
 			break;
 		}
+	}
+
+	private void clearStackUptoPos(int pos) {
+		Fragment f = fList.get(pos);
+		while (!(fragBackStack.isEmpty()) && (fragBackStack.pop() != f))
+			Log.d(TAG, "Clearing frag upto pos=" + pos + ": fragBackStack.size() = " + fragBackStack.size());
+	}
+
+	private void clearStackUptoFragment(Fragment f) {
+		while (!(fragBackStack.isEmpty()) && (fragBackStack.pop() != f))
+			Log.d(TAG, "Clearing frag upto f: fragBackStack.size() = " + fragBackStack.size());
 	}
 
 	public void setTabPressedState(int index) {
@@ -270,57 +325,9 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		}
 	}
 
-	@Override
-	public void onFragmentItemClick(int fragType, boolean doLogIn, Post post) {
-		// boolean isLoggedIn = !(ParseUser.getCurrentUser()==null);
-		if (fragType == Constants.FRAG_REWARD) {
-			if (doLogIn) {
-				Log.d(TAG, "Logging in & log in fragment calling as the reward tab...");
-			} else {
-				// isLoggedIn = false;
-				// Toast.makeText(this, "Now assume that you're logged out!",
-				// Toast.LENGTH_LONG).show();
-				Log.d(TAG, "Logged out & Reward tab...");
-			}
-			fragTranx = fragMang.beginTransaction();
-			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
-			fragTranx.commit();
-			fragBackStack.push(fList.get(1));
-			setRewardTabPressed();
-		} else if (fragType == Constants.FRAG_OFFER) {
-			// TODO Show post details
-			Log.d(TAG, "FRAG_MORE transitioning to FragmentSingleOffer");
-			fragTranx = fragMang.beginTransaction();
-			Fragment f = FragmentSingleOffer.newInstance(post);
-			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
-			fragTranx.replace(R.id.flFragmentHolder, f);
-			fragTranx.commit();
-			fragBackStack.push(f);
-		} else if (fragType == Constants.FRAG_MORE) {
-			// TODO Show log-in fragment
-			if (doLogIn) {
-				Log.d(TAG, "FRAG_MORE transitioning to LogInFragment");
-				fragTranx = fragMang.beginTransaction();
-				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
-				fragTranx.commit();
-				fragBackStack.push(fList.get(4));
-				setRewardTabPressed();
-			} else
-				Toast.makeText(HolderActivity.this, "Log out is yet to be implemented!", Toast.LENGTH_LONG).show();
-		} else if (fragType == Constants.FRAG_LOGGED_IN) {
-			fragTranx = fragMang.beginTransaction();
-			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
-			fragTranx.commit();
-			fragBackStack.push(fList.get(1));
-			setRewardTabPressed();
-		}
-	}
-
 	private void shareTheApp() {
-		Intent sendIntent = new Intent();
+		Log.e(TAG, "shareTheApp");
+		Intent sendIntent = new Intent(HolderActivity.this, HomeActivity.class);
 		sendIntent.setAction(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey I am using Gabriel Horn!");
 		sendIntent.setType("text/plain");
@@ -338,7 +345,210 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			fragTranx = fragMang.beginTransaction();
 			fragTranx.replace(R.id.flFragmentHolder, fragBackStack.peek());
 			fragTranx.commit();
+			resetTabSelectionForFragment(fragBackStack.peek());
 		}
+	}
+
+	private void resetTabSelectionForFragment(Fragment f) {
+		if (f == fList.get(0))
+			setOfferTabPressed();
+		else if (f == fList.get(1) || f == fList.get(4))
+			setRewardTabPressed();
+		else if (f == fList.get(2))
+			setAddPostTabPressed();
+		else if (f == fList.get(3))
+			setMoreTabPressed();
+		else
+			Log.e(TAG, "No suitable tab found!! :: f = " + f);
+	}
+
+	@Override
+	public void onFragmentItemClick(int fragType, boolean doLogIn, Post post) {
+		// boolean isLoggedIn = !(ParseUser.getCurrentUser()==null);
+		if (fragType == Constants.FRAG_REWARD) {
+			fragTranx = fragMang.beginTransaction();
+			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
+			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(1)))
+				clearStackUptoPos(1);
+			fragBackStack.push(fList.get(1));
+			setRewardTabPressed();
+		} else if (fragType == Constants.FRAG_OFFER) {
+			// TO_DO Show post details
+			Log.d(TAG, "FRAG_MORE transitioning to FragmentSingleOffer");
+			fragTranx = fragMang.beginTransaction();
+			Fragment f = FragmentSingleOffer.newInstance(post);
+			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
+			fragTranx.replace(R.id.flFragmentHolder, f);
+			fragTranx.commit();
+			if (fragBackStack.contains(f))
+				clearStackUptoFragment(f);
+			fragBackStack.push(f);
+		} else if (fragType == Constants.FRAG_MORE) {
+			// TO_DO Show log-in fragment
+			if (doLogIn) {
+				Log.d(TAG, "FRAG_MORE transitioning to LogInFragment");
+				fragTranx = fragMang.beginTransaction();
+				fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+				fragTranx.replace(R.id.flFragmentHolder, fList.get(4));
+				fragTranx.commit();
+				if (fragBackStack.contains(fList.get(4)))
+					clearStackUptoPos(4);
+				fragBackStack.push(fList.get(4));
+				setRewardTabPressed();
+			}
+		} else if (fragType == Constants.FRAG_LOGGED_IN) {
+			fragTranx = fragMang.beginTransaction();
+			fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+			fragTranx.replace(R.id.flFragmentHolder, fList.get(1));
+			fragTranx.commit();
+			if (fragBackStack.contains(fList.get(1)))
+				clearStackUptoPos(1);
+			fragBackStack.push(fList.get(1));
+			setRewardTabPressed();
+		}
+	}
+
+	private void getAppCompanyInfo()
+	{
+		String appCompany=Utils.readString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,"");
+		if(appCompany.equals(""))
+		{
+			String appPackage =getApplicationContext().getPackageName();
+			ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("AppParentCompany");
+			parseQuery.whereEqualTo("appIdentifier", appPackage);
+			parseQuery.findInBackground(new FindCallback<ParseObject>() {
+				
+				@Override
+				public void done(List<ParseObject> list, ParseException e) {
+					if(e==null)
+					{
+						ParseObject company=list.get(0);
+						String appId=company.getObjectId();
+						Utils.writeString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,appId);
+						String companyPhn=company.getString("phoneNumber");
+						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_PHONE,companyPhn);
+						String companyEmail=company.getString("email");
+						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,companyEmail);
+						String companySite=company.getString("websiteUrl");
+						Utils.writeString(HolderActivity.this,Utils.VISIT_OUR_SITE,companySite);
+						company.pinInBackground(new SaveCallback() {
+							
+							@Override
+							public void done(ParseException arg0) {
+								Log.e("MSG","appCompanySaved");								
+							}
+						});
+						Log.e("MSGD",appId+companyPhn+companyEmail);
+					}
+					
+				}
+			});
+		}
+	}
+	@Override
+	public void gotoRewardsTab() {
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		Fragment f;
+		if (ParseUser.getCurrentUser() == null)
+			f = fList.get(4);
+		else
+			f = fList.get(1);
+		fragTranx.replace(R.id.flFragmentHolder, f);
+		fragTranx.commit();
+		if (fragBackStack.contains(f))
+			clearStackUptoFragment(f);
+		fragBackStack.push(f);
+		setRewardTabPressed();
+	}
+
+	@Override
+	public void logInOrOut() {
+	}
+
+	@Override
+	public void editStoreLocation() {
+		// TODO Load g-map & get selected location
+		Log.i(TAG, "editStoreLocation");
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		Fragment f = FragmentEditLocation.newInstance();
+		fragTranx.replace(R.id.flFragmentHolder, f);
+		fragTranx.commit();
+		if (fragBackStack.contains(f))
+			clearStackUptoFragment(f);
+		fragBackStack.push(f);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 255, 255, 255));
+		// setMoreTabPressed();
+
+	}
+
+	@Override
+	public void onCallUsMenuClick() {
+		String phn=Utils.readString(HolderActivity.this,Utils.APP_COMPANY_PHONE,"");
+		if(!phn.equals(""))
+		{
+		Intent callIntent = new Intent(Intent.ACTION_CALL);
+		callIntent.setData(Uri.parse("tel:" + phn));
+		startActivity(callIntent);
+		}
+	}
+	
+
+	@Override
+	public void onEmailUsMenuClick() {
+		String email=Utils.readString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,"");
+		if(!email.equals(""))
+		{
+			Intent intentMail = new Intent(Intent.ACTION_SEND);
+			intentMail.putExtra(Intent.EXTRA_EMAIL, new String[]{email});          
+			
+			intentMail.setType("message/rfc822");
+			startActivity(Intent.createChooser(intentMail, "Choose an Email client :"));
+		}
+	}
+
+	@Override
+	public void onVisitWebMenuClick() {
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		VisitSiteFragment visitSiteFragment=new VisitSiteFragment();
+		fragTranx.replace(R.id.flFragmentHolder,visitSiteFragment);
+		fragTranx.commit();
+		if (fragBackStack.contains(visitSiteFragment))
+			clearStackUptoFragment(visitSiteFragment);
+		fragBackStack.push(visitSiteFragment);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 255, 255, 255));
+	}
+
+	@Override
+	public void onShareAppMenuClick() {
+		shareTheApp();
+	}
+
+	@Override
+	public void onAboutAppMenuClick() {
+		// TODO load about-app fragment
+	}
+
+	@Override
+	public void onTermsConditionMenuClick() {
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		TermsAndConditionsFragment tcFragment=new TermsAndConditionsFragment();
+		fragTranx.replace(R.id.flFragmentHolder, tcFragment);
+		fragTranx.commit();
+		if (fragBackStack.contains(tcFragment))
+			clearStackUptoFragment(tcFragment);
+		fragBackStack.push(tcFragment);
+		llBottomTabHoolder.setBackgroundColor(Color.argb(255, 255, 255, 255));
+	}
+
+	@Override
+	public void onPrivacyPolicyMenuClick() {
+		// TODO load privacy-policy fragment
 	}
 
 }

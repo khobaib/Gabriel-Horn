@@ -2,6 +2,8 @@ package com.minibittechnologies.utility;
 
 import org.woodyguthriecenter.app.R;
 
+import com.parse.ParseObject;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +15,10 @@ public class Utils {
 	public static final String PREF_NAME = "HGHORN";
 	public static final int MODE = Context.MODE_WORLD_WRITEABLE;
 	public static final String KEY_PARENT_APP_ID = "parent_app_id";
+	public static final String APP_COMPANY_PHONE = "app_company_phone";
+	public static final String APP_COMPANY_EMAIL = "app_company_email";
+	public static final String VISIT_OUR_SITE = "site_url";
+	public static ParseObject appCompany=null;
 	public static void writeBoolean(Context context, String key, boolean value) {
 		getEditor(context).putBoolean(key, value).commit();
 	}

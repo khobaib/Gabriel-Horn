@@ -3,7 +3,6 @@ package com.minibittechnologies.fragments;
 import java.util.Stack;
 
 import org.woodyguthriecenter.app.R;
-import com.minibittechnologies.activity.HomeActivity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,12 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.ViewParent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.minibittechnologies.activity.HomeActivity;
 
 public class RewardsTabFragments extends TabFragment{
 	protected Stack<Fragment> backEndStack;

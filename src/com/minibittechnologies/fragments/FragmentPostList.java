@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.woodyguthriecenter.app.R;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.minibittechnologies.adapter.PostViewListViewAdapter;
 import com.minibittechnologies.interfaces.FragmentClickListener;
 import com.minibittechnologies.model.Post;
@@ -26,6 +31,10 @@ import com.minibittechnologies.utility.Utils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseQueryAdapter.OnQueryLoadListener;
 
@@ -43,38 +52,53 @@ public class FragmentPostList extends Fragment {
 
 	View topBarClone;
 
-	// private PullToRefreshListView mPullToRefreshListView;
+	private PullToRefreshListView mPullToRefreshListView;
 
 	private FragmentClickListener fragClicker;
 
-	/**
-	 * Try never to use it! Rather call <br>
-	 * {@code newInstance(FragmentClickListener fragClicker)}
-	 */
-	public FragmentPostList() {
+	// /**
+	// * Try never to use it! Rather call <br>
+	// * {@code newInstance(FragmentClickListener fragClicker)}
+	// */
+	// public FragmentPostList() {
+	// }
+	//
+	// private FragmentPostList(FragmentClickListener fragClicker) {
+	// this.fragClicker = fragClicker;
+	// }
+
+	public static Fragment newInstance() {
+		return new FragmentPostList();
 	}
 
-	private FragmentPostList(FragmentClickListener fragClicker) {
-		this.fragClicker = fragClicker;
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		fragClicker = (FragmentClickListener) activity;
 	}
 
-	public static Fragment newInstance(FragmentClickListener fragClicker) {
-		return new FragmentPostList(fragClicker);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// fragClicker = (FragmentClickListener)
+		// getArguments().getSerializable(Constants.KEY_FRAG_CLICKER);
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 
-		lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
-
+		//lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
+		mPullToRefreshListView=(PullToRefreshListView) rootView.findViewById(R.id.list_view_latest_offer);
+		lvPost=this.mPullToRefreshListView.getRefreshableView();
 		// View topBarClone = View.inflate(getActivity(),
 		// R.layout.post_header_view, lvPost);
-		topBarClone = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, null, false);
-		Log.e(">>>>>>>>>", "adding new top bar");
-		lvPost.addHeaderView(topBarClone);
+		//topBarClone = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, null, false);
+		//Log.e(">>>>>>>>>", "adding new top bar");
+		//lvPost.addHeaderView(topBarClone);
 
-		isTopBarVisible = true;
+		//isTopBarVisible = true;
 
 		// View topBarClone = inflater.inflate(R.layout.post_header_view,
 		// container, false);
@@ -90,24 +114,22 @@ public class FragmentPostList extends Fragment {
 				fragClicker.onFragmentItemClick(Constants.FRAG_OFFER, false, (Post) parent.getItemAtPosition(position));
 			}
 		});
-		// mPullToRefreshListView.setOnRefreshListener(new
-		// OnRefreshListener<ListView>() {
-		// @Override
-		// public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		// Log.e("refresh", "called");
-		//
-		// postAdapter.loadObjects();
-		// pDialog.show();
-		// }
-		// });
-		initHeaderListener();
+		mPullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				postAdapter.loadObjects();
+				pDialog.show();
+			}
+		});
+	//	initHeaderListener();
 
 		View footerView = getActivity().getLayoutInflater().inflate(R.layout.list_offer_footer, null, false);
 		lvPost.addFooterView(footerView);
 
-		topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
-		topBar.setVisibility(View.VISIBLE);
-		((RelativeLayout) rootView).addView(topBar);
+		//topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
+		//topBar.setVisibility(View.VISIBLE);
+		//((RelativeLayout) rootView).addView(topBar);
 
 		return rootView;
 	}
@@ -140,7 +162,7 @@ public class FragmentPostList extends Fragment {
 				if (pDialog.isShowing())
 					pDialog.dismiss();
 				// lvPost.addHeaderView(topBarClone);
-				// mPullToRefreshListView.onRefreshComplete();
+				mPullToRefreshListView.onRefreshComplete();
 				Log.e("size", "" + postAdapter.getCount());
 			}
 
@@ -167,7 +189,22 @@ public class FragmentPostList extends Fragment {
 	private void doListQuery() {
 		// Refreshes the list view with new data based usually on updated
 		// location data.
-		postAdapter.loadObjects();
+		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+		queryAppCompany.fromLocalDatastore();
+		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject obj, ParseException e) {
+				if(e==null)
+				{
+					Utils.appCompany=obj;
+					postAdapter.loadObjects();
+					Log.e("MSG","got app company");
+				}
+				
+			}
+		});
 	}
 
 	public void onHeaderVisibilityUpdate(boolean shouldShow) {
