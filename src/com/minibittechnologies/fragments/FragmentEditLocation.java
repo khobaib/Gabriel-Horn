@@ -12,7 +12,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,9 +20,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import com.google.android.gms.internal.df;
-import com.google.android.gms.internal.li;
-import com.google.android.gms.internal.lo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
@@ -48,12 +44,13 @@ public class FragmentEditLocation extends Fragment implements OnMarkerDragListen
 
 	private final String TAG = this.getClass().getSimpleName();
 
-	private double latitude=36.132894;
-	private double longitude=-95.945205;
+	private double latitude = 36.132894;
+	private double longitude = -95.945205;
 	private GoogleMap gMap;
 
 	private LatLng initPos = new LatLng(36.132894, -95.945205);
 	private ProgressDialog pDialog;
+
 	public static Fragment newInstance() {
 		return new FragmentEditLocation();
 	}
@@ -71,7 +68,7 @@ public class FragmentEditLocation extends Fragment implements OnMarkerDragListen
 		rv.findViewById(R.id.btnsaveEditLocation).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//alert("This saving is yet to complete!\nMsg to show: 'Loaction Saved.'");
+				// alert("This saving is yet to complete!\nMsg to show: 'Loaction Saved.'");
 				pDialog = Utils.createProgressDialog(getActivity());
 				getAppCompany();
 			}
@@ -110,93 +107,88 @@ public class FragmentEditLocation extends Fragment implements OnMarkerDragListen
 
 	@Override
 	public void onMarkerDrag(Marker marker) {
-		//marker.setTitle("108 Gallery");
-		//marker.setSnippet(marker.getPosition().latitude+","+marker.getPosition().longitude);
-		
-		
+		// marker.setTitle("108 Gallery");
+		// marker.setSnippet(marker.getPosition().latitude+","+marker.getPosition().longitude);
+
 	}
 
 	@Override
 	public void onMarkerDragEnd(Marker marker) {
 		Log.i(TAG, "onMarkerDragEnd :: marker end pos. = " + marker.getPosition());
 		marker.setTitle("108 Gallery");
-		
-		DecimalFormat df=getFormatter();
-		String strLat=df.format(marker.getPosition().latitude);
-		String strLon=df.format(marker.getPosition().longitude);
-		marker.setSnippet(strLat+","+strLon);
-		latitude=Double.valueOf(strLat);
-		longitude=Double.valueOf(strLon);
+
+		DecimalFormat df = getFormatter();
+		String strLat = df.format(marker.getPosition().latitude);
+		String strLon = df.format(marker.getPosition().longitude);
+		marker.setSnippet(strLat + "," + strLon);
+		latitude = Double.valueOf(strLat);
+		longitude = Double.valueOf(strLon);
 		marker.showInfoWindow();
-		
+
 	}
 
 	@Override
 	public void onMarkerDragStart(Marker marker) {
 		Log.i(TAG, "onMarkerDragStart :: marker start pos. = " + marker.getPosition());
-		//marker.setTitle("108 Gallery");
-		//marker.setSnippet(marker.getPosition().latitude+","+marker.getPosition().longitude);
+		// marker.setTitle("108 Gallery");
+		// marker.setSnippet(marker.getPosition().latitude+","+marker.getPosition().longitude);
 		marker.hideInfoWindow();
 	}
-	private void getAppCompany()
-	{
-		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+
+	private void getAppCompany() {
+		ParseQuery<ParseObject> queryAppCompany = ParseQuery.getQuery("AppParentCompany");
 		queryAppCompany.fromLocalDatastore();
-		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
-		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
-			
+		String appParentId = Utils.readString(getActivity(), Utils.KEY_PARENT_APP_ID, "");
+		queryAppCompany.getInBackground(appParentId, new GetCallback<ParseObject>() {
+
 			@Override
 			public void done(ParseObject obj, ParseException e) {
-				if(e==null)
-				{
-					Utils.appCompany=obj;
+				if (e == null) {
+					Utils.appCompany = obj;
 					getCurrentLocation();
-					Log.e("MSG","got app company");
+					Log.e("MSG", "got app company");
 				}
-				
+
 			}
 		});
 
 	}
-	private void getCurrentLocation()
-	{
-		ParseQuery<ParseObject> query=ParseQuery.getQuery("RetailLocation");
-		query.whereEqualTo("appCompany",Utils.appCompany);
-		query.whereEqualTo("name","108 Gallery");
+
+	private void getCurrentLocation() {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("RetailLocation");
+		query.whereEqualTo("appCompany", Utils.appCompany);
+		query.whereEqualTo("name", "108 Gallery");
 		query.findInBackground(new FindCallback<ParseObject>() {
-			
+
 			@Override
 			public void done(List<ParseObject> list, ParseException e) {
-				
-				if(e==null && list.size()>0)
-				{
+
+				if (e == null && list.size() > 0) {
 					updateLocation(list.get(0));
 				}
 			}
 		});
 	}
-	private void updateLocation(ParseObject location)
-	{
-		
-		ParseGeoPoint geoPoint=new ParseGeoPoint(latitude,longitude);
-		location.put("location",geoPoint);
+
+	private void updateLocation(ParseObject location) {
+
+		ParseGeoPoint geoPoint = new ParseGeoPoint(latitude, longitude);
+		location.put("location", geoPoint);
 		location.saveInBackground(new SaveCallback() {
-			
+
 			@Override
 			public void done(ParseException e) {
-				if(e==null)
-				{
+				if (e == null) {
 					alert("Location Updated.");
-				}
-				else
-				{
+				} else {
 					alert("Location Update Failed.");
 				}
-				if(pDialog.isShowing())
-                          pDialog.dismiss();				
+				if (pDialog.isShowing())
+					pDialog.dismiss();
 			}
 		});
 	}
+
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -211,10 +203,10 @@ public class FragmentEditLocation extends Fragment implements OnMarkerDragListen
 			// an exception here :(
 		}
 	}
-	private DecimalFormat getFormatter()
-	{
 
-		 DecimalFormat df = new DecimalFormat("#.000000");
-		 return df;
+	private DecimalFormat getFormatter() {
+
+		DecimalFormat df = new DecimalFormat("#.000000");
+		return df;
 	}
 }
