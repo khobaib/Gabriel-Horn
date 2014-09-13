@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:background="@color/app_theme"
         android:gravity="center"
-        android:text="108 contemporary"
+        android:text="Gabriel Horn"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/white" />
 

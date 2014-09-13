@@ -53,12 +53,12 @@
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="15dp" >
+            android:paddingTop="7dp" >
 
             <Button
                 android:id="@+id/btnOffer"
                 android:layout_width="0dip"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:drawableTop="@drawable/tab_1"
@@ -68,7 +68,7 @@
             <Button
                 android:id="@+id/btnReward"
                 android:layout_width="0dip"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:drawableTop="@drawable/tab_2"
@@ -78,7 +78,7 @@
             <Button
                 android:id="@+id/btnAddPost"
                 android:layout_width="0dip"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:drawableTop="@drawable/tab_post_1"
@@ -88,7 +88,7 @@
             <Button
                 android:id="@+id/btnMore"
                 android:layout_width="0dip"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:drawableTop="@drawable/tab_4"
