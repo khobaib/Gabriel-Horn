@@ -10,9 +10,11 @@ import java.util.Stack;
 
 import com.devotify.gabrielhorn.R;
 import com.devotify.gabrielhorn.fragments.AddPostFragment;
+import com.devotify.gabrielhorn.fragments.FragmentAboutApp;
 import com.devotify.gabrielhorn.fragments.FragmentEditLocation;
 import com.devotify.gabrielhorn.fragments.FragmentMore;
 import com.devotify.gabrielhorn.fragments.FragmentPostList;
+import com.devotify.gabrielhorn.fragments.FragmentPrivacyPolicy;
 import com.devotify.gabrielhorn.fragments.FragmentRewards;
 import com.devotify.gabrielhorn.fragments.FragmentSingleOffer;
 import com.devotify.gabrielhorn.fragments.LoginFragment;
@@ -88,7 +90,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		fragTranx = fragMang.beginTransaction();
 		fragTranx.add(R.id.flFragmentHolder, fList.get(0));
 		fragTranx.commit();
-		fragBackStack.push(fList.get(0));
+		fragBackStack.push(fList.get(0)); // TODO
 		setOfferTabPressed();
 
 		// flFragHolder = (FrameLayout) findViewById(R.id.flFragmentHolder);
@@ -523,7 +525,14 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onAboutAppMenuClick() {
-		// TODO load about-app fragment
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		Fragment aboutFragment = FragmentAboutApp.newInstance();
+		fragTranx.replace(R.id.flFragmentHolder, aboutFragment);
+		fragTranx.commit();
+		if (fragBackStack.contains(aboutFragment))
+			clearStackUptoFragment(aboutFragment);
+		fragBackStack.push(aboutFragment);
 	}
 
 	@Override
@@ -541,7 +550,13 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onPrivacyPolicyMenuClick() {
-		// TODO load privacy-policy fragment
+		fragTranx = fragMang.beginTransaction();
+		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		Fragment aboutFragment = FragmentPrivacyPolicy.newInstance();
+		fragTranx.replace(R.id.flFragmentHolder, aboutFragment);
+		fragTranx.commit();
+		if (fragBackStack.contains(aboutFragment))
+			clearStackUptoFragment(aboutFragment);
+		fragBackStack.push(aboutFragment);
 	}
-
 }

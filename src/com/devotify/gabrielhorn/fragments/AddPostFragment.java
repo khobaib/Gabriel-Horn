@@ -11,16 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.adapter.NothingSelectedSpinnerAdapter;
-import com.devotify.gabrielhorn.interfaces.OnDateOrTimSetListener;
-import com.devotify.gabrielhorn.utility.Utils;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -59,6 +56,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.adapter.NothingSelectedSpinnerAdapter;
+import com.devotify.gabrielhorn.interfaces.OnDateOrTimSetListener;
+import com.devotify.gabrielhorn.utility.Utils;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -76,11 +77,13 @@ public class AddPostFragment extends Fragment {
 	private static final int GALLERY_REQ_CODE = 902;
 	private static final String[] monthArray = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
 			"Nov", "Dec" };
+	private static final int BUTTON_POSITIVE = -1;
+	private static final int BUTTON_NEGATIVE = -2;
 
 	private Uri mImageCaptureUri;
 	private File picFile = null;
 
-	private LinearLayout llImageHolder,llLinkHolder;
+	private LinearLayout llImageHolder, llLinkHolder;
 	// private ImageView ivToPostimage;
 	private boolean isImageVisible = false;
 
@@ -99,8 +102,8 @@ public class AddPostFragment extends Fragment {
 	private TextView tvMonth, tvDay, tvYear, tvHour, tvMin, tvAmPM;
 	private String postLink = "";
 	private ProgressDialog pDialog;
-	
-	public static Fragment newInstance(){
+
+	public static Fragment newInstance() {
 		return new AddPostFragment();
 	}
 
@@ -136,8 +139,8 @@ public class AddPostFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				addHyperLink();
-
+				// addHyperLink();
+				showAddHyperLinkDialog();
 			}
 		});
 
@@ -150,8 +153,8 @@ public class AddPostFragment extends Fragment {
 
 			}
 		});
-		txtLink=(TextView)v.findViewById(R.id.tvToBePostedlinks);
-		
+		txtLink = (TextView) v.findViewById(R.id.tvToBePostedlinks);
+
 		btnAddPost = (Button) v.findViewById(R.id.btnAddPost);
 		btnAddPost.setOnClickListener(new OnClickListener() {
 
@@ -183,23 +186,21 @@ public class AddPostFragment extends Fragment {
 				Date date = calculateExpiryDate();
 				// set up progress dialog
 
-				
 				if (!validationError) {
 					pDialog = Utils.createProgressDialog(getActivity());
 					pDialog.show();
-					ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+					ParseQuery<ParseObject> queryAppCompany = ParseQuery.getQuery("AppParentCompany");
 					queryAppCompany.fromLocalDatastore();
-					String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
-					queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
-						
+					String appParentId = Utils.readString(getActivity(), Utils.KEY_PARENT_APP_ID, "");
+					queryAppCompany.getInBackground(appParentId, new GetCallback<ParseObject>() {
+
 						@Override
 						public void done(ParseObject obj, ParseException e) {
-							if(e==null)
-							{
-								Utils.appCompany=obj;
-								
+							if (e == null) {
+								Utils.appCompany = obj;
+
 							}
-							
+
 						}
 					});
 					ParseObject parseObject = ParseObject.create("Post");
@@ -209,7 +210,7 @@ public class AddPostFragment extends Fragment {
 					parseObject.put("expiration", date);
 					parseObject.put("author", ParseUser.getCurrentUser());
 					parseObject.put("link", postLink);
-					parseObject.put("appCompany",Utils.appCompany);
+					parseObject.put("appCompany", Utils.appCompany);
 					if (mImageCaptureUri != null) {
 						byte[] data = new byte[(int) picFile.length()];
 						FileInputStream fileInputStream;
@@ -270,10 +271,8 @@ public class AddPostFragment extends Fragment {
 		});
 		spCategory = (Spinner) v.findViewById(R.id.sp_catgory);
 		spCategory.setOnItemSelectedListener(new OnItemSelectedListener() {
-
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-
 				if (position > 0) {
 					edtCategory.setText(catList[position - 1]);
 				}
@@ -281,8 +280,6 @@ public class AddPostFragment extends Fragment {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 		setSpinner();
@@ -301,7 +298,7 @@ public class AddPostFragment extends Fragment {
 		llImageHolder = (LinearLayout) v.findViewById(R.id.llImageToPostHolderAddPost);
 		isImageVisible = false;
 		llImageHolder.setVisibility(View.GONE);
-		
+
 		llLinkHolder = (LinearLayout) v.findViewById(R.id.llLinkToPostHolderAddPost);
 		llLinkHolder.setVisibility(View.GONE);
 
@@ -343,25 +340,25 @@ public class AddPostFragment extends Fragment {
 		myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 	}
-	private void getAppCompany()
-	{
-		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+
+	private void getAppCompany() {
+		ParseQuery<ParseObject> queryAppCompany = ParseQuery.getQuery("AppParentCompany");
 		queryAppCompany.fromLocalDatastore();
-		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
-		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
-			
+		String appParentId = Utils.readString(getActivity(), Utils.KEY_PARENT_APP_ID, "");
+		queryAppCompany.getInBackground(appParentId, new GetCallback<ParseObject>() {
+
 			@Override
 			public void done(ParseObject obj, ParseException e) {
-				if(e==null)
-				{
-					Utils.appCompany=obj;
-					Log.e("MSG","got app company");
+				if (e == null) {
+					Utils.appCompany = obj;
+					Log.e("MSG", "got app company");
 				}
-				
+
 			}
 		});
 
 	}
+
 	private void toast(String str) {
 		Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
 
@@ -454,7 +451,6 @@ public class AddPostFragment extends Fragment {
 		DialogFragment df = new DateOrTimePickerFragment(new OnDateOrTimSetListener() {
 			@Override
 			public void dateOrTimeSet(int hour, int minute, int ignored) {
-				// TODO Auto-generated method stub
 				Log.d(TAG, "Hour: " + hour + ", minute: " + minute + ", ignored: " + ignored);
 				if (hour >= 12) {
 					tvHour.setText((hour - 12) + "");
@@ -519,10 +515,10 @@ public class AddPostFragment extends Fragment {
 		dialog.show();
 	}
 
+	@SuppressWarnings("unused")
 	private void addHyperLink() {
 		final Dialog dialog = new Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
 		dialog.setContentView(R.layout.dialog_add_link);
-		// TODO Handle input data
 
 		// Center-focus the dialog
 		Window window = dialog.getWindow();
@@ -533,7 +529,6 @@ public class AddPostFragment extends Fragment {
 		Button addLink = (Button) dialog.findViewById(R.id.btnDialogAddLink);
 		Button cancl = (Button) dialog.findViewById(R.id.btnDialogCancelAddLink);
 		addLink.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				postLink = edtLink.getText().toString();
@@ -557,19 +552,15 @@ public class AddPostFragment extends Fragment {
 		dialog.show();
 	}
 
-	private void addLink()
-	{
-		if(postLink.equals(""))
-		{
+	private void addLink() {
+		if (postLink.equals("")) {
 			llLinkHolder.setVisibility(View.GONE);
-			
-		}
-		else
-		{
+		} else {
 			llLinkHolder.setVisibility(View.VISIBLE);
 			txtLink.setText(postLink);
 		}
 	}
+
 	private void showPicDialog() {
 
 		final Dialog dialog = new Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
@@ -649,7 +640,6 @@ public class AddPostFragment extends Fragment {
 		try {
 			picFile.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -902,6 +892,30 @@ public class AddPostFragment extends Fragment {
 		super.onDestroy();
 		if (pDialog != null && pDialog.isShowing())
 			pDialog.dismiss();
+	}
+
+	private void showAddHyperLinkDialog() {
+		AlertDialog addLinkDialog = new AlertDialog.Builder(getActivity()).create();
+		addLinkDialog.setMessage("Enter or paste a link below:");
+
+		final EditText etLink = new EditText(getActivity());
+		etLink.setHint("URL (string with http://)");
+		addLinkDialog.setView(etLink);
+		addLinkDialog.setButton(BUTTON_POSITIVE, "Add Link", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				postLink = etLink.getText().toString();
+				Log.d(TAG, "Link got: " + postLink);
+				addLink();
+				dialog.dismiss();
+			}
+		});
+
+		addLinkDialog.setButton(BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				dialog.dismiss();
+			}
+		});
+		addLinkDialog.show();
 	}
 
 }
