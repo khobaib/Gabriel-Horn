@@ -11,7 +11,6 @@ import java.util.Stack;
 import org.woodyguthriecenter.app.R;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -26,7 +25,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.google.android.gms.internal.em;
 import com.minibittechnologies.fragments.AddPostFragment;
 import com.minibittechnologies.fragments.FragmentEditLocation;
 import com.minibittechnologies.fragments.FragmentMore;
@@ -410,43 +408,41 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 		}
 	}
 
-	private void getAppCompanyInfo()
-	{
-		String appCompany=Utils.readString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,"");
-		if(appCompany.equals(""))
-		{
-			String appPackage =getApplicationContext().getPackageName();
+	private void getAppCompanyInfo() {
+		String appCompany = Utils.readString(HolderActivity.this, Utils.KEY_PARENT_APP_ID, "");
+		if (appCompany.equals("")) {
+			String appPackage = getApplicationContext().getPackageName();
 			ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("AppParentCompany");
 			parseQuery.whereEqualTo("appIdentifier", appPackage);
 			parseQuery.findInBackground(new FindCallback<ParseObject>() {
-				
+
 				@Override
 				public void done(List<ParseObject> list, ParseException e) {
-					if(e==null)
-					{
-						ParseObject company=list.get(0);
-						String appId=company.getObjectId();
-						Utils.writeString(HolderActivity.this,Utils.KEY_PARENT_APP_ID,appId);
-						String companyPhn=company.getString("phoneNumber");
-						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_PHONE,companyPhn);
-						String companyEmail=company.getString("email");
-						Utils.writeString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,companyEmail);
-						String companySite=company.getString("websiteUrl");
-						Utils.writeString(HolderActivity.this,Utils.VISIT_OUR_SITE,companySite);
+					if (e == null) {
+						ParseObject company = list.get(0);
+						String appId = company.getObjectId();
+						Utils.writeString(HolderActivity.this, Utils.KEY_PARENT_APP_ID, appId);
+						String companyPhn = company.getString("phoneNumber");
+						Utils.writeString(HolderActivity.this, Utils.APP_COMPANY_PHONE, companyPhn);
+						String companyEmail = company.getString("email");
+						Utils.writeString(HolderActivity.this, Utils.APP_COMPANY_EMAIL, companyEmail);
+						String companySite = company.getString("websiteUrl");
+						Utils.writeString(HolderActivity.this, Utils.VISIT_OUR_SITE, companySite);
 						company.pinInBackground(new SaveCallback() {
-							
+
 							@Override
 							public void done(ParseException arg0) {
-								Log.e("MSG","appCompanySaved");								
+								Log.e("MSG", "appCompanySaved");
 							}
 						});
-						Log.e("MSGD",appId+companyPhn+companyEmail);
+						Log.e("MSGD", appId + companyPhn + companyEmail);
 					}
-					
+
 				}
 			});
 		}
 	}
+
 	@Override
 	public void gotoRewardsTab() {
 		fragTranx = fragMang.beginTransaction();
@@ -487,24 +483,21 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	@Override
 	public void onCallUsMenuClick() {
-		String phn=Utils.readString(HolderActivity.this,Utils.APP_COMPANY_PHONE,"");
-		if(!phn.equals(""))
-		{
-		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		callIntent.setData(Uri.parse("tel:" + phn));
-		startActivity(callIntent);
+		String phn = Utils.readString(HolderActivity.this, Utils.APP_COMPANY_PHONE, "");
+		if (!phn.equals("")) {
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+			callIntent.setData(Uri.parse("tel:" + phn));
+			startActivity(callIntent);
 		}
 	}
-	
 
 	@Override
 	public void onEmailUsMenuClick() {
-		String email=Utils.readString(HolderActivity.this,Utils.APP_COMPANY_EMAIL,"");
-		if(!email.equals(""))
-		{
+		String email = Utils.readString(HolderActivity.this, Utils.APP_COMPANY_EMAIL, "");
+		if (!email.equals("")) {
 			Intent intentMail = new Intent(Intent.ACTION_SEND);
-			intentMail.putExtra(Intent.EXTRA_EMAIL, new String[]{email});          
-			
+			intentMail.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+
 			intentMail.setType("message/rfc822");
 			startActivity(Intent.createChooser(intentMail, "Choose an Email client :"));
 		}
@@ -514,8 +507,8 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	public void onVisitWebMenuClick() {
 		fragTranx = fragMang.beginTransaction();
 		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-		VisitSiteFragment visitSiteFragment=new VisitSiteFragment();
-		fragTranx.replace(R.id.flFragmentHolder,visitSiteFragment);
+		VisitSiteFragment visitSiteFragment = new VisitSiteFragment();
+		fragTranx.replace(R.id.flFragmentHolder, visitSiteFragment);
 		fragTranx.commit();
 		if (fragBackStack.contains(visitSiteFragment))
 			clearStackUptoFragment(visitSiteFragment);
@@ -537,7 +530,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 	public void onTermsConditionMenuClick() {
 		fragTranx = fragMang.beginTransaction();
 		fragTranx.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-		TermsAndConditionsFragment tcFragment=new TermsAndConditionsFragment();
+		TermsAndConditionsFragment tcFragment = new TermsAndConditionsFragment();
 		fragTranx.replace(R.id.flFragmentHolder, tcFragment);
 		fragTranx.commit();
 		if (fragBackStack.contains(tcFragment))
