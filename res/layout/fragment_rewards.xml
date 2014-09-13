@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212" >
+    android:background="#121212"
+    tools:ignore="HardcodedText" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +18,7 @@
             android:layout_centerHorizontal="true"
             android:text="My Rewards Card"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
 
         <View
             android:id="@+id/v_separator"
@@ -44,14 +46,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                tools:ignore="UselessParent,UseCompoundDrawables" >
 
                 <ImageView
                     android:id="@+id/imageView1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/icon_star" />
+                    android:src="@drawable/icon_star"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/tv_user_point"
@@ -59,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:text="8"
                     android:textColor="@color/white"
-                    android:textSize="80dp" />
+                    android:textSize="80sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -71,7 +75,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:text="(2 stars until next reward )"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btnScanForStar"
@@ -83,8 +87,8 @@
             android:background="@drawable/btn_border"
             android:padding="15dp"
             android:text="+ scan for star"
-            android:textSize="25dp"
             android:textColor="@color/white"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
@@ -97,10 +101,10 @@
             android:layout_marginTop="5dp"
             android:text="my rewards"
             android:textColor="@color/white"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
-        <com.minibittechnologies.utility.NestedListView
+        <com.devotify.gabrielhorn.utility.NestedListView
             android:id="@+id/listView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -108,7 +112,7 @@
             android:layout_marginTop="5dp"
             android:divider="@null"
             android:dividerHeight="3dp" >
-        </com.minibittechnologies.utility.NestedListView>
+        </com.devotify.gabrielhorn.utility.NestedListView>
     </RelativeLayout>
 
 </ScrollView>
