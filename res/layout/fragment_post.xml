@@ -4,13 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CCCCCC" >
+
+    <ImageView
+        android:id="@+id/img_top_logo_back"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#ffffff"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp" />
+
     <ImageView
         android:id="@+id/img_top_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:layout_alignBottom="@+id/img_top_logo_back"
+        android:layout_alignTop="@+id/img_top_logo_back"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/toplogo" />
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView
@@ -23,5 +33,7 @@
         android:layout_marginRight="10dp"
         android:divider="#CCCCCC"
         android:dividerHeight="10dp"
+        ptr:ptrHeaderTextColor="@color/black"
         ptr:ptrMode="pullFromStart" />
+
 </RelativeLayout>

@@ -77,8 +77,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/rounded_black_bg"
+            android:gravity="top"
             android:ems="10"
-            android:hint=""
             android:lines="5"
             android:padding="5dp"
             android:textColor="@color/white" >

@@ -34,8 +34,7 @@
             android:singleLine="true"
             android:text="Gabriel Horn"
             android:textColor="#ffffff"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            android:textSize="17sp" />
     </RelativeLayout>
 
     <ScrollView
@@ -58,9 +57,8 @@
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="16dp"
                 android:text="dhcgfd gdvcjdc hdcjd "
-                android:textColor="#555555"
-                android:textSize="26dp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"
+                android:textSize="26dp" />
 
             <View
                 android:id="@+id/ve_line"
@@ -92,8 +90,7 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="16dp"
-                android:adjustViewBounds="true"
-                android:src="@drawable/top_logo" />
+                android:adjustViewBounds="true" />
 
             <View
                 android:layout_width="1dp"
