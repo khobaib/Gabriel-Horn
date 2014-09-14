@@ -24,16 +24,4 @@
         android:divider="#CCCCCC"
         android:dividerHeight="10dp"
         ptr:ptrMode="pullFromStart" />
-<!--
-    <ListView
-        android:id="@+id/list_view_latest_offer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:divider="#CCCCCC"
-        android:dividerHeight="10dp" />
-        
- -->
 </RelativeLayout>

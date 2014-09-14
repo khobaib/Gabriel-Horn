@@ -36,7 +36,7 @@
             android:layout_below="@+id/v_separator"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/bg_black"
+            android:background="@drawable/bg_total_reward_point"
             android:gravity="center"
             android:orientation="horizontal" >
 
