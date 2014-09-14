@@ -515,43 +515,6 @@ public class AddPostFragment extends Fragment {
 		dialog.show();
 	}
 
-	@SuppressWarnings("unused")
-	private void addHyperLink() {
-		final Dialog dialog = new Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-		dialog.setContentView(R.layout.dialog_add_link);
-
-		// Center-focus the dialog
-		Window window = dialog.getWindow();
-		window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		window.setGravity(Gravity.CENTER);
-		final EditText edtLink = (EditText) dialog.findViewById(R.id.editText1);
-		edtLink.setText(postLink);
-		Button addLink = (Button) dialog.findViewById(R.id.btnDialogAddLink);
-		Button cancl = (Button) dialog.findViewById(R.id.btnDialogCancelAddLink);
-		addLink.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				postLink = edtLink.getText().toString();
-				addLink();
-				dialog.dismiss();
-			}
-		});
-		cancl.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-
-		// The below code is EXTRA - to dim the parent view by 70% :D
-		WindowManager.LayoutParams lp = window.getAttributes();
-		lp.dimAmount = 0.7f;
-		lp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-		dialog.getWindow().setAttributes(lp);
-		dialog.show();
-	}
-
 	private void addLink() {
 		if (postLink.equals("")) {
 			llLinkHolder.setVisibility(View.GONE);

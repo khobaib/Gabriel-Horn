@@ -31,7 +31,7 @@ import com.devotify.gabrielhorn.fragments.FragmentMore;
 import com.devotify.gabrielhorn.fragments.FragmentPostList;
 import com.devotify.gabrielhorn.fragments.FragmentPrivacyPolicy;
 import com.devotify.gabrielhorn.fragments.FragmentRewards;
-import com.devotify.gabrielhorn.fragments.FragmentSingleOffer;
+import com.devotify.gabrielhorn.fragments.FragmentOfferDetails;
 import com.devotify.gabrielhorn.fragments.LoginFragment;
 import com.devotify.gabrielhorn.fragments.TermsAndConditionsFragment;
 import com.devotify.gabrielhorn.fragments.VisitSiteFragment;
@@ -377,7 +377,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 			// TO_DO Show post details
 			Log.d(TAG, "FRAG_MORE transitioning to FragmentSingleOffer");
 			fragTranx = fragMang.beginTransaction();
-			Fragment f = FragmentSingleOffer.newInstance(post);
+			Fragment f = FragmentOfferDetails.newInstance(post);
 			fragTranx.setCustomAnimations(R.anim.slide_out_rightleft, R.anim.slide_in_right_toleft);
 			fragTranx.replace(R.id.flFragmentHolder, f);
 			fragTranx.commit();

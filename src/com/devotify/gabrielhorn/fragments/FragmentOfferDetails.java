@@ -17,7 +17,7 @@ import com.parse.ParseFile;
 import com.parse.ParseImageView;
 
 @SuppressLint("NewApi")
-public class FragmentSingleOffer extends Fragment {
+public class FragmentOfferDetails extends Fragment {
 
 	// public OffersTabFragment parent;
 
@@ -28,8 +28,8 @@ public class FragmentSingleOffer extends Fragment {
 	private ImageView backbuttonoftab;
 	private TextView welcome_title;
 
-	public static FragmentSingleOffer newInstance(Post singleofferDetails) {
-		FragmentSingleOffer f = new FragmentSingleOffer();
+	public static FragmentOfferDetails newInstance(Post singleofferDetails) {
+		FragmentOfferDetails f = new FragmentOfferDetails();
 		Bundle args = new Bundle();
 		args.putSerializable("post", singleofferDetails);
 		f.setArguments(args);
@@ -44,7 +44,7 @@ public class FragmentSingleOffer extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_single_offer, container, false);
+		ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_offer_details, container, false);
 		tv_title = (TextView) v.findViewById(R.id.tv_title);
 		tv_message = (TextView) v.findViewById(R.id.tv_message);
 		// img_pic = (ImageView) v.findViewById(R.id.img_pic);
