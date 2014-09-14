@@ -33,6 +33,7 @@ public class PostViewListViewAdapter extends ParseQueryAdapter<Post> {
 			public ParseQuery<Post> create() {
 				ParseQuery<Post> query = Post.getQuery();
 				query.whereEqualTo("appCompany",Utils.appCompany);	
+				query.addDescendingOrder("expiration");
 				return query;
 			}
 		});

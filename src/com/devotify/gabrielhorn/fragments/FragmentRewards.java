@@ -210,7 +210,7 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	private void getRewardList() {
 		Log.e(">>>>>>>>", "getRewardList");
 		// finalAwardList = new ArrayList<ParseObject>();
-		// finalAwardList.clear();
+		 finalAwardList.clear();
 		ParseQuery<ParseObject> rewardQuery = ParseQuery.getQuery(Constants.OBJECT_REWARDS);
 		rewardQuery.whereLessThanOrEqualTo(Constants.REWARD_POINTS_NEEDED, UserPoint);
 		rewardQuery.whereEqualTo("appCompany", Utils.appCompany);
