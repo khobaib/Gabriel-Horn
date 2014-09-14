@@ -2,13 +2,6 @@ package com.devotify.gabrielhorn.fragments;
 
 import java.util.List;
 
-import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.adapter.PostViewListViewAdapter;
-import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
-import com.devotify.gabrielhorn.model.Post;
-import com.devotify.gabrielhorn.utility.Constants;
-import com.devotify.gabrielhorn.utility.Utils;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,8 +16,13 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
+import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.adapter.PostViewListViewAdapter;
+import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
+import com.devotify.gabrielhorn.model.Post;
+import com.devotify.gabrielhorn.utility.Constants;
+import com.devotify.gabrielhorn.utility.Utils;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -41,7 +39,7 @@ import com.parse.ParseQueryAdapter.OnQueryLoadListener;
 public class FragmentPostList extends Fragment {
 	private ParseQueryAdapter<Post> postAdapter; // Adapter for the Parse query
 	private ListView lvPost;
-	private OffersTabFragment parent;
+	// private OffersTabFragment parent;
 	private View topBar;
 
 	private boolean isTopBarVisible;
@@ -89,16 +87,19 @@ public class FragmentPostList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 
-		//lvPost = (ListView) rootView.findViewById(R.id.list_view_latest_offer);
-		mPullToRefreshListView=(PullToRefreshListView) rootView.findViewById(R.id.list_view_latest_offer);
-		lvPost=this.mPullToRefreshListView.getRefreshableView();
+		// lvPost = (ListView)
+		// rootView.findViewById(R.id.list_view_latest_offer);
+		mPullToRefreshListView = (PullToRefreshListView) rootView.findViewById(R.id.list_view_latest_offer);
+		lvPost = this.mPullToRefreshListView.getRefreshableView();
 		// View topBarClone = View.inflate(getActivity(),
 		// R.layout.post_header_view, lvPost);
-		//topBarClone = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, null, false);
-		//Log.e(">>>>>>>>>", "adding new top bar");
-		//lvPost.addHeaderView(topBarClone);
+		// topBarClone =
+		// getActivity().getLayoutInflater().inflate(R.layout.post_header_view,
+		// null, false);
+		// Log.e(">>>>>>>>>", "adding new top bar");
+		// lvPost.addHeaderView(topBarClone);
 
-		//isTopBarVisible = true;
+		// isTopBarVisible = true;
 
 		// View topBarClone = inflater.inflate(R.layout.post_header_view,
 		// container, false);
@@ -122,14 +123,16 @@ public class FragmentPostList extends Fragment {
 				pDialog.show();
 			}
 		});
-	//	initHeaderListener();
+		// initHeaderListener();
 
 		View footerView = getActivity().getLayoutInflater().inflate(R.layout.list_offer_footer, null, false);
 		lvPost.addFooterView(footerView);
 
-		//topBar = getActivity().getLayoutInflater().inflate(R.layout.post_header_view, container, false);
-		//topBar.setVisibility(View.VISIBLE);
-		//((RelativeLayout) rootView).addView(topBar);
+		// topBar =
+		// getActivity().getLayoutInflater().inflate(R.layout.post_header_view,
+		// container, false);
+		// topBar.setVisibility(View.VISIBLE);
+		// ((RelativeLayout) rootView).addView(topBar);
 
 		return rootView;
 	}
@@ -189,20 +192,19 @@ public class FragmentPostList extends Fragment {
 	private void doListQuery() {
 		// Refreshes the list view with new data based usually on updated
 		// location data.
-		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
-		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
+		ParseQuery<ParseObject> queryAppCompany = ParseQuery.getQuery("AppParentCompany");
+		String appParentId = Utils.readString(getActivity(), Utils.KEY_PARENT_APP_ID, "");
 		queryAppCompany.fromLocalDatastore();
-		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
-			
+		queryAppCompany.getInBackground(appParentId, new GetCallback<ParseObject>() {
+
 			@Override
 			public void done(ParseObject obj, ParseException e) {
-				if(e==null)
-				{
-					Utils.appCompany=obj;
+				if (e == null) {
+					Utils.appCompany = obj;
 					postAdapter.loadObjects();
-					Log.e("MSG","got app company");
+					Log.e("MSG", "got app company");
 				}
-				
+
 			}
 		});
 	}
@@ -306,13 +308,13 @@ public class FragmentPostList extends Fragment {
 		hideAnimator.start();
 	}
 
-	public OffersTabFragment getParent() {
-		return parent;
-	}
-
-	public void setParent(OffersTabFragment parent) {
-		this.parent = parent;
-	}
+	// public OffersTabFragment getParent() {
+	// return parent;
+	// }
+	//
+	// public void setParent(OffersTabFragment parent) {
+	// this.parent = parent;
+	// }
 
 	@Override
 	public void onDestroyView() {

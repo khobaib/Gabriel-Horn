@@ -1,8 +1,5 @@
 package com.devotify.gabrielhorn.fragments;
 
-import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.model.Post;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.model.Post;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -20,7 +19,7 @@ import com.parse.ParseImageView;
 @SuppressLint("NewApi")
 public class FragmentSingleOffer extends Fragment {
 
-	public OffersTabFragment parent;
+	// public OffersTabFragment parent;
 
 	private Post singleofferDetails;
 	private TextView tv_title, tv_message;

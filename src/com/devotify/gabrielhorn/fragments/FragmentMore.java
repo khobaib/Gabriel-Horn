@@ -2,11 +2,6 @@ package com.devotify.gabrielhorn.fragments;
 
 import java.util.ArrayList;
 
-import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.adapter.CustomAdapterForMore;
-import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
-import com.devotify.gabrielhorn.utility.Constants;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,6 +17,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
+import com.devotify.gabrielhorn.utility.Constants;
 import com.parse.ParseUser;
 
 @SuppressLint("NewApi")
@@ -30,7 +28,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 	private final String TAG = this.getClass().getSimpleName();
 
 	ListView list_item;
-	MoreTabFragments parent;
+	// MoreTabFragments parent;
 	ArrayList<String> items;
 	// ImageView backbuttonoftab;
 	TextView welcome_title;
@@ -38,8 +36,7 @@ public class FragmentMore extends Fragment implements OnClickListener {
 
 	// OnDataPass dataPasser;
 	@SuppressWarnings("unused")
-	private CustomAdapterForMore adapter;
-
+	// private CustomAdapterForMore adapter;
 	private FragmentClickListener fragClicker;
 
 	public static Fragment newInstance() {

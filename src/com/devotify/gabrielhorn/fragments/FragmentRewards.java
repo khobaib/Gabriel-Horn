@@ -5,14 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import net.sourceforge.zbar.Symbol;
-
-import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.adapter.RewardListadapter;
-import com.devotify.gabrielhorn.model.Reward;
-import com.devotify.gabrielhorn.utility.Constants;
-import com.devotify.gabrielhorn.utility.NestedListView;
-import com.devotify.gabrielhorn.utility.Utils;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,6 +26,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.adapter.RewardListadapter;
+import com.devotify.gabrielhorn.model.Reward;
+import com.devotify.gabrielhorn.utility.Constants;
+import com.devotify.gabrielhorn.utility.NestedListView;
+import com.devotify.gabrielhorn.utility.Utils;
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
 import com.parse.FindCallback;
@@ -210,11 +208,12 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 	}
 
 	private void getRewardList() {
-		//finalAwardList = new ArrayList<ParseObject>();
-		//finalAwardList.clear();
+		Log.e(">>>>>>>>", "getRewardList");
+		// finalAwardList = new ArrayList<ParseObject>();
+		// finalAwardList.clear();
 		ParseQuery<ParseObject> rewardQuery = ParseQuery.getQuery(Constants.OBJECT_REWARDS);
 		rewardQuery.whereLessThanOrEqualTo(Constants.REWARD_POINTS_NEEDED, UserPoint);
-		rewardQuery.whereEqualTo("appCompany",Utils.appCompany);
+		rewardQuery.whereEqualTo("appCompany", Utils.appCompany);
 		rewardQuery.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
@@ -363,8 +362,8 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		UserPoint = UserPoint - pointsUsed;
 		user.put(Constants.USER_REWARD_POINTS, UserPoint);
 		user.saveInBackground();
-		finalAwardList.clear();
-		rewardListadapter.notifyDataSetChanged();
+		// finalAwardList.clear();
+		// rewardListadapter.notifyDataSetChanged();
 		tvUserPoint.setText("" + UserPoint);
 		Log.e("up:", UserPoint + "   " + pointsUsed);
 		getRewardList();
@@ -381,26 +380,26 @@ public class FragmentRewards extends Fragment implements OnItemClickListener {
 		else
 			return false;
 	}
-	private void getAppCompany()
-	{
-		ParseQuery<ParseObject> queryAppCompany=ParseQuery.getQuery("AppParentCompany");
+
+	private void getAppCompany() {
+		ParseQuery<ParseObject> queryAppCompany = ParseQuery.getQuery("AppParentCompany");
 		queryAppCompany.fromLocalDatastore();
-		String appParentId=Utils.readString(getActivity(),Utils.KEY_PARENT_APP_ID,"");
-		queryAppCompany.getInBackground(appParentId,new GetCallback<ParseObject>() {
-			
+		String appParentId = Utils.readString(getActivity(), Utils.KEY_PARENT_APP_ID, "");
+		queryAppCompany.getInBackground(appParentId, new GetCallback<ParseObject>() {
+
 			@Override
 			public void done(ParseObject obj, ParseException e) {
-				if(e==null)
-				{
-					Utils.appCompany=obj;
+				if (e == null) {
+					Utils.appCompany = obj;
 					getRewardList();
-					Log.e("MSG","got app company");
+					Log.e("MSG", "got app company");
 				}
-				
+
 			}
 		});
 
 	}
+
 	private void showExpiredDialog(String name) {
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

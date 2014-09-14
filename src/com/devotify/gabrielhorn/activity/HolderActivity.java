@@ -8,6 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
 import com.devotify.gabrielhorn.R;
 import com.devotify.gabrielhorn.fragments.AddPostFragment;
 import com.devotify.gabrielhorn.fragments.FragmentAboutApp;
@@ -24,22 +39,6 @@ import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
 import com.devotify.gabrielhorn.model.Post;
 import com.devotify.gabrielhorn.utility.Constants;
 import com.devotify.gabrielhorn.utility.Utils;
-
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.LinearLayout;
-
 import com.parse.FindCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
@@ -327,7 +326,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
 	private void shareTheApp() {
 		Log.e(TAG, "shareTheApp");
-		Intent sendIntent = new Intent(HolderActivity.this, HomeActivity.class);
+		Intent sendIntent = new Intent();
 		sendIntent.setAction(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey I am using Gabriel Horn!");
 		sendIntent.setType("text/plain");
