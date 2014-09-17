@@ -57,6 +57,20 @@
         android:text="Content"
         android:textColor="#ff555555"
         android:textSize="17dp" />
+    
+<!--         <TextView
+        android:id="@+id/tv_content2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/img_icon"
+        android:layout_alignRight="@+id/tv_title"
+        android:layout_below="@+id/tv_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:text="Holy neglect Batgirl, it's been since February since I posted. We've been getting skin ready for summertime fun! Don't forget to take care of your skin DURING the summer."
+        android:textColor="#ff555555"
+        android:textSize="17dp" /> -->
 
     <com.parse.ParseImageView
         android:id="@+id/iv_post_image"
