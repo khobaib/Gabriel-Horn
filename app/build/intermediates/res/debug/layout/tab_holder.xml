@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/RelativeLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/flFragmentHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true">
+    </FrameLayout>
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/bottom_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/bottom_bar"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/bottom_bar"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/action_offers">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_button_icon_height"
+                android:src="@drawable/offers_icon"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/news_title"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/action_rewards">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_button_icon_height"
+                android:src="@drawable/rewards"
+                android:scaleType="centerInside"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rewards_title"
+                android:textColor="@color/black"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/action_share_add_post">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_button_icon_height"
+                android:src="@drawable/share"
+                android:id="@+id/share_post_toggle_button"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/share_title"
+                android:textColor="@color/black"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="2dp"
+                android:id="@+id/share_post_toggle_text_view"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:id="@+id/action_more">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_button_icon_height"
+                android:scaleType="center"
+                android:src="@drawable/more_icon"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_bar_button_icon_height"
+                android:textColor="@color/black"
+                android:text="@string/more_title"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout><!-- From: file:/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/res/layout/tab_holder.xml -->
