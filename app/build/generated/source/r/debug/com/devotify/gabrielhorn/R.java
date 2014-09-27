@@ -475,13 +475,11 @@ containing a value of this type.
         public static final int rounded_gray_bg=0x7f02004c;
         public static final int rounded_login=0x7f02004d;
         public static final int rounded_white_bg=0x7f02004e;
-        public static final int share=0x7f02004f;
-        public static final int share_icon=0x7f020050;
-        public static final int small_calendar_icon=0x7f020051;
-        public static final int time_icon=0x7f020052;
-        public static final int time_icon_white=0x7f020053;
-        public static final int top_logo=0x7f020054;
-        public static final int website=0x7f020055;
+        public static final int share_icon=0x7f02004f;
+        public static final int small_calendar_icon=0x7f020050;
+        public static final int time_icon=0x7f020051;
+        public static final int time_icon_white=0x7f020052;
+        public static final int top_logo=0x7f020053;
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f060040;

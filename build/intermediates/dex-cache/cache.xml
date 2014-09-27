@@ -26,17 +26,17 @@
         revision="19.1.0"
         sha1="b345b04752628a557bfceefc3f15afb22533db18"/>
     <item
-        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/zbar-241d3b2a1868aa56f44a557df7d0abf9c5a86e8a.jar"
-        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/GabrielHorn/zBarScannerLibrary/unspecified/libs/zbar.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="7bbdf7ba57a8a157c0cad51e455609c70887812e"/>
-    <item
         dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/universal-image-loader-1.8.6-with-sources-aa0214b38196d1e784d08648aab4fe71d32d5976.jar"
         jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/libs/universal-image-loader-1.8.6-with-sources.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="9ad605dd55be2e74e614b2ab2ff466439c4461b7"/>
+    <item
+        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/zbar-241d3b2a1868aa56f44a557df7d0abf9c5a86e8a.jar"
+        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/GabrielHorn/zBarScannerLibrary/unspecified/libs/zbar.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7bbdf7ba57a8a157c0cad51e455609c70887812e"/>
     <item
         dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/Parse-1.5.1-0ca7d9755c4653b2c274f131c47776d3c56f6d91.jar"
         jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/libs/Parse-1.5.1.jar"
@@ -48,6 +48,6 @@
         jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/GabrielHorn/zBarScannerLibrary/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="eadb7545e7727a5d15e1cdeccf91df47a041b42f"/>
+        sha1="f52745f9cadadfad68ca84af363b1930e770b071"/>
 
 </pre-dex-items>

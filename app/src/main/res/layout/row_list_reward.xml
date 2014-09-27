@@ -7,15 +7,16 @@
 
     <TextView
         android:id="@+id/reward_points_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
+        android:gravity="right|center_vertical"
         android:textColor="@color/white"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -35,6 +36,7 @@
         android:id="@+id/reward_name_text_view"
         android:layout_toStartOf="@+id/imageView"
         android:layout_toLeftOf="@+id/imageView"
+        android:textColor="@color/white"
         android:layout_alignTop="@+id/imageView"
         android:gravity="center_horizontal"
         android:layout_alignParentLeft="true"
