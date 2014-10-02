@@ -3,6 +3,9 @@
  */
 package com.devotify.gabrielhorn.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -47,6 +50,7 @@ import java.util.Stack;
 
 public class HolderActivity extends FragmentActivity implements OnClickListener, FragmentClickListener, Serializable
 {
+    public static final String DEBUG_TAG = "Minibit Debug Tag";
     private final String TAG = this.getClass().getSimpleName();
 
     private View offersItemContainer, rewardsItemContainer, postItemContainer, moreItemContainer, bottomBar;
@@ -58,6 +62,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
     private static Stack<Fragment> fragBackStack;
 
+    public static final long LOCATION_ALARM_DURATION = (long) (10 * 1000);
     public static final int POS_POST_LIST = 0, POS_REWARDS = 1, POS_SHARE_ADD_POST = 2, POS_MORE = 3, POS_LOGIN = 4;
     private static ArrayList<Fragment> fList;
 
@@ -66,7 +71,9 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_holder);
+
         initTabButtons();
+        initLocationAlarm(this);
 
         ParseAnalytics.trackAppOpened(getIntent());
         getAppCompanyInfo(new AsyncCallback<Boolean>()
@@ -91,6 +98,16 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
                 moreItemContainer.setOnClickListener(HolderActivity.this);
             }
         });
+    }
+
+    public static void initLocationAlarm(Context context)
+    {
+        Intent locationAlarmIntent = new Intent(context, BackgroundNotificationService.class);
+        PendingIntent pendingLocationAlarmIntent = PendingIntent.getService(context, 0,
+                locationAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), LOCATION_ALARM_DURATION, pendingLocationAlarmIntent);
     }
 
     private void setupFragmentList()

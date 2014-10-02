@@ -4,9 +4,10 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
 
-    <ImageView
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:src="@color/transparent"
         android:background="@drawable/post_row_background"
         android:layout_alignBottom="@+id/ve_top"/>
 

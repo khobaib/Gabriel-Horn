@@ -6,4 +6,5 @@
     <dimen name="navigation_header_height">60dp</dimen>
     <dimen name="bottom_bar_height">60dp</dimen>
     <dimen name="bottom_bar_button_icon_height">25dp</dimen>
+    <integer name="slide_anim_duration">200</integer>
 </resources>

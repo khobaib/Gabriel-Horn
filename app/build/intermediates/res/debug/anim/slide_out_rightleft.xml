@@ -3,5 +3,5 @@
   <translate
      android:fromXDelta="100%p" android:toXDelta="0%p"
      android:fromYDelta="0%" android:toYDelta="0%"
-     android:duration="500" />
+     android:duration="@integer/slide_anim_duration" />
 </set><!-- From: file:/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/res/anim/slide_out_rightleft.xml -->

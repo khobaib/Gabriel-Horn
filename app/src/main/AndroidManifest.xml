@@ -90,7 +90,16 @@
                 <category android:name="com.devotify.gabrielhorn"/>
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".activity.LocationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
 
+        <service
+            android:name=".activity.BackgroundNotificationService"
+            android:exported="false"/>
     </application>
 
 </manifest>
