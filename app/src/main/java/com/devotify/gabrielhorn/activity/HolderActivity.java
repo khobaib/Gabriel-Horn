@@ -62,7 +62,7 @@ public class HolderActivity extends FragmentActivity implements OnClickListener,
 
     private static Stack<Fragment> fragBackStack;
 
-    public static final long LOCATION_ALARM_DURATION = (long) (10 * 1000);
+    public static final long LOCATION_ALARM_DURATION = (long) (30 * 10 * 1000);
     public static final int POS_POST_LIST = 0, POS_REWARDS = 1, POS_SHARE_ADD_POST = 2, POS_MORE = 3, POS_LOGIN = 4;
     private static ArrayList<Fragment> fList;
 

@@ -1,48 +1,135 @@
 package com.devotify.gabrielhorn.activity;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.IntentCompat;
+
+import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.model.LocalUser;
+import com.devotify.gabrielhorn.utility.AsyncCallback;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 /**
  * Created by Usama on 10/1/14.
  */
-public class BackgroundNotificationService extends IntentService
+public class BackgroundNotificationService extends IntentService implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener
 {
-    public BackgroundNotificationService(String name)
+    private LocationClient mLocationClient;
+
+    public BackgroundNotificationService()
     {
-        super(name);
+        super(BackgroundNotificationService.class.toString());
     }
 
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener()
-        {
-            public void onLocationChanged(Location location)
-            {
-                Log.e(HolderActivity.DEBUG_TAG, "Location updated to: " + location.getLatitude() + ", " + location.getLongitude());
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras)
-            {
-            }
-
-            public void onProviderEnabled(String provider)
-            {
-            }
-
-            public void onProviderDisabled(String provider)
-            {
-            }
-        };
-
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        mLocationClient = new LocationClient(this, this, this);
+        mLocationClient.connect();
     }
+
+
+    @Override
+    public void onConnected(Bundle bundle)
+    {
+        final Location currentUserLocation = mLocationClient.getLastLocation();
+        if (currentUserLocation != null)
+        {
+            final LocalUser localUser = LocalUser.getInstance();
+            if (localUser == null)
+            {
+                LocalUser.initialize(BackgroundNotificationService.this, new AsyncCallback<Boolean>()
+                {
+                    @Override
+                    public void onOperationCompleted(Boolean result)
+                    {
+                        if (result)
+                            onLocalUserReady(LocalUser.getInstance(), currentUserLocation);
+                    }
+                });
+            }
+            else
+            {
+                onLocalUserReady(localUser, currentUserLocation);
+            }
+        }
+
+        mLocationClient.disconnect();
+    }
+
+    @Override
+    public void onDisconnected()
+    {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult)
+    {
+
+    }
+
+    public void onLocalUserReady(LocalUser localUser, final Location currentUserLocation)
+    {
+        ParseQuery<ParseObject> notificationObjectQuery = ParseQuery.getQuery("LocationPin");
+        notificationObjectQuery.whereEqualTo("appCompany", localUser.getParentCompany());
+        notificationObjectQuery.findInBackground(new FindCallback<ParseObject>()
+        {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e)
+            {
+                for (ParseObject locationPinCandidate : parseObjects)
+                {
+                    ParseGeoPoint candidateLocation = locationPinCandidate.getParseGeoPoint("location");
+                    double candidateDistanceMeters = candidateLocation.distanceInKilometersTo(new ParseGeoPoint(currentUserLocation.getLatitude(),
+                            currentUserLocation.getLongitude())) * 1000;
+                    if (candidateDistanceMeters <= locationPinCandidate.getInt("vicinityRadius"))
+                    {
+                        sendUserNotification(locationPinCandidate);
+                    }
+                }
+            }
+        });
+    }
+
+    public void sendUserNotification(ParseObject notificationObject)
+    {
+        String title = getString(R.string.app_name);
+        String message = notificationObject.getString("notificationText");
+
+        Intent notificationIntent = new Intent(this, HolderActivity.class);
+
+        // Don't start a new activity if the app is already running in the foreground
+        notificationIntent.setFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.app_icon).setContentText(message).setContentIntent(intent).setContentTitle(title).setAutoCancel(true);
+        builder.setVibrate(new long[]
+                {
+                        0, 250
+                });
+
+        builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify((int) notificationObject.getCreatedAt().getTime(), builder.build());
+    }
+
 }
