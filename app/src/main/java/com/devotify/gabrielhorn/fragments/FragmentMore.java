@@ -7,24 +7,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
-import com.devotify.gabrielhorn.utility.Constants;
+import com.devotify.gabrielhorn.interfaces.LogInStateListener;
+import com.devotify.gabrielhorn.utility.FontUtils;
+import com.devotify.gabrielhorn.utility.Fonts;
 import com.parse.ParseUser;
 
-public class FragmentMore extends Fragment implements OnClickListener
+public class FragmentMore extends Fragment implements OnClickListener, LogInStateListener
 {
-    private final String TAG = this.getClass().getSimpleName();
+    public interface MoreItemClickedListener
+    {
+        public void onCallUsMenuClicked();
 
-    ListView list_item;
-    TextView welcome_title;
-    RelativeLayout topBar;
+        public void onEmailUsMenuClicked();
 
-    private FragmentClickListener fragClicker;
+        public void onVisitWebMenuClicked();
+
+        public void onShareAppMenuClicked();
+
+        public void onAboutAppMenuClicked();
+
+        public void onTermsConditionMenuClicked();
+
+        public void onPrivacyPolicyMenuClicked();
+
+        public void onRewardsClicked();
+
+        public void onEditStoreLocationClicked();
+    }
+
+    private MoreItemClickedListener moreItemClickedListener;
+    private LogInStateListener logInStateListener;
+    private TextView loginTextView;
 
     public static Fragment newInstance()
     {
@@ -35,7 +51,8 @@ public class FragmentMore extends Fragment implements OnClickListener
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        fragClicker = (FragmentClickListener) activity;
+        moreItemClickedListener = (MoreItemClickedListener) activity;
+        logInStateListener = (LogInStateListener) activity;
     }
 
     @Override
@@ -44,13 +61,9 @@ public class FragmentMore extends Fragment implements OnClickListener
         View rv = inflater.inflate(R.layout.frag_more_static, container, false);
         rv.findViewById(R.id.tvMyRewardsMore).setOnClickListener(this);
 
-        TextView tvLogOut = (TextView) rv.findViewById(R.id.tvLogOutMore);
-        tvLogOut.setOnClickListener(this);
-
-        if (ParseUser.getCurrentUser() == null)
-            tvLogOut.setText("Log in");
-        else
-            tvLogOut.setText("Log out");
+        loginTextView = (TextView) rv.findViewById(R.id.tvLogOutMore);
+        loginTextView.setOnClickListener(this);
+        updateLoginState();
 
         rv.findViewById(R.id.tvEditLocationMore).setOnClickListener(this);
 
@@ -69,19 +82,8 @@ public class FragmentMore extends Fragment implements OnClickListener
         else
             editStoreLocationsView.setVisibility(View.GONE);
 
+        FontUtils.getInstance().overrideFonts(rv, Fonts.LIGHT);
         return rv;
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-    }
-
-    public interface OnDataPass
-    {
-        public void onDataPass(String data);
     }
 
     @Override
@@ -90,40 +92,57 @@ public class FragmentMore extends Fragment implements OnClickListener
         switch (v.getId())
         {
             case R.id.tvMyRewardsMore:
-                fragClicker.gotoRewardsTab();
+                moreItemClickedListener.onRewardsClicked();
                 return;
             case R.id.tvLogOutMore:
                 if (ParseUser.getCurrentUser() != null)
+                {
                     ParseUser.getCurrentUser().logOut();
-                fragClicker.onFragmentItemClick(Constants.FRAG_MORE, true, null);
+                    logInStateListener.onLogInToggled(false);
+                }
+                else
+                {
+                    logInStateListener.onLogInToggled(true);
+                }
                 return;
             case R.id.tvEditLocationMore:
-                fragClicker.editStoreLocation();
+                moreItemClickedListener.onEditStoreLocationClicked();
                 return;
             case R.id.tvCallUsMore:
-                fragClicker.onCallUsMenuClick();
+                moreItemClickedListener.onCallUsMenuClicked();
                 return;
             case R.id.tvEmailUsMore:
-                fragClicker.onEmailUsMenuClick();
+                moreItemClickedListener.onEmailUsMenuClicked();
                 return;
             case R.id.tvVisitWebMore:
-                fragClicker.onVisitWebMenuClick();
+                moreItemClickedListener.onVisitWebMenuClicked();
                 return;
             case R.id.tvShareAppMore:
-                fragClicker.onShareAppMenuClick();
+                moreItemClickedListener.onShareAppMenuClicked();
                 return;
             case R.id.tvAboutAppMore:
-                fragClicker.onAboutAppMenuClick();
+                moreItemClickedListener.onAboutAppMenuClicked();
                 return;
             case R.id.tvTermsConditionMore:
-                fragClicker.onTermsConditionMenuClick();
+                moreItemClickedListener.onTermsConditionMenuClicked();
                 return;
             case R.id.tvPrivacyPolicyMore:
-                fragClicker.onPrivacyPolicyMenuClick();
-                return;
-
-            default:
+                moreItemClickedListener.onPrivacyPolicyMenuClicked();
                 return;
         }
+    }
+
+    @Override
+    public void onLogInToggled(boolean isLoggedIn)
+    {
+        updateLoginState();
+    }
+
+    public void updateLoginState()
+    {
+        if (ParseUser.getCurrentUser() == null)
+            loginTextView.setText("Log in");
+        else
+            loginTextView.setText("Log out");
     }
 }

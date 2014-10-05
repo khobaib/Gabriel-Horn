@@ -24,9 +24,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:appcompat-v7:20.0.0'
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile files('libs/Parse-1.5.1.jar')
-    compile files('libs/universal-image-loader-1.8.6-with-sources.jar')
     compile 'info.hoang8f:android-segmented:1.0.2'
     compile 'com.google.android.gms:play-services:5.+'
     compile project(':zBarScannerLibrary')

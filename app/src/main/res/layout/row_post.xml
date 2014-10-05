@@ -2,14 +2,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
+                android:background="@drawable/post_row_background"
                 android:paddingRight="10dp">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@color/transparent"
-        android:background="@drawable/post_row_background"
-        android:layout_alignBottom="@+id/ve_top"/>
 
     <ImageView
         android:id="@+id/post_category_image_view"

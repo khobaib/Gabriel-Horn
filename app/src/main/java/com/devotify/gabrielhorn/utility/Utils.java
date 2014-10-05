@@ -1,10 +1,13 @@
 package com.devotify.gabrielhorn.utility;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.view.View;
 import android.view.WindowManager.BadTokenException;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.devotify.gabrielhorn.R;
@@ -12,11 +15,6 @@ import com.devotify.gabrielhorn.R;
 public class Utils
 {
     public static final String PREF_NAME = "HGHORN";
-    public static final int MODE = Context.MODE_WORLD_WRITEABLE;
-    public static final String KEY_PARENT_APP_ID = "parent_app_id";
-    public static final String APP_COMPANY_PHONE = "app_company_phone";
-    public static final String APP_COMPANY_EMAIL = "app_company_email";
-    public static final String VISIT_OUR_SITE = "site_url";
 
     public static void writeBoolean(Context context, String key, boolean value)
     {
@@ -73,7 +71,7 @@ public class Utils
 
     public static SharedPreferences getPreferences(Context context)
     {
-        return context.getSharedPreferences(PREF_NAME, MODE);
+        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public static Editor getEditor(Context context)
@@ -107,6 +105,25 @@ public class Utils
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.progress_dialog);
         return dialog;
+    }
+
+
+    public static void showKeyboard(Activity activity)
+    {
+        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE)).
+                toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
+
+    public static void hideKeyboard(Activity activity)
+    {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        View view = activity.getCurrentFocus();
+        if (view == null)
+            return;
+
+        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

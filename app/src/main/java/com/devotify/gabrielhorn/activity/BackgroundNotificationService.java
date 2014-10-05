@@ -113,7 +113,7 @@ public class BackgroundNotificationService extends IntentService implements Goog
         String title = getString(R.string.app_name);
         String message = notificationObject.getString("notificationText");
 
-        Intent notificationIntent = new Intent(this, HolderActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
 
         // Don't start a new activity if the app is already running in the foreground
         notificationIntent.setFlags(IntentCompat.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

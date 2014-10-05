@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_email_login"
         android:hint="Password"
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:textColor="@color/white" />
 

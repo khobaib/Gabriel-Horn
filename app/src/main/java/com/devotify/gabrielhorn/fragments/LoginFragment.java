@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,30 +15,26 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.devotify.gabrielhorn.R;
-import com.devotify.gabrielhorn.interfaces.FragmentClickListener;
-import com.devotify.gabrielhorn.utility.Constants;
+import com.devotify.gabrielhorn.interfaces.LogInStateListener;
+import com.devotify.gabrielhorn.model.LocalUser;
+import com.devotify.gabrielhorn.utility.FontUtils;
+import com.devotify.gabrielhorn.utility.Fonts;
 import com.devotify.gabrielhorn.utility.Utils;
-import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
-import java.util.List;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
 
 public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChangeListener
 {
-    SegmentedGroup loginSegment;
-    RelativeLayout signUpLayout, loginLayout;
-    EditText etEmail, etFirstName, etLastName, etPassword, etEmailLogIn, etPasswordLogin;
-    Button bSignUp, bLogin;
+    private SegmentedGroup loginSegment;
+    private RelativeLayout signUpLayout, loginLayout;
+    private EditText etEmail, etFirstName, etLastName, etPassword, etEmailLogIn, etPasswordLogin;
+    private Button bSignUp, bLogin;
     private ProgressDialog pDialog;
-
-    private FragmentClickListener fragClicker;
+    private LogInStateListener onLogInListener;
 
     public static Fragment newInstance()
     {
@@ -47,16 +42,10 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        fragClicker = (FragmentClickListener) activity;
+        onLogInListener = (LogInStateListener) activity;
     }
 
     @Override
@@ -79,91 +68,66 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
             @Override
             public void onClick(View v)
             {
-                // Validate the sign up data
                 boolean validationError = false;
                 StringBuilder validationErrorMessage = new StringBuilder(getResources().getString(R.string.error_intro));
+
                 if (isEmpty(etEmail))
                 {
                     validationError = true;
                     validationErrorMessage.append(getResources().getString(R.string.error_blank_email));
                 }
+
                 if (isEmpty(etFirstName))
                 {
                     if (validationError)
                     {
                         validationErrorMessage.append(getResources().getString(R.string.error_join));
                     }
+
                     validationError = true;
                     validationErrorMessage.append(getResources().getString(R.string.error_blank_username));
                 }
+
                 if (isEmpty(etPassword))
                 {
                     if (validationError)
                     {
                         validationErrorMessage.append(getResources().getString(R.string.error_join));
                     }
+
                     validationError = true;
                     validationErrorMessage.append(getResources().getString(R.string.error_blank_password));
                 }
 
                 validationErrorMessage.append(getResources().getString(R.string.error_end));
-
-                // If there is a validation error, display the error
                 if (validationError)
                 {
                     Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG).show();
                     return;
                 }
-                String appPackage = getActivity().getApplicationContext().getPackageName();
-                Log.e("appPackage", appPackage);
-                // Set up a progress dialog
+
                 pDialog = Utils.createProgressDialog(getActivity());
                 pDialog.show();
-                ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("AppParentCompany");
-                parseQuery.whereEqualTo("appIdentifier", appPackage);
-                parseQuery.findInBackground(new FindCallback<ParseObject>()
+
+                ParseUser user = new ParseUser();
+                user.setEmail(etEmail.getText().toString().trim());
+                user.setUsername(etEmail.getText().toString().toString());
+                user.setPassword(etPassword.getText().toString());
+                user.put("appCompany", LocalUser.getInstance().getParentCompany());
+                user.put("fullName", etFirstName.getText().toString() + " " + etLastName.getText().toString());
+                user.signUpInBackground(new SignUpCallback()
                 {
-
                     @Override
-                    public void done(List<ParseObject> list, ParseException e)
+                    public void done(ParseException e)
                     {
-                        if (e == null)
+                        pDialog.dismiss();
+                        if (e != null)
                         {
-                            if (list.size() > 0)
-                            {
-                                ParseObject appCompany = list.get(0);
-                                ParseUser user = new ParseUser();
-                                user.setEmail(etEmail.getText().toString().trim());
-                                user.setUsername(etEmail.getText().toString().toString());
-                                user.setPassword(etPassword.getText().toString());
-                                user.put("appCompany", appCompany);
-                                user.put("fullName", etFirstName.getText().toString() + " "
-                                        + etLastName.getText().toString());
-                                user.signUpInBackground(new SignUpCallback()
-                                {
-
-                                    @Override
-                                    public void done(ParseException e)
-                                    {
-                                        pDialog.dismiss();
-                                        if (e != null)
-                                        {
-                                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                            }
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                        else
-                        {
-                            Log.e("errre", e.toString());
-                        }
-
                     }
                 });
-
             }
-
         });
 
         etEmailLogIn = (EditText) v.findViewById(R.id.et_email_login);
@@ -171,17 +135,19 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
         bLogin = (Button) v.findViewById(R.id.b_login);
         bLogin.setOnClickListener(new OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
+                Utils.hideKeyboard(getActivity());
                 boolean validationError = false;
                 StringBuilder validationErrorMessage = new StringBuilder(getResources().getString(R.string.error_intro));
+
                 if (isEmpty(etEmailLogIn))
                 {
                     validationError = true;
                     validationErrorMessage.append(getResources().getString(R.string.error_blank_email));
                 }
+
                 if (isEmpty(etPasswordLogin))
                 {
                     if (validationError)
@@ -191,27 +157,21 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
                     validationError = true;
                     validationErrorMessage.append(getResources().getString(R.string.error_blank_password));
                 }
-                validationErrorMessage.append(getResources().getString(R.string.error_end));
 
-                // If there is a validation error, display the error
+                validationErrorMessage.append(getResources().getString(R.string.error_end));
                 if (validationError)
                 {
                     Toast.makeText(getActivity(), validationErrorMessage.toString(), Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                // Set up a progress dialog
                 pDialog = Utils.createProgressDialog(getActivity());
                 pDialog.show();
 
-                // log in code
-
                 String email = etEmailLogIn.getText().toString();
                 String password = etPasswordLogin.getText().toString();
-                // ParseUser.l
                 ParseUser.logInInBackground(email, password, new LogInCallback()
                 {
-
                     @Override
                     public void done(ParseUser user, ParseException excption)
                     {
@@ -219,8 +179,7 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
                         if (user != null)
                         {
                             Toast.makeText(getActivity(), "Successfully logged in.", Toast.LENGTH_LONG).show();
-                            // dataPasser.onDataPass("rewardFragment");
-                            fragClicker.onFragmentItemClick(Constants.FRAG_LOGGED_IN, false, null);
+                            onLogInListener.onLogInToggled(false);
                         }
                         else
                         {
@@ -228,11 +187,11 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
                         }
                     }
                 });
-
             }
         });
 
         loginSegment.setOnCheckedChangeListener(this);
+        FontUtils.getInstance().overrideFonts(v, Fonts.LIGHT);
         return v;
     }
 
@@ -250,19 +209,11 @@ public class LoginFragment extends Fragment implements RadioGroup.OnCheckedChang
                 signUpLayout.setVisibility(View.GONE);
                 break;
         }
-
     }
 
     private boolean isEmpty(EditText etText)
     {
-        if (etText.getText().toString().trim().length() > 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return etText.getText().toString().trim().length() <= 0;
     }
 
     @Override

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.devotify.gabrielhorn.R;
 import com.devotify.gabrielhorn.model.LocalUser;
 import com.devotify.gabrielhorn.model.Post;
+import com.devotify.gabrielhorn.utility.FontUtils;
+import com.devotify.gabrielhorn.utility.Fonts;
 import com.devotify.gabrielhorn.viewHelpers.ParseImageCacheAdapter;
 import com.devotify.gabrielhorn.viewHelpers.ViewHolder;
 import com.parse.GetDataCallback;
@@ -161,5 +163,7 @@ public class PostViewListViewAdapter extends ParseImageCacheAdapter<Post>
         {
             expiredTextView.setVisibility(View.GONE);
         }
+
+        FontUtils.getInstance().overrideFonts((View) tvTitle.getParent(), Fonts.LIGHT);
     }
 }

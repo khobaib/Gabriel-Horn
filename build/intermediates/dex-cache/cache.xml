@@ -14,23 +14,11 @@
         revision="19.1.0"
         sha1="b6a82434c1eca686607867cd906bcc80ed987837"/>
     <item
-        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-bae27abe471469af86c2ad909c54968133566db4.jar"
-        jar="/Users/usama/Desktop/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
-    <item
         dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/classes-426625dfd7b7695541cda1deb2910a6d497b6f74.jar"
         jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/info.hoang8f/android-segmented/1.0.2/classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="b345b04752628a557bfceefc3f15afb22533db18"/>
-    <item
-        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/universal-image-loader-1.8.6-with-sources-aa0214b38196d1e784d08648aab4fe71d32d5976.jar"
-        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/libs/universal-image-loader-1.8.6-with-sources.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="9ad605dd55be2e74e614b2ab2ff466439c4461b7"/>
     <item
         dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/zbar-241d3b2a1868aa56f44a557df7d0abf9c5a86e8a.jar"
         jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/GabrielHorn/zBarScannerLibrary/unspecified/libs/zbar.jar"
@@ -44,10 +32,40 @@
         revision="19.1.0"
         sha1="3d645417e7780d44f32e29a3ec6b729b75aef26c"/>
     <item
+        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/classes-77fb8a70b2b68a08f0d6e290a3b0c5a6352e311d.jar"
+        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef"/>
+    <item
+        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/support-annotations-20.0.0-8d5a13e0f3a588505b44cc3582a9da266a29724e.jar"
+        jar="/Users/usama/Desktop/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-annotations/20.0.0/support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
+    <item
+        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/classes-c7371e4646e2a1ff9140f27a7797ae28d4806d2c.jar"
+        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+    <item
         dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/classes-2cdf1da578c3228d6143cf291fb38334b4abf6bd.jar"
         jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/GabrielHorn/zBarScannerLibrary/unspecified/classes.jar"
         jumboMode="false"
         revision="19.1.0"
-        sha1="f52745f9cadadfad68ca84af363b1930e770b071"/>
+        sha1="0978bd4295e4f9a4d3046f9201d10094e9f28cb1"/>
+    <item
+        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/classes-76e99b92f1df47a67f6b1657571369ae57815ed9.jar"
+        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/com.astuetz/pagerslidingtabstrip/1.0.1/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7912610ed96381c25c36d986eba422731b9641b6"/>
+    <item
+        dex="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/pre-dexed/debug/internal_impl-20.0.0-88a34bca5a42ea7290b779d7f188a10d8cd50e17.jar"
+        jar="/Users/usama/AndroidStudioProjects/GabrielHorn/app/build/intermediates/exploded-aar/com.android.support/support-v4/20.0.0/libs/internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
 
 </pre-dex-items>
