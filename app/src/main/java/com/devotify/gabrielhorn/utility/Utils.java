@@ -5,12 +5,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.AssetManager;
 import android.view.View;
 import android.view.WindowManager.BadTokenException;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.devotify.gabrielhorn.R;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Utils
 {
@@ -126,4 +131,28 @@ public class Utils
         inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
+    public static String readAssetsFile(Context context, String file)
+    {
+        AssetManager assetManager = context.getAssets();
+        try
+        {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(assetManager.open(file)));
+
+            StringBuilder out = new StringBuilder();
+            String line = "";
+            while ((line = reader.readLine()) != null)
+            {
+                out.append(line);
+            }
+
+            reader.close();
+            return out.toString();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

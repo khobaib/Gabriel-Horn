@@ -5,13 +5,13 @@ package com.devotify.gabrielhorn.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.webkit.WebView;
 
 import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.utility.Utils;
 
 /**
  * @author Touhid
@@ -27,11 +27,12 @@ public class PrivacyPolicyFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.frag_privacy_terms, container, false);
-        TextView tv = (TextView) v.findViewById(R.id.tvPrivacyOrTerms);
 
         String appName = getString(R.string.app_name);
-        String privacyPolicy = getString(R.string.privacy_policy_text);
-        tv.setText(Html.fromHtml(privacyPolicy.replaceAll("@@@", appName)));
+        String oldData = Utils.readAssetsFile(getActivity(), "privacy_policy.html");
+
+        WebView privacyPolicyWebView = (WebView) v.findViewById(R.id.privacy_policy_web_view);
+        privacyPolicyWebView.loadData(oldData.replaceAll("&&&", appName), "text/html", "UTF-8");
         return v;
     }
 

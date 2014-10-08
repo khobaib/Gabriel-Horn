@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.devotify.gabrielhorn.R;
+import com.devotify.gabrielhorn.utility.Utils;
 
 public class TermsAndConditionsFragment extends Fragment
 {
@@ -18,9 +19,12 @@ public class TermsAndConditionsFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.layout_tc_fragment, container, false);
+
+        String appName = getString(R.string.app_name);
+        String oldData = Utils.readAssetsFile(getActivity(), "terms_conditions.html");
+
         tcWebView = (WebView) v.findViewById(R.id.wv_tc);
-        tcWebView.loadUrl("file:///android_asset/ghorn_tc.html");
+        tcWebView.loadData(oldData.replaceAll("&&&", appName), "text/html", "UTF-8");
         return v;
     }
-
 }

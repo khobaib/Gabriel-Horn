@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.devotify.gabrielhorn.fragments.FragmentMore;
-import com.devotify.gabrielhorn.fragments.FragmentPostList;
+import com.devotify.gabrielhorn.fragments.PostsFragment;
 import com.devotify.gabrielhorn.fragments.LoginFragment;
 import com.devotify.gabrielhorn.fragments.RewardsFragment;
 import com.parse.ParseUser;
@@ -45,7 +45,7 @@ public class HomePageSwipeAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case POS_NEWS_FEED:
-                return FragmentPostList.newInstance();
+                return PostsFragment.newInstance();
             case POS_REWARDS:
                 return ParseUser.getCurrentUser() != null ? RewardsFragment.newInstance() : LoginFragment.newInstance();
             case POS_MORE:

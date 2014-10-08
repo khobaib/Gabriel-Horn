@@ -6,16 +6,6 @@
     android:orientation="vertical"
     tools:ignore="UseCompoundDrawables" >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/app_theme"
-        android:gravity="center"
-        android:text="About this App"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/white"
-        tools:ignore="HardcodedText" />
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

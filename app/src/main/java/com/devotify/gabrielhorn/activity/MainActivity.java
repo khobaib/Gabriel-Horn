@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +17,7 @@ import com.devotify.gabrielhorn.adapter.HomePageSwipeAdapter;
 import com.devotify.gabrielhorn.fragments.AboutFragment;
 import com.devotify.gabrielhorn.fragments.EditLocationFragment;
 import com.devotify.gabrielhorn.fragments.FragmentMore;
-import com.devotify.gabrielhorn.fragments.FragmentPostList;
+import com.devotify.gabrielhorn.fragments.PostsFragment;
 import com.devotify.gabrielhorn.fragments.PostDetailsFragment;
 import com.devotify.gabrielhorn.fragments.PrivacyPolicyFragment;
 import com.devotify.gabrielhorn.fragments.TabContainerFragment;
@@ -34,18 +35,20 @@ import com.parse.ParseAnalytics;
 
 import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity implements FragmentPostList.FragmentPostItemClickedListener,
+public class MainActivity extends ActionBarActivity implements PostsFragment.FragmentPostItemClickedListener,
         FragmentMore.MoreItemClickedListener, LogInStateListener, RegisterActivityResultListener
 {
-    public static final long LOCATION_ALARM_DURATION = (long) (30 * 10 * 1000);
+    public static final long LOCATION_ALARM_DURATION = (long) (30 * 10 * 1000), SPLASH_SCREEN_DURATION = 5 * 1000;
     private TabContainerFragment mTabContainerFragment;
     private ArrayList<ActivityResultListener> mActivityResultListeners = new ArrayList<>();
+    private long startSplashTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.splash_screen);
+        startSplashTime = System.currentTimeMillis();
 
         FontUtils.initialize(this, new String[]{Fonts.LIGHT});
         initLocationAlarm(this);
@@ -55,13 +58,27 @@ public class MainActivity extends ActionBarActivity implements FragmentPostList.
             @Override
             public void onOperationCompleted(Boolean result)
             {
-                initUI();
+                long dt = System.currentTimeMillis() - startSplashTime;
+                long timeToWait = SPLASH_SCREEN_DURATION - dt;
+                timeToWait = timeToWait > 0 ? timeToWait : 0;
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        initUI();
+                    }
+                }, timeToWait);
             }
         });
     }
 
     public void initUI()
     {
+        setContentView(R.layout.activity_main);
+
         mTabContainerFragment = new TabContainerFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mTabContainerFragment).commit();
 

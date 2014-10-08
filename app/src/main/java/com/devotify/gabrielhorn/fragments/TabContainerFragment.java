@@ -35,10 +35,12 @@ public class TabContainerFragment extends Fragment
         homePager.setAdapter(homePageSwipeAdapter);
         homePager.setOffscreenPageLimit(HomePageSwipeAdapter.NUM_SWIPE_VIEWS);
 
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) rootView.findViewById(R.id.main_tabs);
+        final PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) rootView.findViewById(R.id.main_tabs);
         tabs.setShouldExpand(true);
         tabs.setBackgroundColor(getResources().getColor(R.color.tab_color));
         tabs.setViewPager(homePager);
+        tabs.setTextColor(getResources().getColor(R.color.primary_color));
+        tabs.setIndicatorColor(getResources().getColor(R.color.primary_color));
     }
 
     public HomePageSwipeAdapter getHomePageSwipeAdapter()

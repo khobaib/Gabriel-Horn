@@ -22,11 +22,14 @@
     <dataSet config="main" >
         <source path="/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/assets" >
             <file
-                name="ghorn_tc.html"
-                path="/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/assets/ghorn_tc.html" />
-            <file
                 name="Roboto-Light.ttf"
                 path="/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/assets/Roboto-Light.ttf" />
+            <file
+                name="privacy_policy.html"
+                path="/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/assets/privacy_policy.html" />
+            <file
+                name="terms_conditions.html"
+                path="/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/assets/terms_conditions.html" />
         </source>
     </dataSet>
     <dataSet config="debug" >
