@@ -11,14 +11,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.devotify.gabrielhorn.R;
 import com.devotify.gabrielhorn.adapter.HomePageSwipeAdapter;
 import com.devotify.gabrielhorn.fragments.AboutFragment;
+import com.devotify.gabrielhorn.fragments.AddPostFragment;
 import com.devotify.gabrielhorn.fragments.EditLocationFragment;
 import com.devotify.gabrielhorn.fragments.FragmentMore;
-import com.devotify.gabrielhorn.fragments.PostsFragment;
 import com.devotify.gabrielhorn.fragments.PostDetailsFragment;
+import com.devotify.gabrielhorn.fragments.PostsFragment;
 import com.devotify.gabrielhorn.fragments.PrivacyPolicyFragment;
 import com.devotify.gabrielhorn.fragments.TabContainerFragment;
 import com.devotify.gabrielhorn.fragments.TermsAndConditionsFragment;
@@ -32,6 +34,8 @@ import com.devotify.gabrielhorn.utility.AsyncCallback;
 import com.devotify.gabrielhorn.utility.FontUtils;
 import com.devotify.gabrielhorn.utility.Fonts;
 import com.parse.ParseAnalytics;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 
@@ -47,43 +51,53 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.splash_screen);
-        startSplashTime = System.currentTimeMillis();
 
+        startSplashTime = System.currentTimeMillis();
         FontUtils.initialize(this, new String[]{Fonts.LIGHT});
-        initLocationAlarm(this);
+
         ParseAnalytics.trackAppOpened(getIntent());
         getAppCompanyInfo(new AsyncCallback<Boolean>()
         {
             @Override
             public void onOperationCompleted(Boolean result)
             {
-                long dt = System.currentTimeMillis() - startSplashTime;
-                long timeToWait = SPLASH_SCREEN_DURATION - dt;
-                timeToWait = timeToWait > 0 ? timeToWait : 0;
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable()
+                if (result)
                 {
-                    @Override
-                    public void run()
+                    initLocationAlarm(MainActivity.this);
+
+                    long dt = System.currentTimeMillis() - startSplashTime;
+                    long timeToWait = SPLASH_SCREEN_DURATION - dt;
+                    timeToWait = timeToWait > 0 ? timeToWait : 0;
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable()
                     {
-                        initUI();
-                    }
-                }, timeToWait);
+                        @Override
+                        public void run()
+                        {
+                            initUI();
+                        }
+                    }, timeToWait);
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Error. Please check your network connection.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     public void initUI()
     {
+        getSupportActionBar().show();
         setContentView(R.layout.activity_main);
 
         mTabContainerFragment = new TabContainerFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mTabContainerFragment).commit();
 
-        int titleId = getResources().getIdentifier("action_bar_title", "id",
-                "android");
+        int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
         TextView actionBarTitleTextView = (TextView) findViewById(titleId);
         FontUtils.getInstance().overrideFonts(actionBarTitleTextView, Fonts.LIGHT);
     }
@@ -102,7 +116,25 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main, menu);
+        updateAddPostButton(menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        updateAddPostButton(menu);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void updateAddPostButton(Menu menu)
+    {
+        MenuItem addPostItem = menu.findItem(R.id.action_add_post);
+        if (addPostItem != null)
+        {
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            addPostItem.setVisible(currentUser != null && currentUser.getBoolean("isAdmin"));
+        }
     }
 
     @Override
@@ -112,6 +144,10 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
         {
             case R.id.action_share:
                 onShareAppMenuClicked();
+                break;
+            case R.id.action_add_post:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddPostFragment.newInstance()).
+                        addToBackStack(null).commit();
                 break;
         }
 
@@ -148,9 +184,13 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
     @Override
     public void onShareAppMenuClicked()
     {
+        ParseFile shareImageFile = LocalUser.getInstance().getParentCompany().getParseFile("generalShareImageUrl");
+        String shareImageUrl = shareImageFile != null ? shareImageFile.getUrl() : "";
+
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey I am using Gabriel Horn!");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "I would like to share the " + getString(R.string.app_name) + " app with you. " +
+                "Stay up to date with exclusive releases, events, and rewards.");
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, "Share Via"));
     }
@@ -218,6 +258,7 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
     @Override
     public void onLogInToggled(boolean requestLogin)
     {
+        supportInvalidateOptionsMenu();
         mTabContainerFragment.getHomePageSwipeAdapter().notifyDataSetChanged();
 
         if (requestLogin)

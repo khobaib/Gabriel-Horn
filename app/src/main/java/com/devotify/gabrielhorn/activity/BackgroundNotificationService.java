@@ -17,6 +17,7 @@ import com.devotify.gabrielhorn.utility.AsyncCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
@@ -43,7 +44,6 @@ public class BackgroundNotificationService extends IntentService implements Goog
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
     }
-
 
     @Override
     public void onConnected(Bundle bundle)
@@ -87,25 +87,45 @@ public class BackgroundNotificationService extends IntentService implements Goog
 
     public void onLocalUserReady(LocalUser localUser, final Location currentUserLocation)
     {
-        ParseQuery<ParseObject> notificationObjectQuery = ParseQuery.getQuery("LocationPin");
-        notificationObjectQuery.whereEqualTo("appCompany", localUser.getParentCompany());
-        notificationObjectQuery.findInBackground(new FindCallback<ParseObject>()
+        if (localUser.getParentCompany() != null)
         {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e)
+            ParseQuery<ParseObject> notificationObjectQuery = ParseQuery.getQuery("LocationPin");
+            notificationObjectQuery.whereEqualTo("appCompany", localUser.getParentCompany());
+            notificationObjectQuery.fromLocalDatastore();
+            notificationObjectQuery.findInBackground(new FindCallback<ParseObject>()
             {
-                for (ParseObject locationPinCandidate : parseObjects)
+                @Override
+                public void done(final List<ParseObject> parseObjects, ParseException e)
                 {
-                    ParseGeoPoint candidateLocation = locationPinCandidate.getParseGeoPoint("location");
-                    double candidateDistanceMeters = candidateLocation.distanceInKilometersTo(new ParseGeoPoint(currentUserLocation.getLatitude(),
-                            currentUserLocation.getLongitude())) * 1000;
-                    if (candidateDistanceMeters <= locationPinCandidate.getInt("vicinityRadius"))
+                    ParseObject.unpinAllInBackground("location_pins", parseObjects, new DeleteCallback()
                     {
-                        sendUserNotification(locationPinCandidate);
+                        @Override
+                        public void done(ParseException e)
+                        {
+                            if (e == null)
+                            {
+                                ParseObject.pinAllInBackground("location_pins", parseObjects);
+                            }
+                            else
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                    for (ParseObject locationPinCandidate : parseObjects)
+                    {
+                        ParseGeoPoint candidateLocation = locationPinCandidate.getParseGeoPoint("location");
+                        double candidateDistanceMeters = candidateLocation.distanceInKilometersTo(new ParseGeoPoint(currentUserLocation.getLatitude(),
+                                currentUserLocation.getLongitude())) * 1000;
+                        if (candidateDistanceMeters <= locationPinCandidate.getInt("vicinityRadius"))
+                        {
+                            sendUserNotification(locationPinCandidate);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void sendUserNotification(ParseObject notificationObject)

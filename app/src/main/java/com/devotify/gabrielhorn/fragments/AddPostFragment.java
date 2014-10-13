@@ -26,6 +26,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,12 +51,18 @@ import com.devotify.gabrielhorn.R;
 import com.devotify.gabrielhorn.adapter.NothingSelectedSpinnerAdapter;
 import com.devotify.gabrielhorn.interfaces.OnDateOrTimSetListener;
 import com.devotify.gabrielhorn.model.LocalUser;
+import com.devotify.gabrielhorn.utility.FontUtils;
+import com.devotify.gabrielhorn.utility.Fonts;
 import com.devotify.gabrielhorn.utility.Utils;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SendCallback;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,16 +77,15 @@ import java.util.Date;
 
 public class AddPostFragment extends Fragment
 {
-
-    // OnDataPass dataPasser;
-
     private final String TAG = this.getClass().getSimpleName();
+
     private static final int CAMERA_REQ_CODE = 901;
     private static final int GALLERY_REQ_CODE = 902;
     private static final String[] monthArray = {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
             "Nov", "Dec"
     };
+
     private static final int BUTTON_POSITIVE = -1;
     private static final int BUTTON_NEGATIVE = -2;
 
@@ -112,27 +119,24 @@ public class AddPostFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.fragment_add_post, container, false);
         bCamera = (Button) v.findViewById(R.id.btnCamera);
         bCamera.setOnClickListener(new OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
                 showPicDialog();
-
             }
         });
 
         bHLink = (Button) v.findViewById(R.id.btnHyperLink);
         bHLink.setOnClickListener(new OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
-                // addHyperLink();
                 showAddHyperLinkDialog();
             }
         });
@@ -140,128 +144,28 @@ public class AddPostFragment extends Fragment
         ivSelectedImage = (ImageView) v.findViewById(R.id.ivToBePostedImage);
         ivSelectedImage.setOnClickListener(new OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
                 showPicRemovePrompt();
-
             }
         });
+
         txtLink = (TextView) v.findViewById(R.id.tvToBePostedlinks);
 
         btnAddPost = (Button) v.findViewById(R.id.btnAddPost);
         btnAddPost.setOnClickListener(new OnClickListener()
         {
-
             @Override
             public void onClick(View v)
             {
-                boolean validationError = false;
-                StringBuilder errorMessage = new StringBuilder(getResources().getString(R.string.error_intro));
-                String catgory = edtCategory.getText().toString();
-                if (catgory.equals(""))
-                {
-                    errorMessage.append("Enter Category");
-                    validationError = true;
-                }
-                String tite = edtTitle.getText().toString();
-                if (tite.equals(""))
-                {
-                    if (validationError)
-                        errorMessage.append(", ");
-                    validationError = true;
-                    errorMessage.append("Enter Title");
-                }
-                String details = edtDetails.getText().toString();
-                if (details.equals(""))
-                {
-                    if (validationError)
-                        errorMessage.append(" and ");
-                    validationError = true;
-                    errorMessage.append("Enter Deatils");
-
-                }
-                errorMessage.append(getResources().getString(R.string.error_end));
-                Date date = calculateExpiryDate();
-                // set up progress dialog
-
-                if (!validationError)
-                {
-                    pDialog = Utils.createProgressDialog(getActivity());
-                    pDialog.show();
-
-                    ParseObject parseObject = ParseObject.create("Post");
-                    parseObject.put("contents", details);
-                    parseObject.put("title", tite);
-                    parseObject.put("category", catgory);
-                    parseObject.put("expiration", date);
-                    parseObject.put("author", ParseUser.getCurrentUser());
-                    parseObject.put("link", postLink);
-                    parseObject.put("appCompany", LocalUser.getInstance().getParentCompany());
-                    if (mImageCaptureUri != null)
-                    {
-                        byte[] data = new byte[(int) picFile.length()];
-                        FileInputStream fileInputStream;
-                        try
-                        {
-
-                            fileInputStream = new FileInputStream(picFile);
-                            fileInputStream.read(data);
-                            ParseFile pFile = new ParseFile(picFile.getName(), data);
-
-                            parseObject.put("image", pFile);
-                        }
-                        catch (IOException e)
-                        {
-
-                            e.printStackTrace();
-                        }
-                    }
-                    parseObject.saveInBackground(new SaveCallback()
-                    {
-
-                        @Override
-                        public void done(ParseException e)
-                        {
-                            if (e == null)
-
-                            {
-                                Log.e("TAG", "success");
-                                Toast.makeText(getActivity(), "Successfully posted.", Toast.LENGTH_LONG).show();
-
-                            }
-                            else
-                            {
-                                Log.e("TAG", "error");
-                            }
-                            pDialog.dismiss();
-                        }
-                    });
-
-                }
-                else
-                {
-                    toast(errorMessage.toString());
-                }
-
+                onPostButtonClicked();
             }
-
         });
 
         edtCategory = (EditText) v.findViewById(R.id.etCategoryAddPost);
-        /*
-         * edtCategory.setOnClickListener(new OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) {
-		 * 
-		 * 
-		 * } });
-		 */
         edtCategory.setOnTouchListener(new OnTouchListener()
         {
-
-            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent arg1)
             {
@@ -269,6 +173,7 @@ public class AddPostFragment extends Fragment
                 return true;
             }
         });
+
         spCategory = (Spinner) v.findViewById(R.id.sp_catgory);
         spCategory.setOnItemSelectedListener(new OnItemSelectedListener()
         {
@@ -286,6 +191,7 @@ public class AddPostFragment extends Fragment
             {
             }
         });
+
         setSpinner();
 
         edtTitle = (EditText) v.findViewById(R.id.etTitleAddPost);
@@ -338,7 +244,124 @@ public class AddPostFragment extends Fragment
                 setImageInTheView();
         }
 
+        FontUtils.getInstance().overrideFonts(v, Fonts.LIGHT);
         return v;
+    }
+
+    public void onPostButtonClicked()
+    {
+        boolean validationError = false;
+
+        StringBuilder errorMessage = new StringBuilder(getResources().getString(R.string.error_intro));
+        String catgory = edtCategory.getText().toString();
+        if (catgory.equals(""))
+        {
+            errorMessage.append("Enter Category");
+            validationError = true;
+        }
+
+        final String title = edtTitle.getText().toString();
+        if (title.equals(""))
+        {
+            if (validationError)
+                errorMessage.append(", ");
+            validationError = true;
+            errorMessage.append("Enter Title");
+        }
+
+        String details = edtDetails.getText().toString();
+        if (details.equals(""))
+        {
+            if (validationError)
+                errorMessage.append(" and ");
+            validationError = true;
+            errorMessage.append("Enter Deatils");
+
+        }
+
+        errorMessage.append(getResources().getString(R.string.error_end));
+        Date date = calculateExpiryDate();
+        if (!validationError)
+        {
+            pDialog = Utils.createProgressDialog(getActivity());
+            pDialog.show();
+
+            ParseObject parseObject = ParseObject.create("Post");
+            parseObject.put("contents", details);
+            parseObject.put("title", title);
+            parseObject.put("category", catgory);
+            parseObject.put("expiration", date);
+            parseObject.put("author", ParseUser.getCurrentUser());
+            parseObject.put("link", postLink);
+            parseObject.put("appCompany", LocalUser.getInstance().getParentCompany());
+
+            if (mImageCaptureUri != null)
+            {
+                byte[] data = new byte[(int) picFile.length()];
+                FileInputStream fileInputStream;
+
+                try
+                {
+                    fileInputStream = new FileInputStream(picFile);
+                    fileInputStream.read(data);
+                    ParseFile pFile = new ParseFile(picFile.getName(), data);
+                    parseObject.put("image", pFile);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            parseObject.saveInBackground(new SaveCallback()
+            {
+                @Override
+                public void done(ParseException e)
+                {
+                    if (e == null)
+                    {
+                        if (getActivity() != null)
+                        {
+                            Toast.makeText(getActivity(), "Successfully posted.", Toast.LENGTH_LONG).show();
+                            getActivity().getSupportFragmentManager().popBackStack();
+
+                            ParseQuery<ParseInstallation> installationQuery = ParseInstallation.getQuery();
+                            installationQuery.whereEqualTo("appIdentifier", getActivity().getPackageName());
+                            ParsePush.sendMessageInBackground(title, installationQuery, new SendCallback()
+                            {
+                                @Override
+                                public void done(ParseException e)
+                                {
+                                    if (e != null)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else
+                    {
+                        Log.e("TAG", "error");
+                    }
+
+                    pDialog.dismiss();
+                }
+            });
+
+        }
+        else
+        {
+            toast(errorMessage.toString());
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        menu.clear();
+        inflater.inflate(R.menu.add_post_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setSpinner()
@@ -348,7 +371,6 @@ public class AddPostFragment extends Fragment
         spCategory.setAdapter(new NothingSelectedSpinnerAdapter(myAdapter, R.layout.row_spinner_nothing_selected,
                 getActivity()));
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
     }
 
     private void toast(String str)
@@ -378,23 +400,20 @@ public class AddPostFragment extends Fragment
     {
         String day = tvDay.getText().toString();
         String stringMonth = tvMonth.getText().toString();
-        // int month = 0;
-		/*
-		 * for(int i=0;i<monthArray.length;i++) {
-		 * if(monthArray[i].equals(stringMonth)) month=i; }
-		 */
         String year = tvYear.getText().toString();
         String minute = tvMin.getText().toString();
+
         int hour = Integer.valueOf(tvHour.getText().toString());
         String amPm = tvAmPM.getText().toString();
+
         if (amPm.equals("PM"))
         {
             hour = hour + 12;
         }
 
         String dateString = day + "-" + stringMonth + "-" + year + " " + hour + ":" + minute;
-        // Log.e("DATE",dateString);
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy hh:mm");
+
         Date date = null;
         try
         {
@@ -450,7 +469,6 @@ public class AddPostFragment extends Fragment
         return year + "_" + month + "_" + day + "_" + hour + "_" + min;
     }
 
-    // Time --- Time
     private void showTimePicker()
     {
         DialogFragment df = new DateOrTimePickerFragment(new OnDateOrTimSetListener()
@@ -475,7 +493,6 @@ public class AddPostFragment extends Fragment
         df.show(((FragmentActivity) activity).getSupportFragmentManager(), "time_picker");
     }
 
-    // Date --- Date
     private void showDatePicker()
     {
         DialogFragment df = new DateOrTimePickerFragment(new OnDateOrTimSetListener()
@@ -521,11 +538,9 @@ public class AddPostFragment extends Fragment
             }
         });
 
-        // Center-focus the dialog
         Window window = dialog.getWindow();
         window.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.BOTTOM);
-        // The below code is EXTRA - to dim the parent view by 70% :D
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.dimAmount = 0.7f;
         lp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
@@ -548,7 +563,6 @@ public class AddPostFragment extends Fragment
 
     private void showPicDialog()
     {
-
         final Dialog dialog = new Dialog(activity, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
         dialog.setContentView(R.layout.dialog_pic_taker);
         Button btnTakePic = (Button) dialog.findViewById(R.id.btnCameraDialogPicTaker);
@@ -632,10 +646,8 @@ public class AddPostFragment extends Fragment
         File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "Gabriel Horn");
         directory.mkdir();
-        // String mainDir = directory.toString();
 
         String photoFileName = "post_pic" + getTimeStamp() + ".png";
-        Log.d(TAG, photoFileName);
         picFile = new File(directory.getPath(), photoFileName);
         try
         {
@@ -665,7 +677,7 @@ public class AddPostFragment extends Fragment
         {
             angle = 270;
         }
-        Log.d(TAG, "angle = " + angle);
+
         return angle;
     }
 
@@ -734,8 +746,6 @@ public class AddPostFragment extends Fragment
         Cursor cursor = activity.getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null)
         {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
             String filePath = cursor.getString(columnIndex);
@@ -750,7 +760,6 @@ public class AddPostFragment extends Fragment
     {
         try
         {
-            // decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
             FileInputStream stream1 = new FileInputStream(f);
@@ -857,8 +866,6 @@ public class AddPostFragment extends Fragment
                         {
                             Log.e("Error_Touhid", e.toString());
                         }
-                        // code b4 crop: ivProfilePic.setImageBitmap(scaledBmp);
-                        // btnUpdate.setVisibility(View.VISIBLE);
                     }
                     catch (IOException e)
                     {
@@ -872,9 +879,6 @@ public class AddPostFragment extends Fragment
                     }
                     Log.d(TAG, "starting crop");
                     saveImage();
-                    //
-                    // doCrop();
-                    // imageUriToString = mImageCaptureUri.toString();
                     break;
 
                 case GALLERY_REQ_CODE:
@@ -908,8 +912,6 @@ public class AddPostFragment extends Fragment
                         if (picFile == null)
                             Log.i(TAG, "<<<<<<<<<<<<<<<<<< Pic file is null !! >>>>>>>>>>>>>>>>>");
                     }
-                    // doCrop();
-                    // imageUriToString = mImageCaptureUri.toString();
                     break;
             }
         }

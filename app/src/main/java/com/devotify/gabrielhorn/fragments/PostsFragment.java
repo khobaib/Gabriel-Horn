@@ -52,7 +52,6 @@ public class PostsFragment extends Fragment
             @Override
             public void onLoading()
             {
-
             }
 
             @Override

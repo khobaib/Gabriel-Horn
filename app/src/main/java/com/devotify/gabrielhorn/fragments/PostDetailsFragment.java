@@ -19,7 +19,7 @@ import com.parse.ParseImageView;
 public class PostDetailsFragment extends Fragment
 {
     private Post singleofferDetails;
-    private TextView tv_title, tv_message;
+    private TextView tv_title, tv_message, postLinkTextView;
 
     public static PostDetailsFragment newInstance(Post singleOfferDetails)
     {
@@ -43,8 +43,11 @@ public class PostDetailsFragment extends Fragment
         ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_post_details, container, false);
         tv_title = (TextView) v.findViewById(R.id.tv_title);
         tv_message = (TextView) v.findViewById(R.id.tv_message);
+        postLinkTextView = (TextView) v.findViewById(R.id.post_link_text_view);
+
         tv_title.setText(singleofferDetails.getTitle());
         tv_message.setText(singleofferDetails.getContents());
+        postLinkTextView.setText(singleofferDetails.getLink());
 
         ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.img_pic);
         ParseFile imageFile = singleofferDetails.getParseFile("image");

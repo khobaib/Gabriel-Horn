@@ -833,6 +833,8 @@
     <string name="error_join">", and "</string>
     <string name="error_mismatched_passwords">enter the same password twice</string>
     <string name="expired">Expired</string>
+    <string name="forgot_pass"><u>Forgot Password?</u></string>
+    <string name="forgot_password_email_hint">Email to Send Reset Request</string>
     <string name="login_subtitle">Sign up to start earning rewards, or log in to see your My Reward Card.</string>
     <string name="login_title">Earn rewards for your purchases!</string>
     <string name="more_title">More</string>

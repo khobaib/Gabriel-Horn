@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/svAddPostFrag"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true" >
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/svAddPostFrag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:background="#1d1f1f"
         android:orientation="vertical"
         android:padding="10dp"
-        tools:ignore="HardcodedText" >
+        tools:ignore="HardcodedText">
 
         <TextView
             android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
             android:layout_marginTop="15dp"
             android:text="Category"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/etCategoryAddPost"
@@ -32,14 +32,14 @@
             android:ems="10"
             android:padding="5dp"
             android:textColor="@color/white"
-            tools:ignore="TextFields" />
+            tools:ignore="TextFields"/>
 
         <Spinner
             android:id="@+id/sp_catgory"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:spinnerMode="dialog"
-            tools:ignore="UnusedAttribute" />
+            tools:ignore="UnusedAttribute"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
             android:layout_marginTop="15dp"
             android:text="Title"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/etTitleAddPost"
@@ -59,7 +59,7 @@
             android:ems="10"
             android:hint=""
             android:padding="5dp"
-            android:textColor="@color/white" >
+            android:textColor="@color/white">
         </EditText>
 
         <TextView
@@ -69,7 +69,7 @@
             android:layout_marginTop="15dp"
             android:text="Details"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/etDetailsAddPost"
@@ -81,7 +81,7 @@
             android:ems="10"
             android:lines="5"
             android:padding="5dp"
-            android:textColor="@color/white" >
+            android:textColor="@color/white">
         </EditText>
 
         <TextView
@@ -91,12 +91,12 @@
             android:layout_marginTop="15dp"
             android:text="Expiration"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <LinearLayout
             android:id="@+id/llDateAddPost"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tvMonthAddPost"
@@ -108,7 +108,7 @@
                 android:padding="5dp"
                 android:text="Jun"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tvDateAddPost"
@@ -120,7 +120,7 @@
                 android:padding="5dp"
                 android:text="30"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tvYearAddPost"
@@ -132,13 +132,13 @@
                 android:padding="5dp"
                 android:text="2014"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llTimeAddPost"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tvHourAddPost"
@@ -150,7 +150,7 @@
                 android:padding="5dp"
                 android:text="5"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tvMinAddPost"
@@ -162,7 +162,7 @@
                 android:padding="5dp"
                 android:text="30"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tvDayPosiAddPost"
@@ -174,7 +174,7 @@
                 android:padding="5dp"
                 android:text="AM"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
@@ -184,7 +184,7 @@
             android:layout_marginBottom="5dp"
             android:orientation="vertical"
             android:visibility="visible"
-            tools:ignore="UseCompoundDrawables" >
+            tools:ignore="UseCompoundDrawables">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -193,7 +193,7 @@
                 android:layout_marginTop="15dp"
                 android:text="Images"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <ImageView
                 android:id="@+id/ivToBePostedImage"
@@ -204,7 +204,7 @@
                 android:layout_marginTop="3dp"
                 android:gravity="center"
                 android:src="@drawable/back"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"/>
         </LinearLayout>
 
         <LinearLayout
@@ -214,7 +214,7 @@
             android:layout_marginBottom="5dp"
             android:orientation="vertical"
             android:visibility="visible"
-            tools:ignore="UseCompoundDrawables" >
+            tools:ignore="UseCompoundDrawables">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -223,7 +223,7 @@
                 android:layout_marginTop="15dp"
                 android:text="links"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"/>
 
             <LinearLayout
                 android:id="@+id/tvlink_wrapper"
@@ -233,7 +233,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/rounded_white_bg"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvToBePostedlinks"
@@ -244,7 +244,7 @@
                     android:layout_marginTop="2dp"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -253,14 +253,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:padding="5dp" >
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="1dp"
                 android:layout_height="96dp"
                 android:layout_centerInParent="true"
-                android:background="@color/white" />
+                android:background="@color/white"/>
 
             <Button
                 android:id="@+id/btnHyperLink"
@@ -271,7 +271,7 @@
                 android:layout_marginLeft="26dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/pin"
-                android:padding="5dp" />
+                android:padding="5dp"/>
 
             <Button
                 android:id="@+id/btnCamera"
@@ -281,7 +281,7 @@
                 android:layout_alignBottom="@+id/btnHyperLink"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="23dp"
-                android:background="@drawable/camera" />
+                android:background="@drawable/camera"/>
         </RelativeLayout>
 
         <Button
@@ -296,12 +296,7 @@
             android:paddingRight="35dp"
             android:paddingTop="10dp"
             android:text="Add Post"
-            android:textColor="@color/white" />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="60dp"
-            android:background="@android:color/transparent" />
+            android:textColor="@color/white"/>
     </LinearLayout>
 
 </ScrollView>

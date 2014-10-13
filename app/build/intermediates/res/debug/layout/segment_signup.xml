@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_signup"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="5dp"
-    tools:ignore="HardcodedText" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/rl_signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                tools:ignore="HardcodedText">
 
     <EditText
         android:id="@+id/et_email"
@@ -13,13 +13,13 @@
         android:layout_height="wrap_content"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
 
     <LinearLayout
         android:id="@+id/ll_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/et_email" >
+        android:layout_below="@+id/et_email">
 
         <EditText
             android:id="@+id/et_first_name"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="First Name"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/et_last_name"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Last Name"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"/>
     </LinearLayout>
 
     <EditText
@@ -45,7 +45,7 @@
         android:layout_below="@+id/ll_name"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/tv_terms"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/et_password"
         android:padding="10dp"
-        android:text="@string/agree_term" />
+        android:text="@string/agree_term"/>
 
     <Button
         android:id="@+id/b_continue"
@@ -63,15 +63,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:background="@drawable/login_button_back"
-        android:padding="15dp"
+        android:padding="10dp"
         android:text="Continue"
-        android:textColor="@color/white" />
-
-    <View
-        android:id="@+id/v_bottom"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:layout_below="@+id/b_continue"
-        android:layout_marginTop="100dp" />
-
+        android:textColor="@color/white"/>
 </RelativeLayout><!-- From: file:/Users/usama/AndroidStudioProjects/GabrielHorn/app/src/main/res/layout/segment_signup.xml -->

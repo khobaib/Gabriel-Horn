@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.devotify.gabrielhorn.fragments.FragmentMore;
-import com.devotify.gabrielhorn.fragments.PostsFragment;
 import com.devotify.gabrielhorn.fragments.LoginFragment;
+import com.devotify.gabrielhorn.fragments.PostsFragment;
 import com.devotify.gabrielhorn.fragments.RewardsFragment;
 import com.parse.ParseUser;
 

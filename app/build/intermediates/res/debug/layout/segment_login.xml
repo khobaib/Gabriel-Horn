@@ -31,7 +31,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:background="@drawable/login_button_back"
-        android:padding="15dp"
+        android:padding="10dp"
         android:text="Log In"
         android:textColor="@color/white" />
 
