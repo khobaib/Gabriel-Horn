@@ -14,7 +14,7 @@ gen/
 */build/*
 app/build/
 zBarScannerLibrary/build
-
+.gradle/
 
 # Local configuration file (sdk path, etc)
 local.properties
