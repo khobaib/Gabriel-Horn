@@ -29,8 +29,10 @@ import com.devotify.gabrielhorn.utility.FontUtils;
 import com.devotify.gabrielhorn.utility.Fonts;
 import com.dm.zbar.android.scanner.ZBarConstants;
 import com.dm.zbar.android.scanner.ZBarScannerActivity;
-import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.LocationCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -38,7 +40,7 @@ import com.parse.SaveCallback;
 
 import net.sourceforge.zbar.Symbol;
 
-import java.util.List;
+import java.util.Date;
 
 public class RewardsFragment extends Fragment implements OnItemClickListener, ActivityResultListener
 {
@@ -95,13 +97,23 @@ public class RewardsFragment extends Fragment implements OnItemClickListener, Ac
     {
         if (isCameraAvailable())
         {
-            Intent intent = new Intent(getActivity(), ZBarScannerActivity.class);
-            intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{Symbol.QRCODE});
-            getActivity().startActivityForResult(intent, ZBAR_QR_SCANNER_REQUEST);
+            long lastScanTime = ParseUser.getCurrentUser().getDate("qrScanDate").getTime();
+            long dt = System.currentTimeMillis() - lastScanTime;
+            if (dt > 3600 * 1000 || ParseUser.getCurrentUser().getBoolean("isSuperAdmin"))
+            {
+                Intent intent = new Intent(getActivity(), ZBarScannerActivity.class);
+                intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{Symbol.QRCODE});
+                getActivity().startActivityForResult(intent, ZBAR_QR_SCANNER_REQUEST);
+            }
+            else
+            {
+                long minutes = (3600 * 1000 - dt) / (1000 * 60);
+                Toast.makeText(getActivity(), "You must wait " + minutes + " minutes before scanning again", Toast.LENGTH_SHORT).show();
+            }
         }
         else
         {
-            Toast.makeText(getActivity(), "Rear Facing Camera Unavailable", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Camera Unavailable", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -121,31 +133,68 @@ public class RewardsFragment extends Fragment implements OnItemClickListener, Ac
 
                 String contents = data.getStringExtra(ZBarConstants.SCAN_RESULT);
                 ParseQuery<ParseObject> qrCodequery = ParseQuery.getQuery(Constants.OBJECT_QRCODE);
-                qrCodequery.whereEqualTo(Constants.OBJECT_ID, contents);
-                qrCodequery.findInBackground(new FindCallback<ParseObject>()
+                qrCodequery.include("location");
+                qrCodequery.getInBackground(contents, new GetCallback<ParseObject>()
                 {
                     @Override
-                    public void done(List<ParseObject> qrCodeObject, ParseException e)
+                    public void done(final ParseObject qrCodeObject, ParseException e)
                     {
-                        dialog.cancel();
-                        if (e == null && qrCodeObject != null && qrCodeObject.size() > 0)
+                        if (getActivity() != null)
                         {
-                            int pointsToAward = qrCodeObject.get(0).getInt(Constants.POINTS_TO_AWARD);
-
-                            ParseUser user = ParseUser.getCurrentUser();
-                            user.put(Constants.USER_REWARD_POINTS, user.getInt("rewardPoints") + pointsToAward);
-                            user.saveInBackground(new SaveCallback()
+                            dialog.cancel();
+                            if (e == null)
                             {
-                                @Override
-                                public void done(ParseException paramParseException)
+                                final ParseObject locationObject = qrCodeObject.getParseObject("location");
+                                ParseGeoPoint.getCurrentLocationInBackground(10000, new LocationCallback()
                                 {
-                                    updateRewardsTextView();
-                                }
-                            });
-                        }
-                        else
-                        {
-                            alert("Cannot find this product.");
+                                    @Override
+                                    public void done(ParseGeoPoint parseGeoPoint, ParseException e)
+                                    {
+                                        if (e == null)
+                                        {
+                                            if (parseGeoPoint != null)
+                                            {
+                                                double distanceKilometers = parseGeoPoint.distanceInKilometersTo(locationObject.
+                                                        getParseGeoPoint("location"));
+                                                double distanceMeters = distanceKilometers / 1000.0;
+
+                                                if (distanceMeters <= locationObject.getDouble("vicinityRadius"))
+                                                {
+                                                    int pointsToAward = qrCodeObject.getInt(Constants.POINTS_TO_AWARD);
+
+                                                    ParseUser user = ParseUser.getCurrentUser();
+                                                    user.put("rewardPoints", user.getInt("rewardPoints") + pointsToAward);
+                                                    user.put("qrScanDate", new Date());
+                                                    user.saveInBackground(new SaveCallback()
+                                                    {
+                                                        @Override
+                                                        public void done(ParseException paramParseException)
+                                                        {
+                                                            updateRewardsTextView();
+                                                        }
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    Toast.makeText(getActivity(), "You must scan this code in a store to win loyalty points", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Toast.makeText(getActivity(), "Error - couldn't fetch your location", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(), "Invalid QR code", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
