@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -33,11 +34,18 @@ import com.devotify.gabrielhorn.model.Post;
 import com.devotify.gabrielhorn.utility.AsyncCallback;
 import com.devotify.gabrielhorn.utility.FontUtils;
 import com.devotify.gabrielhorn.utility.Fonts;
+import com.facebook.Session;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
+import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
-import com.parse.ParseFile;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity implements PostsFragment.FragmentPostItemClickedListener,
         FragmentMore.MoreItemClickedListener, LogInStateListener, RegisterActivityResultListener
@@ -47,12 +55,19 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
     private ArrayList<ActivityResultListener> mActivityResultListeners = new ArrayList<>();
     private long startSplashTime;
 
+    private UiLifecycleHelper uiHelper;
+    Session session;
+    List<String> permissions = Arrays.asList("public_profile", "email");
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.splash_screen);
+
+        uiHelper = new UiLifecycleHelper(this, null);
+        uiHelper.onCreate(savedInstanceState);
 
         startSplashTime = System.currentTimeMillis();
         FontUtils.initialize(this, new String[]{Fonts.LIGHT});
@@ -184,15 +199,44 @@ public class MainActivity extends ActionBarActivity implements PostsFragment.Fra
     @Override
     public void onShareAppMenuClicked()
     {
-        ParseFile shareImageFile = LocalUser.getInstance().getParentCompany().getParseFile("generalShareImageUrl");
-        String shareImageUrl = shareImageFile != null ? shareImageFile.getUrl() : "";
+        ParseFacebookUtils.logIn(permissions, this, new LogInCallback() {
 
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "I would like to share the " + getString(R.string.app_name) + " app with you. " +
-                "Stay up to date with exclusive releases, events, and rewards.");
-        sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent, "Share Via"));
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (user == null) {
+                    Log.e("FAILURE", "User denied for facebook login");
+                    // e.printStackTrace();
+                } else {
+                    session = ParseFacebookUtils.getSession();
+                    if (session != null) {
+                        Log.e(">>>>>", "session not null");
+                        if (session.isOpened()) {
+                            Log.e(">>>>>", "session is opened");
+                            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(MainActivity.this).setName("Title:Nexus9 price")
+                                    .setDescription("Nexus 9 price would be starting from $399")
+                                    .setPicture("http://i58.tinypic.com/2iqkg04.png")
+                                    .setLink("https://www.androidauthority.com/nexus-9-specs-features-price-availability-538604/")
+                                    .setApplicationName("Devotify").build();
+                            uiHelper.trackPendingDialogCall(shareDialog.present());
+                        }
+                    }
+
+                    Log.e("SUCESS", "Already existing user for facebook login");
+
+                }
+
+            }
+        });
+
+//        ParseFile shareImageFile = LocalUser.getInstance().getParentCompany().getParseFile("generalShareImageUrl");
+//        String shareImageUrl = shareImageFile != null ? shareImageFile.getUrl() : "";
+//
+//        Intent sendIntent = new Intent();
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, "I would like to share the " + getString(R.string.app_name) + " app with you. " +
+//                "Stay up to date with exclusive releases, events, and rewards.");
+//        sendIntent.setType("text/plain");
+//        startActivity(Intent.createChooser(sendIntent, "Share Via"));
     }
 
     @Override

@@ -22,4 +22,6 @@
     <string name="more_title">More</string>
     <string name="forgot_pass"><u>Forgot Password?</u></string>
     <string name="forgot_password_email_hint">Email to Send Reset Request</string>
+
+    <string name="fb_app_id">1711453775745803</string>
 </resources>

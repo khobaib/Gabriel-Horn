@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         applicationId "com.devotify.gabrielhorn"
@@ -30,6 +30,7 @@ dependencies {
     compile 'info.hoang8f:android-segmented:1.0.2'
     compile 'com.google.android.gms:play-services:5.+'
     compile project(':zBarScannerLibrary')
+    compile project(':facebook')
     compile 'com.nineoldandroids:library:2.4.0'
     compile files('libs/Parse-1.7.0/Parse-1.7.0.jar')
 }
